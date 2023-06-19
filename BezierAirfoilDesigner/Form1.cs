@@ -23,7 +23,7 @@ namespace BezierAirfoilDesigner
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {            
+        {
             dataGridView1.AllowUserToResizeColumns = false;
             dataGridView1.AllowUserToResizeRows = false;
             dataGridView2.AllowUserToResizeColumns = false;
@@ -50,7 +50,7 @@ namespace BezierAirfoilDesigner
         {
 
             List<PointF> controlPointsTop = new List<PointF>();
-            for(int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
             {
                 // Retrieve the values from the DataGridView
                 float xt = float.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
@@ -63,7 +63,7 @@ namespace BezierAirfoilDesigner
 
 
             List<PointF> controlPointsBottom = new List<PointF>();
-            for(int i = 0; i < dataGridView2.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridView2.Rows.Count - 1; i++)
             {
                 // Retrieve the values from the DataGridView
                 float xb = float.Parse(dataGridView2.Rows[i].Cells[0].Value.ToString());
@@ -74,28 +74,10 @@ namespace BezierAirfoilDesigner
             }
 
 
-            //if (float.Parse(textBox9.Text) < 3) { textBox9.Text = "3"; }
-            //if (float.Parse(textBox18.Text) < 3) { textBox18.Text = "3"; }
-
-            //PointF P0_top = new PointF(float.Parse(textBox1.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox2.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P1_top = new PointF(float.Parse(textBox3.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox4.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P2_top = new PointF(float.Parse(textBox5.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox6.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P3_top = new PointF(float.Parse(textBox7.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox8.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //int numPointsTop = int.Parse(textBox9.Text);
-
-            //PointF P0_bottom = new PointF(float.Parse(textBox10.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox11.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P1_bottom = new PointF(float.Parse(textBox12.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox13.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P2_bottom = new PointF(float.Parse(textBox14.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox15.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //PointF P3_bottom = new PointF(float.Parse(textBox16.Text, System.Globalization.CultureInfo.InvariantCulture), float.Parse(textBox17.Text, System.Globalization.CultureInfo.InvariantCulture));
-            //int numPointsBottom = int.Parse(textBox18.Text);
-
-            //List<PointF> controlPointsTop = new List<PointF> { P0_top, P1_top, P2_top, P3_top };
-            //List<PointF> controlPointsBottom = new List<PointF> { P0_bottom, P1_bottom, P2_bottom, P3_bottom };
-
-            //--------------------------------------------------------------------------------------------------
-
-            int numPointsTop = 100;
-            int numPointsBottom = 100;
+            if (int.Parse(textBox1.Text) < 3) { textBox1.Text = "3"; }
+            if (int.Parse(textBox2.Text) < 3) { textBox2.Text = "3"; }
+            int numPointsTop = int.Parse(textBox1.Text);
+            int numPointsBottom = int.Parse(textBox2.Text);
 
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
@@ -199,6 +181,82 @@ namespace BezierAirfoilDesigner
                 }
 
                 return points;
+            }
+
+            public static List<PointF> IncreaseOrder(List<PointF> controlPoints)
+            {
+                int n = controlPoints.Count - 1;
+                List<PointF> increasedControlPoints = new List<PointF>();
+
+                increasedControlPoints.Add(controlPoints[0]);
+
+                for (int i = 1; i < n; i++)
+                {
+                    float x = (i * controlPoints[i - 1].X + (n - i) * controlPoints[i].X) / n;
+                    float y = (i * controlPoints[i - 1].Y + (n - i) * controlPoints[i].Y) / n;
+
+                    increasedControlPoints.Add(new PointF(x, y));
+                }
+
+                increasedControlPoints.Add(controlPoints[n]);
+                increasedControlPoints.Add(controlPoints[n]);
+
+                return increasedControlPoints;
+            }
+        }
+
+        private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsTop = new List<PointF>();
+            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            {
+                // Retrieve the values from the DataGridView
+                float x = float.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
+                float y = float.Parse(dataGridView1.Rows[i].Cells[1].Value.ToString());
+                // Create a PointF object
+                PointF point = new PointF(x, y);
+                controlPointsTop.Add(point);
+            }
+
+            List<PointF> increasedControlPoints = DeCasteljau.IncreaseOrder(controlPointsTop);
+
+            dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
+
+            dataGridView1.Columns.Add("xVal", "X");
+            dataGridView1.Columns.Add("yVal", "Y");
+
+            for (int i = 0; i < increasedControlPoints.Count; i++)
+            {
+                dataGridView1.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
+            }
+
+        }
+
+        private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsBottom = new List<PointF>();
+            for (int i = 0; i < dataGridView2.Rows.Count - 1; i++)
+            {
+                // Retrieve the values from the DataGridView
+                float x = float.Parse(dataGridView2.Rows[i].Cells[0].Value.ToString());
+                float y = float.Parse(dataGridView2.Rows[i].Cells[1].Value.ToString());
+                // Create a PointF object
+                PointF point = new PointF(x, y);
+                controlPointsBottom.Add(point);
+            }
+
+            List<PointF> increasedControlPoints = DeCasteljau.IncreaseOrder(controlPointsBottom);
+
+            dataGridView2.Rows.Clear();
+            dataGridView2.Columns.Clear();
+
+            dataGridView2.Columns.Add("xVal", "X");
+            dataGridView2.Columns.Add("yVal", "Y");
+
+            for (int i = 0; i < increasedControlPoints.Count; i++)
+            {
+                dataGridView2.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
             }
         }
     }
