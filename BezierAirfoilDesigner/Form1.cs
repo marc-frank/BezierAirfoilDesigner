@@ -190,19 +190,20 @@ namespace BezierAirfoilDesigner
 
                 increasedControlPoints.Add(controlPoints[0]);
 
-                for (int i = 1; i < n; i++)
+                for (int i = 1; i <= n; i++)
                 {
-                    float x = (i * controlPoints[i - 1].X + (n - i) * controlPoints[i].X) / n;
-                    float y = (i * controlPoints[i - 1].Y + (n - i) * controlPoints[i].Y) / n;
+                    float x = (i * controlPoints[i - 1].X + (n - i + 1) * controlPoints[i].X) / (n + 1);
+                    float y = (i * controlPoints[i - 1].Y + (n - i + 1) * controlPoints[i].Y) / (n + 1);
 
                     increasedControlPoints.Add(new PointF(x, y));
                 }
 
                 increasedControlPoints.Add(controlPoints[n]);
-                increasedControlPoints.Add(controlPoints[n]);
 
                 return increasedControlPoints;
             }
+
+
         }
 
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
@@ -231,6 +232,9 @@ namespace BezierAirfoilDesigner
                 dataGridView1.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
             }
 
+            lblOrderTop.Text = "order: " + increasedControlPoints.Count.ToString();
+
+            calculations();
         }
 
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
@@ -258,6 +262,10 @@ namespace BezierAirfoilDesigner
             {
                 dataGridView2.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
             }
+
+            lblOrderBottom.Text = "order: " + increasedControlPoints.Count.ToString();
+
+            calculations();
         }
     }
 }

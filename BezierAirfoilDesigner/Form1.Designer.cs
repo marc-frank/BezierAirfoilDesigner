@@ -45,6 +45,8 @@
             textBox2 = new TextBox();
             label4 = new Label();
             label5 = new Label();
+            lblOrderTop = new Label();
+            lblOrderBottom = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -153,7 +155,7 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(1481, 108);
+            textBox1.Location = new Point(1481, 127);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(86, 26);
             textBox1.TabIndex = 10;
@@ -161,7 +163,7 @@
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(1481, 451);
+            textBox2.Location = new Point(1481, 470);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(86, 26);
             textBox2.TabIndex = 11;
@@ -170,7 +172,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(1481, 86);
+            label4.Location = new Point(1481, 105);
             label4.Name = "label4";
             label4.Size = new Size(75, 19);
             label4.TabIndex = 12;
@@ -179,17 +181,37 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(1481, 429);
+            label5.Location = new Point(1481, 448);
             label5.Name = "label5";
             label5.Size = new Size(75, 19);
             label5.TabIndex = 13;
             label5.Text = "# of points";
+            // 
+            // lblOrderTop
+            // 
+            lblOrderTop.AutoSize = true;
+            lblOrderTop.Location = new Point(1481, 86);
+            lblOrderTop.Name = "lblOrderTop";
+            lblOrderTop.Size = new Size(57, 19);
+            lblOrderTop.TabIndex = 14;
+            lblOrderTop.Text = "order: 4";
+            // 
+            // lblOrderBottom
+            // 
+            lblOrderBottom.AutoSize = true;
+            lblOrderBottom.Location = new Point(1481, 429);
+            lblOrderBottom.Name = "lblOrderBottom";
+            lblOrderBottom.Size = new Size(57, 19);
+            lblOrderBottom.TabIndex = 15;
+            lblOrderBottom.Text = "order: 4";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1772, 740);
+            Controls.Add(lblOrderBottom);
+            Controls.Add(lblOrderTop);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(textBox2);
@@ -233,5 +255,7 @@
         private TextBox textBox2;
         private Label label4;
         private Label label5;
+        private Label lblOrderTop;
+        private Label lblOrderBottom;
     }
 }
