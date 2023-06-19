@@ -231,6 +231,7 @@ namespace BezierAirfoilDesigner
                 dataGridView1.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
             }
 
+            calculations();
         }
 
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
@@ -258,6 +259,8 @@ namespace BezierAirfoilDesigner
             {
                 dataGridView2.Rows.Add(increasedControlPoints[i].X, increasedControlPoints[i].Y);
             }
+
+            calculations();
         }
     }
 }
