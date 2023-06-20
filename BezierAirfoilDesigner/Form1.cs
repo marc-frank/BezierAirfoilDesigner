@@ -267,5 +267,15 @@ namespace BezierAirfoilDesigner
 
             calculations();
         }
+
+        private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

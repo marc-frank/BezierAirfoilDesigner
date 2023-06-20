@@ -47,6 +47,10 @@
             label5 = new Label();
             lblOrderTop = new Label();
             lblOrderBottom = new Label();
+            btnDecreaseOrderTop = new Button();
+            btnDecreaseOrderBottom = new Button();
+            richTextBox2 = new RichTextBox();
+            label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -65,29 +69,29 @@
             // 
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(1196, 31);
+            dataGridView1.Location = new Point(1184, 31);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 47;
             dataGridView1.RowTemplate.Height = 28;
-            dataGridView1.Size = new Size(279, 318);
+            dataGridView1.Size = new Size(298, 169);
             dataGridView1.TabIndex = 1;
             // 
             // dataGridView2
             // 
             dataGridView2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(1196, 374);
+            dataGridView2.Location = new Point(1184, 225);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 47;
             dataGridView2.RowTemplate.Height = 28;
-            dataGridView2.Size = new Size(279, 318);
+            dataGridView2.Size = new Size(298, 169);
             dataGridView2.TabIndex = 2;
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(1196, 9);
+            label1.Location = new Point(1193, 9);
             label1.Name = "label1";
             label1.Size = new Size(31, 19);
             label1.TabIndex = 3;
@@ -97,7 +101,7 @@
             // 
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label2.AutoSize = true;
-            label2.Location = new Point(1196, 352);
+            label2.Location = new Point(1184, 203);
             label2.Name = "label2";
             label2.Size = new Size(55, 19);
             label2.TabIndex = 4;
@@ -106,7 +110,7 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.Location = new Point(1674, 698);
+            button1.Location = new Point(1681, 698);
             button1.Name = "button1";
             button1.Size = new Size(86, 26);
             button1.TabIndex = 5;
@@ -117,7 +121,7 @@
             // richTextBox1
             // 
             richTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            richTextBox1.Location = new Point(1573, 31);
+            richTextBox1.Location = new Point(1580, 31);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(187, 661);
             richTextBox1.TabIndex = 6;
@@ -127,7 +131,7 @@
             // 
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Location = new Point(1573, 9);
+            label3.Location = new Point(1580, 9);
             label3.Name = "label3";
             label3.Size = new Size(53, 19);
             label3.TabIndex = 7;
@@ -136,29 +140,29 @@
             // btnIncreaseOrderTop
             // 
             btnIncreaseOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnIncreaseOrderTop.Location = new Point(1481, 31);
+            btnIncreaseOrderTop.Location = new Point(1488, 53);
             btnIncreaseOrderTop.Name = "btnIncreaseOrderTop";
-            btnIncreaseOrderTop.Size = new Size(86, 52);
+            btnIncreaseOrderTop.Size = new Size(26, 26);
             btnIncreaseOrderTop.TabIndex = 8;
-            btnIncreaseOrderTop.Text = "increase order";
+            btnIncreaseOrderTop.Text = "+";
             btnIncreaseOrderTop.UseVisualStyleBackColor = true;
             btnIncreaseOrderTop.Click += btnIncreaseOrderTop_Click;
             // 
             // btnIncreaseOrderBottom
             // 
             btnIncreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnIncreaseOrderBottom.Location = new Point(1481, 374);
+            btnIncreaseOrderBottom.Location = new Point(1488, 247);
             btnIncreaseOrderBottom.Name = "btnIncreaseOrderBottom";
-            btnIncreaseOrderBottom.Size = new Size(86, 52);
+            btnIncreaseOrderBottom.Size = new Size(26, 26);
             btnIncreaseOrderBottom.TabIndex = 9;
-            btnIncreaseOrderBottom.Text = "increase oder";
+            btnIncreaseOrderBottom.Text = "+";
             btnIncreaseOrderBottom.UseVisualStyleBackColor = true;
             btnIncreaseOrderBottom.Click += btnIncreaseOrderBottom_Click;
             // 
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(1481, 127);
+            textBox1.Location = new Point(1488, 104);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(86, 26);
             textBox1.TabIndex = 10;
@@ -167,7 +171,7 @@
             // textBox2
             // 
             textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox2.Location = new Point(1481, 470);
+            textBox2.Location = new Point(1488, 298);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(86, 26);
             textBox2.TabIndex = 11;
@@ -177,7 +181,7 @@
             // 
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label4.AutoSize = true;
-            label4.Location = new Point(1481, 105);
+            label4.Location = new Point(1488, 82);
             label4.Name = "label4";
             label4.Size = new Size(75, 19);
             label4.TabIndex = 12;
@@ -187,7 +191,7 @@
             // 
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
-            label5.Location = new Point(1481, 448);
+            label5.Location = new Point(1488, 276);
             label5.Name = "label5";
             label5.Size = new Size(75, 19);
             label5.TabIndex = 13;
@@ -197,7 +201,7 @@
             // 
             lblOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderTop.AutoSize = true;
-            lblOrderTop.Location = new Point(1481, 86);
+            lblOrderTop.Location = new Point(1488, 31);
             lblOrderTop.Name = "lblOrderTop";
             lblOrderTop.Size = new Size(57, 19);
             lblOrderTop.TabIndex = 14;
@@ -207,17 +211,62 @@
             // 
             lblOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderBottom.AutoSize = true;
-            lblOrderBottom.Location = new Point(1481, 429);
+            lblOrderBottom.Location = new Point(1488, 225);
             lblOrderBottom.Name = "lblOrderBottom";
             lblOrderBottom.Size = new Size(57, 19);
             lblOrderBottom.TabIndex = 15;
             lblOrderBottom.Text = "order: 4";
             // 
+            // btnDecreaseOrderTop
+            // 
+            btnDecreaseOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDecreaseOrderTop.Location = new Point(1523, 53);
+            btnDecreaseOrderTop.Name = "btnDecreaseOrderTop";
+            btnDecreaseOrderTop.Size = new Size(26, 26);
+            btnDecreaseOrderTop.TabIndex = 16;
+            btnDecreaseOrderTop.Text = "-";
+            btnDecreaseOrderTop.UseVisualStyleBackColor = true;
+            btnDecreaseOrderTop.Click += btnDecreaseOrderTop_Click;
+            // 
+            // btnDecreaseOrderBottom
+            // 
+            btnDecreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDecreaseOrderBottom.Location = new Point(1523, 247);
+            btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
+            btnDecreaseOrderBottom.Size = new Size(26, 26);
+            btnDecreaseOrderBottom.TabIndex = 17;
+            btnDecreaseOrderBottom.Text = "-";
+            btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
+            btnDecreaseOrderBottom.Click += btnDecreaseOrderBottom_Click;
+            // 
+            // richTextBox2
+            // 
+            richTextBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            richTextBox2.Location = new Point(1184, 419);
+            richTextBox2.Name = "richTextBox2";
+            richTextBox2.Size = new Size(390, 273);
+            richTextBox2.TabIndex = 18;
+            richTextBox2.Text = "";
+            // 
+            // label6
+            // 
+            label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label6.AutoSize = true;
+            label6.Location = new Point(1184, 397);
+            label6.Name = "label6";
+            label6.Size = new Size(117, 19);
+            label6.TabIndex = 19;
+            label6.Text = "Airfoil Parameters";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1772, 740);
+            ClientSize = new Size(1781, 740);
+            Controls.Add(label6);
+            Controls.Add(richTextBox2);
+            Controls.Add(btnDecreaseOrderBottom);
+            Controls.Add(btnDecreaseOrderTop);
             Controls.Add(lblOrderBottom);
             Controls.Add(lblOrderTop);
             Controls.Add(label5);
@@ -265,5 +314,9 @@
         private Label label5;
         private Label lblOrderTop;
         private Label lblOrderBottom;
+        private Button btnDecreaseOrderTop;
+        private Button btnDecreaseOrderBottom;
+        private RichTextBox richTextBox2;
+        private Label label6;
     }
 }
