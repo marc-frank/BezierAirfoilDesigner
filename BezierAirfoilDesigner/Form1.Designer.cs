@@ -105,8 +105,8 @@
             // 
             // button1
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(1389, 702);
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.Location = new Point(1674, 698);
             button1.Name = "button1";
             button1.Size = new Size(86, 26);
             button1.TabIndex = 5;
@@ -135,6 +135,7 @@
             // 
             // btnIncreaseOrderTop
             // 
+            btnIncreaseOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnIncreaseOrderTop.Location = new Point(1481, 31);
             btnIncreaseOrderTop.Name = "btnIncreaseOrderTop";
             btnIncreaseOrderTop.Size = new Size(86, 52);
@@ -145,6 +146,7 @@
             // 
             // btnIncreaseOrderBottom
             // 
+            btnIncreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnIncreaseOrderBottom.Location = new Point(1481, 374);
             btnIncreaseOrderBottom.Name = "btnIncreaseOrderBottom";
             btnIncreaseOrderBottom.Size = new Size(86, 52);
@@ -155,6 +157,7 @@
             // 
             // textBox1
             // 
+            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             textBox1.Location = new Point(1481, 127);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(86, 26);
@@ -163,6 +166,7 @@
             // 
             // textBox2
             // 
+            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             textBox2.Location = new Point(1481, 470);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(86, 26);
@@ -171,6 +175,7 @@
             // 
             // label4
             // 
+            label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.Location = new Point(1481, 105);
             label4.Name = "label4";
@@ -180,6 +185,7 @@
             // 
             // label5
             // 
+            label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.Location = new Point(1481, 448);
             label5.Name = "label5";
@@ -189,6 +195,7 @@
             // 
             // lblOrderTop
             // 
+            lblOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderTop.AutoSize = true;
             lblOrderTop.Location = new Point(1481, 86);
             lblOrderTop.Name = "lblOrderTop";
@@ -198,6 +205,7 @@
             // 
             // lblOrderBottom
             // 
+            lblOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderBottom.AutoSize = true;
             lblOrderBottom.Location = new Point(1481, 429);
             lblOrderBottom.Name = "lblOrderBottom";
