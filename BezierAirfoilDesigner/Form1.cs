@@ -1,6 +1,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Windows.Forms;
+using System.Numerics;
 
 namespace BezierAirfoilDesigner
 {
@@ -125,11 +126,79 @@ namespace BezierAirfoilDesigner
                 bottom.Add(pointsBottom[i].X, pointsBottom[i].Y);
             }
 
-            formsPlot1.Refresh();
-
-
             lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
+
+            var midline = formsPlot1.Plot.AddScatterList(color: Color.Gray, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+
+            PointF maxCamber = new PointF();
+            int maxCamberIndex = 0;
+            PointF maxThickness = new PointF();
+            int maxThicknessIndex = 0;
+
+            for (int i = 0; i < pointsTop.Count; i++)
+            {
+                float mid = (pointsTop[i].Y + pointsBottom[i].Y) / 2;
+                float thickness = Math.Abs(pointsTop[i].Y) + Math.Abs(pointsBottom[i].Y);
+
+                if (mid > maxCamber.Y)
+                {
+                    maxCamber.X = pointsTop[i].X;
+                    maxCamber.Y = mid;
+                    maxCamberIndex = i;
+                }
+
+                if (thickness > maxThickness.Y)
+                {
+                    maxThickness.X = pointsTop[i].X;
+                    maxThickness.Y = thickness;
+                    maxThicknessIndex = i;
+                }
+
+                midline.Add(pointsTop[i].X, mid);
+            }
+
+            var maxCamberMark = formsPlot1.Plot.AddScatterList(color: Color.Black, lineStyle: ScottPlot.LineStyle.Solid, markerSize: 0, lineWidth: 2);
+            var maxThicknessMark = formsPlot1.Plot.AddScatterList(color: Color.Gray, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+
+            maxCamberMark.Add(maxCamber.X, 0);
+            maxCamberMark.Add(maxCamber.X, maxCamber.Y);
+
+            maxThicknessMark.Add(pointsTop[maxThicknessIndex].X, pointsTop[maxThicknessIndex].Y);
+            maxThicknessMark.Add(pointsBottom[maxThicknessIndex].X, pointsBottom[maxThicknessIndex].Y);
+
+            PointF midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], pointsTop[0], pointsTop[1]);
+            double radius = CircleProperties.CalculateRadius(pointsBottom[1], pointsTop[0], pointsTop[1]);
+
+            richTextBox2.Text = "";
+            richTextBox2.AppendText("nose radius: " + radius + System.Environment.NewLine);
+            richTextBox2.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
+            richTextBox2.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
+            
+            formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: Color.Gray, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
+            formsPlot1.Refresh();
+        }
+
+        public class CircleProperties
+        {
+            public static PointF CalculateMidpoint(PointF p1, PointF p2, PointF p3)
+            {
+                float D = 2 * (p1.X * (p2.Y - p3.Y) + p2.X * (p3.Y - p1.Y) + p3.X * (p1.Y - p2.Y));
+
+                float Ux = ((p1.X * p1.X + p1.Y * p1.Y) * (p2.Y - p3.Y) + (p2.X * p2.X + p2.Y * p2.Y) * (p3.Y - p1.Y) + (p3.X * p3.X + p3.Y * p3.Y) * (p1.Y - p2.Y)) / D;
+                float Uy = ((p1.X * p1.X + p1.Y * p1.Y) * (p3.X - p2.X) + (p2.X * p2.X + p2.Y * p2.Y) * (p1.X - p3.X) + (p3.X * p3.X + p3.Y * p3.Y) * (p2.X - p1.X)) / D;
+
+                return new PointF(Ux, Uy);
+            }
+
+            public static float CalculateRadius(PointF p1, PointF p2, PointF p3)
+            {
+                PointF midpoint = CalculateMidpoint(p1, p2, p3);
+
+                float radius = (float)Math.Sqrt(Math.Pow(p1.X - midpoint.X, 2) + Math.Pow(p1.Y - midpoint.Y, 2));
+
+                return radius;
+            }
         }
 
         public class DeCasteljau
@@ -187,9 +256,6 @@ namespace BezierAirfoilDesigner
 
                 return increasedControlPoints;
             }
-
-            //-----------------------------------------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------------------------------------
 
             public static List<PointF> DecreaseOrder(List<PointF> controlPoints)
             {
@@ -344,6 +410,41 @@ namespace BezierAirfoilDesigner
 
             //-----------------------------------------------------------------------------------------------------------------------------------
 
+            public static double CalculateRadius(List<PointF> controlPoints)
+            {
+                if (controlPoints.Count < 2)
+                {
+                    throw new ArgumentException("Expected at least 2 control points for a Bezier curve.");
+                }
+
+                var P0 = new Vector2(controlPoints[0].X, controlPoints[0].Y);
+                var P1 = new Vector2(controlPoints[1].X, controlPoints[1].Y);
+
+                var B1 = P1 - P0; // First derivative at t=0
+
+                // If there is only two points, it's a straight line and radius of curvature is infinity
+                if (controlPoints.Count == 2)
+                {
+                    return double.PositiveInfinity;
+                }
+
+                var P2 = new Vector2(controlPoints[2].X, controlPoints[2].Y);
+                var B2 = P2 - 2 * P1 + P0; // Second derivative at t=0
+
+                var numerator = Math.Abs(B1.X * B2.Y - B1.Y * B2.X);
+                var denominator = Math.Pow(Math.Pow(B1.X, 2) + Math.Pow(B1.Y, 2), 1.5);
+
+                // Check for division by zero, which would suggest a straight line
+                if (denominator == 0)
+                {
+                    return double.PositiveInfinity; // radius of curvature is infinity for a straight line
+                }
+
+                var curvature = numerator / denominator;
+                var radius = 1 / curvature;
+
+                return radius;
+            }
         }
 
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)

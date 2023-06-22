@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             formsPlot1 = new ScottPlot.FormsPlot();
             dataGridView1 = new DataGridView();
             topBindingSource = new BindingSource(components);
@@ -283,8 +284,9 @@
             Controls.Add(dataGridView2);
             Controls.Add(dataGridView1);
             Controls.Add(formsPlot1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
-            Text = "Form1";
+            Text = "BezierAirfoilDesigner";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).EndInit();
