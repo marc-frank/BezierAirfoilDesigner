@@ -203,9 +203,9 @@
             lblOrderTop.AutoSize = true;
             lblOrderTop.Location = new Point(1488, 31);
             lblOrderTop.Name = "lblOrderTop";
-            lblOrderTop.Size = new Size(57, 19);
+            lblOrderTop.Size = new Size(45, 19);
             lblOrderTop.TabIndex = 14;
-            lblOrderTop.Text = "order: 4";
+            lblOrderTop.Text = "order:";
             // 
             // lblOrderBottom
             // 
@@ -213,9 +213,9 @@
             lblOrderBottom.AutoSize = true;
             lblOrderBottom.Location = new Point(1488, 225);
             lblOrderBottom.Name = "lblOrderBottom";
-            lblOrderBottom.Size = new Size(57, 19);
+            lblOrderBottom.Size = new Size(45, 19);
             lblOrderBottom.TabIndex = 15;
-            lblOrderBottom.Text = "order: 4";
+            lblOrderBottom.Text = "order:";
             // 
             // btnDecreaseOrderTop
             // 
