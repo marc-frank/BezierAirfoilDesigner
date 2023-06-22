@@ -288,6 +288,7 @@
             Name = "Form1";
             Text = "BezierAirfoilDesigner";
             Load += Form1_Load;
+            Resize += Form1_Resize;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();

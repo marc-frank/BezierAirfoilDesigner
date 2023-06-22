@@ -21,7 +21,7 @@ namespace BezierAirfoilDesigner
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            //formsPlot1.SetBounds(12, 10, Form1.ActiveForm.Width - 527, Form1.ActiveForm.Height - 67);
+            formsPlot1.SetBounds(0, 0, Form1.ActiveForm.Width - 611, Form1.ActiveForm.Height - 60);
             //richTextBox1.SetBounds(Form1.ActiveForm.Width - 234, 31, 204, Form1.ActiveForm.Height - 88);
         }
 
@@ -174,7 +174,7 @@ namespace BezierAirfoilDesigner
             richTextBox2.AppendText("nose radius: " + radius + System.Environment.NewLine);
             richTextBox2.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
             richTextBox2.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
-            
+
             formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: Color.Gray, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
             formsPlot1.Refresh();
         }
