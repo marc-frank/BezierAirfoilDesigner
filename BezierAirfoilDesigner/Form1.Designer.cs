@@ -266,6 +266,7 @@
             // 
             // btnDefault
             // 
+            btnDefault.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnDefault.Location = new Point(1184, 701);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(86, 26);
