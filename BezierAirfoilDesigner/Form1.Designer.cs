@@ -52,6 +52,7 @@
             btnDecreaseOrderBottom = new Button();
             richTextBox2 = new RichTextBox();
             label6 = new Label();
+            btnDefault = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -60,11 +61,13 @@
             // 
             // formsPlot1
             // 
-            formsPlot1.Location = new Point(0, 0);
+            formsPlot1.BackColor = SystemColors.Control;
+            formsPlot1.Location = new Point(14, 13);
             formsPlot1.Margin = new Padding(5, 4, 5, 4);
             formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(1188, 724);
+            formsPlot1.Size = new Size(1162, 713);
             formsPlot1.TabIndex = 0;
+            formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
             // 
             // dataGridView1
             // 
@@ -115,7 +118,7 @@
             button1.Name = "button1";
             button1.Size = new Size(86, 26);
             button1.TabIndex = 5;
-            button1.Text = "set";
+            button1.Text = "write";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -232,12 +235,14 @@
             // btnDecreaseOrderBottom
             // 
             btnDecreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDecreaseOrderBottom.BackColor = SystemColors.Control;
+            btnDecreaseOrderBottom.ForeColor = SystemColors.ActiveCaptionText;
             btnDecreaseOrderBottom.Location = new Point(1523, 247);
             btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
             btnDecreaseOrderBottom.Size = new Size(26, 26);
             btnDecreaseOrderBottom.TabIndex = 17;
             btnDecreaseOrderBottom.Text = "-";
-            btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
+            btnDecreaseOrderBottom.UseVisualStyleBackColor = false;
             btnDecreaseOrderBottom.Click += btnDecreaseOrderBottom_Click;
             // 
             // richTextBox2
@@ -259,11 +264,22 @@
             label6.TabIndex = 19;
             label6.Text = "Airfoil Parameters";
             // 
+            // btnDefault
+            // 
+            btnDefault.Location = new Point(1184, 701);
+            btnDefault.Name = "btnDefault";
+            btnDefault.Size = new Size(86, 26);
+            btnDefault.TabIndex = 20;
+            btnDefault.Text = "default";
+            btnDefault.UseVisualStyleBackColor = true;
+            btnDefault.Click += btnDefault_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1781, 740);
+            ClientSize = new Size(1781, 739);
+            Controls.Add(btnDefault);
             Controls.Add(label6);
             Controls.Add(richTextBox2);
             Controls.Add(btnDecreaseOrderBottom);
@@ -321,5 +337,6 @@
         private Button btnDecreaseOrderBottom;
         private RichTextBox richTextBox2;
         private Label label6;
+        private Button btnDefault;
     }
 }
