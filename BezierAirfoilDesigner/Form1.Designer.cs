@@ -38,8 +38,6 @@
             label1 = new Label();
             label2 = new Label();
             button1 = new Button();
-            richTextBox1 = new RichTextBox();
-            label3 = new Label();
             btnIncreaseOrderTop = new Button();
             btnIncreaseOrderBottom = new Button();
             textBox1 = new TextBox();
@@ -53,6 +51,12 @@
             richTextBox2 = new RichTextBox();
             label6 = new Label();
             btnDefault = new Button();
+            button2 = new Button();
+            chkShowControlPolygon = new CheckBox();
+            chkShowThickness = new CheckBox();
+            chkShowRadius = new CheckBox();
+            label3 = new Label();
+            chkShowCamber = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -65,37 +69,40 @@
             formsPlot1.Location = new Point(14, 13);
             formsPlot1.Margin = new Padding(5, 4, 5, 4);
             formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(1162, 713);
+            formsPlot1.Size = new Size(1152, 713);
             formsPlot1.TabIndex = 0;
+            formsPlot1.AxesChanged += formsPlot1_AxesChanged;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
             // 
             // dataGridView1
             // 
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(1184, 31);
+            dataGridView1.Location = new Point(1174, 31);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 47;
             dataGridView1.RowTemplate.Height = 28;
             dataGridView1.Size = new Size(298, 169);
             dataGridView1.TabIndex = 1;
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             // 
             // dataGridView2
             // 
             dataGridView2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(1184, 225);
+            dataGridView2.Location = new Point(1174, 225);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 47;
             dataGridView2.RowTemplate.Height = 28;
             dataGridView2.Size = new Size(298, 169);
             dataGridView2.TabIndex = 2;
+            dataGridView2.CellValueChanged += dataGridView2_CellValueChanged;
             // 
             // label1
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(1193, 9);
+            label1.Location = new Point(1183, 9);
             label1.Name = "label1";
             label1.Size = new Size(31, 19);
             label1.TabIndex = 3;
@@ -105,7 +112,7 @@
             // 
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label2.AutoSize = true;
-            label2.Location = new Point(1184, 203);
+            label2.Location = new Point(1174, 203);
             label2.Name = "label2";
             label2.Size = new Size(55, 19);
             label2.TabIndex = 4;
@@ -114,37 +121,18 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.Location = new Point(1681, 698);
+            button1.Location = new Point(1266, 698);
             button1.Name = "button1";
             button1.Size = new Size(86, 26);
             button1.TabIndex = 5;
-            button1.Text = "write";
+            button1.Text = "save .dat";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
-            // 
-            // richTextBox1
-            // 
-            richTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            richTextBox1.Location = new Point(1580, 31);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(187, 661);
-            richTextBox1.TabIndex = 6;
-            richTextBox1.Text = "";
-            // 
-            // label3
-            // 
-            label3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label3.AutoSize = true;
-            label3.Location = new Point(1580, 9);
-            label3.Name = "label3";
-            label3.Size = new Size(53, 19);
-            label3.TabIndex = 7;
-            label3.Text = ".dat file";
             // 
             // btnIncreaseOrderTop
             // 
             btnIncreaseOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnIncreaseOrderTop.Location = new Point(1488, 53);
+            btnIncreaseOrderTop.Location = new Point(1478, 53);
             btnIncreaseOrderTop.Name = "btnIncreaseOrderTop";
             btnIncreaseOrderTop.Size = new Size(26, 26);
             btnIncreaseOrderTop.TabIndex = 8;
@@ -155,7 +143,7 @@
             // btnIncreaseOrderBottom
             // 
             btnIncreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnIncreaseOrderBottom.Location = new Point(1488, 247);
+            btnIncreaseOrderBottom.Location = new Point(1478, 247);
             btnIncreaseOrderBottom.Name = "btnIncreaseOrderBottom";
             btnIncreaseOrderBottom.Size = new Size(26, 26);
             btnIncreaseOrderBottom.TabIndex = 9;
@@ -166,7 +154,7 @@
             // textBox1
             // 
             textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(1488, 104);
+            textBox1.Location = new Point(1478, 104);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(86, 26);
             textBox1.TabIndex = 10;
@@ -175,7 +163,7 @@
             // textBox2
             // 
             textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox2.Location = new Point(1488, 298);
+            textBox2.Location = new Point(1478, 298);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(86, 26);
             textBox2.TabIndex = 11;
@@ -185,7 +173,7 @@
             // 
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label4.AutoSize = true;
-            label4.Location = new Point(1488, 82);
+            label4.Location = new Point(1478, 82);
             label4.Name = "label4";
             label4.Size = new Size(75, 19);
             label4.TabIndex = 12;
@@ -195,7 +183,7 @@
             // 
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label5.AutoSize = true;
-            label5.Location = new Point(1488, 276);
+            label5.Location = new Point(1478, 276);
             label5.Name = "label5";
             label5.Size = new Size(75, 19);
             label5.TabIndex = 13;
@@ -205,7 +193,7 @@
             // 
             lblOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderTop.AutoSize = true;
-            lblOrderTop.Location = new Point(1488, 31);
+            lblOrderTop.Location = new Point(1478, 31);
             lblOrderTop.Name = "lblOrderTop";
             lblOrderTop.Size = new Size(45, 19);
             lblOrderTop.TabIndex = 14;
@@ -215,7 +203,7 @@
             // 
             lblOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblOrderBottom.AutoSize = true;
-            lblOrderBottom.Location = new Point(1488, 225);
+            lblOrderBottom.Location = new Point(1478, 225);
             lblOrderBottom.Name = "lblOrderBottom";
             lblOrderBottom.Size = new Size(45, 19);
             lblOrderBottom.TabIndex = 15;
@@ -224,7 +212,7 @@
             // btnDecreaseOrderTop
             // 
             btnDecreaseOrderTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDecreaseOrderTop.Location = new Point(1523, 53);
+            btnDecreaseOrderTop.Location = new Point(1513, 53);
             btnDecreaseOrderTop.Name = "btnDecreaseOrderTop";
             btnDecreaseOrderTop.Size = new Size(26, 26);
             btnDecreaseOrderTop.TabIndex = 16;
@@ -237,7 +225,7 @@
             btnDecreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnDecreaseOrderBottom.BackColor = SystemColors.Control;
             btnDecreaseOrderBottom.ForeColor = SystemColors.ActiveCaptionText;
-            btnDecreaseOrderBottom.Location = new Point(1523, 247);
+            btnDecreaseOrderBottom.Location = new Point(1513, 247);
             btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
             btnDecreaseOrderBottom.Size = new Size(26, 26);
             btnDecreaseOrderBottom.TabIndex = 17;
@@ -248,9 +236,9 @@
             // richTextBox2
             // 
             richTextBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            richTextBox2.Location = new Point(1184, 419);
+            richTextBox2.Location = new Point(1174, 419);
             richTextBox2.Name = "richTextBox2";
-            richTextBox2.Size = new Size(390, 273);
+            richTextBox2.Size = new Size(390, 244);
             richTextBox2.TabIndex = 18;
             richTextBox2.Text = "";
             // 
@@ -258,7 +246,7 @@
             // 
             label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label6.AutoSize = true;
-            label6.Location = new Point(1184, 397);
+            label6.Location = new Point(1174, 397);
             label6.Name = "label6";
             label6.Size = new Size(117, 19);
             label6.TabIndex = 19;
@@ -267,7 +255,7 @@
             // btnDefault
             // 
             btnDefault.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDefault.Location = new Point(1184, 701);
+            btnDefault.Location = new Point(1174, 698);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(86, 26);
             btnDefault.TabIndex = 20;
@@ -275,11 +263,81 @@
             btnDefault.UseVisualStyleBackColor = true;
             btnDefault.Click += btnDefault_Click;
             // 
+            // button2
+            // 
+            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button2.Location = new Point(1358, 698);
+            button2.Name = "button2";
+            button2.Size = new Size(95, 26);
+            button2.TabIndex = 21;
+            button2.Text = "save .bez.dat";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // chkShowControlPolygon
+            // 
+            chkShowControlPolygon.AutoSize = true;
+            chkShowControlPolygon.Location = new Point(1224, 669);
+            chkShowControlPolygon.Name = "chkShowControlPolygon";
+            chkShowControlPolygon.Size = new Size(71, 23);
+            chkShowControlPolygon.TabIndex = 25;
+            chkShowControlPolygon.Text = "control";
+            chkShowControlPolygon.UseVisualStyleBackColor = true;
+            chkShowControlPolygon.CheckedChanged += chkShowControlPolygon_CheckedChanged;
+            // 
+            // chkShowThickness
+            // 
+            chkShowThickness.AutoSize = true;
+            chkShowThickness.Location = new Point(1301, 669);
+            chkShowThickness.Name = "chkShowThickness";
+            chkShowThickness.Size = new Size(84, 23);
+            chkShowThickness.TabIndex = 26;
+            chkShowThickness.Text = "thickness";
+            chkShowThickness.UseVisualStyleBackColor = true;
+            chkShowThickness.CheckedChanged += chkShowThickness_CheckedChanged;
+            // 
+            // chkShowRadius
+            // 
+            chkShowRadius.AutoSize = true;
+            chkShowRadius.Location = new Point(1470, 669);
+            chkShowRadius.Name = "chkShowRadius";
+            chkShowRadius.Size = new Size(65, 23);
+            chkShowRadius.TabIndex = 27;
+            chkShowRadius.Text = "radius";
+            chkShowRadius.UseVisualStyleBackColor = true;
+            chkShowRadius.CheckedChanged += chkShowRadius_CheckedChanged;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(1174, 670);
+            label3.Name = "label3";
+            label3.Size = new Size(44, 19);
+            label3.TabIndex = 28;
+            label3.Text = "show:";
+            // 
+            // chkShowCamber
+            // 
+            chkShowCamber.AutoSize = true;
+            chkShowCamber.Location = new Point(1391, 669);
+            chkShowCamber.Name = "chkShowCamber";
+            chkShowCamber.Size = new Size(73, 23);
+            chkShowCamber.TabIndex = 29;
+            chkShowCamber.Text = "camber";
+            chkShowCamber.UseVisualStyleBackColor = true;
+            chkShowCamber.CheckedChanged += chkShowCamber_CheckedChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1781, 739);
+            ClientSize = new Size(1570, 739);
+            Controls.Add(chkShowCamber);
+            Controls.Add(label3);
+            Controls.Add(chkShowRadius);
+            Controls.Add(chkShowThickness);
+            Controls.Add(chkShowControlPolygon);
+            Controls.Add(button2);
             Controls.Add(btnDefault);
             Controls.Add(label6);
             Controls.Add(richTextBox2);
@@ -293,8 +351,6 @@
             Controls.Add(textBox1);
             Controls.Add(btnIncreaseOrderBottom);
             Controls.Add(btnIncreaseOrderTop);
-            Controls.Add(label3);
-            Controls.Add(richTextBox1);
             Controls.Add(button1);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -324,8 +380,6 @@
         private Label label1;
         private Label label2;
         private Button button1;
-        private RichTextBox richTextBox1;
-        private Label label3;
         private Button btnIncreaseOrderTop;
         private Button btnIncreaseOrderBottom;
         private TextBox textBox1;
@@ -339,5 +393,11 @@
         private RichTextBox richTextBox2;
         private Label label6;
         private Button btnDefault;
+        private Button button2;
+        private CheckBox chkShowControlPolygon;
+        private CheckBox chkShowThickness;
+        private CheckBox chkShowRadius;
+        private Label label3;
+        private CheckBox chkShowCamber;
     }
 }
