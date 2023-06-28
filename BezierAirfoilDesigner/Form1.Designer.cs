@@ -120,7 +120,7 @@
             // 
             // button1
             // 
-            button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             button1.Location = new Point(1266, 698);
             button1.Name = "button1";
             button1.Size = new Size(86, 26);
@@ -224,18 +224,18 @@
             // 
             btnDecreaseOrderBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnDecreaseOrderBottom.BackColor = SystemColors.Control;
-            btnDecreaseOrderBottom.ForeColor = SystemColors.ActiveCaptionText;
+            btnDecreaseOrderBottom.ForeColor = SystemColors.ControlText;
             btnDecreaseOrderBottom.Location = new Point(1513, 247);
             btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
             btnDecreaseOrderBottom.Size = new Size(26, 26);
             btnDecreaseOrderBottom.TabIndex = 17;
             btnDecreaseOrderBottom.Text = "-";
-            btnDecreaseOrderBottom.UseVisualStyleBackColor = false;
+            btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
             btnDecreaseOrderBottom.Click += btnDecreaseOrderBottom_Click;
             // 
             // richTextBox2
             // 
-            richTextBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            richTextBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             richTextBox2.Location = new Point(1174, 419);
             richTextBox2.Name = "richTextBox2";
             richTextBox2.Size = new Size(390, 244);
@@ -244,7 +244,7 @@
             // 
             // label6
             // 
-            label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label6.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label6.AutoSize = true;
             label6.Location = new Point(1174, 397);
             label6.Name = "label6";
@@ -254,7 +254,7 @@
             // 
             // btnDefault
             // 
-            btnDefault.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDefault.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnDefault.Location = new Point(1174, 698);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(86, 26);
@@ -265,7 +265,7 @@
             // 
             // button2
             // 
-            button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             button2.Location = new Point(1358, 698);
             button2.Name = "button2";
             button2.Size = new Size(95, 26);
@@ -276,6 +276,7 @@
             // 
             // chkShowControlPolygon
             // 
+            chkShowControlPolygon.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowControlPolygon.AutoSize = true;
             chkShowControlPolygon.Location = new Point(1224, 669);
             chkShowControlPolygon.Name = "chkShowControlPolygon";
@@ -287,6 +288,7 @@
             // 
             // chkShowThickness
             // 
+            chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowThickness.AutoSize = true;
             chkShowThickness.Location = new Point(1301, 669);
             chkShowThickness.Name = "chkShowThickness";
@@ -298,6 +300,7 @@
             // 
             // chkShowRadius
             // 
+            chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowRadius.AutoSize = true;
             chkShowRadius.Location = new Point(1470, 669);
             chkShowRadius.Name = "chkShowRadius";
@@ -309,6 +312,7 @@
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.Location = new Point(1174, 670);
             label3.Name = "label3";
@@ -318,6 +322,7 @@
             // 
             // chkShowCamber
             // 
+            chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowCamber.AutoSize = true;
             chkShowCamber.Location = new Point(1391, 669);
             chkShowCamber.Name = "chkShowCamber";

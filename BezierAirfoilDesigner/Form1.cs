@@ -18,10 +18,20 @@ namespace BezierAirfoilDesigner
         {
             if (Form1.ActiveForm != null)
             {
-                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1152), Form1.ActiveForm.Height - (783 - 713));
-            }
+                //if (Form1.ActiveForm.Width < 1588) { Form1.ActiveForm.Width = 1588; }
+                //if (Form1.ActiveForm.Height < 783) { Form1.ActiveForm.Height = 783; }
 
-            //richTextBox1.SetBounds(Form1.ActiveForm.Width - 234, 31, 204, Form1.ActiveForm.Height - 88);
+                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1152), Form1.ActiveForm.Height - (783 - 713));
+                dataGridView1.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
+                dataGridView2.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
+                
+                label2.SetBounds(Form1.ActiveForm.Width - (1588-1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
+                lblOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 45, 19);
+                btnIncreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
+                btnDecreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1513), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
+                label5.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 51, 75, 19);
+                textBox2.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -77,7 +87,7 @@ namespace BezierAirfoilDesigner
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
 
             Color midLineColor = new();
-            if (showCamber) { midLineColor= Color.Gray; } else { midLineColor = Color.Transparent; }
+            if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
             var midLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             Color thicknessLineColor = new();
