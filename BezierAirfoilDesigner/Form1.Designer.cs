@@ -37,7 +37,7 @@
             bottomBindingSource = new BindingSource(components);
             label1 = new Label();
             label2 = new Label();
-            button1 = new Button();
+            btnSaveDat = new Button();
             btnIncreaseOrderTop = new Button();
             btnIncreaseOrderBottom = new Button();
             textBox1 = new TextBox();
@@ -51,12 +51,13 @@
             richTextBox2 = new RichTextBox();
             label6 = new Label();
             btnDefault = new Button();
-            button2 = new Button();
+            btnSaveBezDat = new Button();
             chkShowControlPolygon = new CheckBox();
             chkShowThickness = new CheckBox();
             chkShowRadius = new CheckBox();
             label3 = new Label();
             chkShowCamber = new CheckBox();
+            btnAxisAuto = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -71,7 +72,6 @@
             formsPlot1.Name = "formsPlot1";
             formsPlot1.Size = new Size(1152, 713);
             formsPlot1.TabIndex = 0;
-            formsPlot1.AxesChanged += formsPlot1_AxesChanged;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
             // 
             // dataGridView1
@@ -118,16 +118,16 @@
             label2.TabIndex = 4;
             label2.Text = "Bottom";
             // 
-            // button1
+            // btnSaveDat
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(1266, 698);
-            button1.Name = "button1";
-            button1.Size = new Size(86, 26);
-            button1.TabIndex = 5;
-            button1.Text = "save .dat";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            btnSaveDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSaveDat.Location = new Point(1358, 698);
+            btnSaveDat.Name = "btnSaveDat";
+            btnSaveDat.Size = new Size(86, 26);
+            btnSaveDat.TabIndex = 5;
+            btnSaveDat.Text = "save .dat";
+            btnSaveDat.UseVisualStyleBackColor = true;
+            btnSaveDat.Click += btnSaveDat_Click;
             // 
             // btnIncreaseOrderTop
             // 
@@ -255,7 +255,7 @@
             // btnDefault
             // 
             btnDefault.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnDefault.Location = new Point(1174, 698);
+            btnDefault.Location = new Point(1266, 698);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(86, 26);
             btnDefault.TabIndex = 20;
@@ -263,16 +263,16 @@
             btnDefault.UseVisualStyleBackColor = true;
             btnDefault.Click += btnDefault_Click;
             // 
-            // button2
+            // btnSaveBezDat
             // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button2.Location = new Point(1358, 698);
-            button2.Name = "button2";
-            button2.Size = new Size(95, 26);
-            button2.TabIndex = 21;
-            button2.Text = "save .bez.dat";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            btnSaveBezDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSaveBezDat.Location = new Point(1450, 698);
+            btnSaveBezDat.Name = "btnSaveBezDat";
+            btnSaveBezDat.Size = new Size(95, 26);
+            btnSaveBezDat.TabIndex = 21;
+            btnSaveBezDat.Text = "save .bez.dat";
+            btnSaveBezDat.UseVisualStyleBackColor = true;
+            btnSaveBezDat.Click += btnSaveBezDat_Click;
             // 
             // chkShowControlPolygon
             // 
@@ -332,17 +332,29 @@
             chkShowCamber.UseVisualStyleBackColor = true;
             chkShowCamber.CheckedChanged += chkShowCamber_CheckedChanged;
             // 
+            // btnAxisAuto
+            // 
+            btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnAxisAuto.Location = new Point(1174, 698);
+            btnAxisAuto.Name = "btnAxisAuto";
+            btnAxisAuto.Size = new Size(86, 26);
+            btnAxisAuto.TabIndex = 30;
+            btnAxisAuto.Text = "AxisAuto";
+            btnAxisAuto.UseVisualStyleBackColor = true;
+            btnAxisAuto.Click += btnAxisAuto_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(btnAxisAuto);
             Controls.Add(chkShowCamber);
             Controls.Add(label3);
             Controls.Add(chkShowRadius);
             Controls.Add(chkShowThickness);
             Controls.Add(chkShowControlPolygon);
-            Controls.Add(button2);
+            Controls.Add(btnSaveBezDat);
             Controls.Add(btnDefault);
             Controls.Add(label6);
             Controls.Add(richTextBox2);
@@ -356,7 +368,7 @@
             Controls.Add(textBox1);
             Controls.Add(btnIncreaseOrderBottom);
             Controls.Add(btnIncreaseOrderTop);
-            Controls.Add(button1);
+            Controls.Add(btnSaveDat);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(dataGridView2);
@@ -384,7 +396,7 @@
         private BindingSource bottomBindingSource;
         private Label label1;
         private Label label2;
-        private Button button1;
+        private Button btnSaveDat;
         private Button btnIncreaseOrderTop;
         private Button btnIncreaseOrderBottom;
         private TextBox textBox1;
@@ -398,11 +410,12 @@
         private RichTextBox richTextBox2;
         private Label label6;
         private Button btnDefault;
-        private Button button2;
+        private Button btnSaveBezDat;
         private CheckBox chkShowControlPolygon;
         private CheckBox chkShowThickness;
         private CheckBox chkShowRadius;
         private Label label3;
         private CheckBox chkShowCamber;
+        private Button btnAxisAuto;
     }
 }

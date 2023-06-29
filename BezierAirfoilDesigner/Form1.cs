@@ -24,8 +24,8 @@ namespace BezierAirfoilDesigner
                 formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1152), Form1.ActiveForm.Height - (783 - 713));
                 dataGridView1.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
                 dataGridView2.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
-                
-                label2.SetBounds(Form1.ActiveForm.Width - (1588-1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
+
+                label2.SetBounds(Form1.ActiveForm.Width - (1588 - 1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
                 lblOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 45, 19);
                 btnIncreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
                 btnDecreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1513), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
@@ -47,8 +47,11 @@ namespace BezierAirfoilDesigner
             chkShowRadius.Checked = false;
 
             calculations();
+            formsPlot1.Plot.AxisAuto();
+            formsPlot1.Refresh();
         }
 
+        double minZoomRange = 0.01;
         bool showControlPolygon;
         bool showThickness;
         bool showCamber;
@@ -56,6 +59,11 @@ namespace BezierAirfoilDesigner
 
         void calculations()
         {
+            var axisLimits = formsPlot1.Plot.GetAxisLimits();
+            formsPlot1.Plot.Clear();
+            formsPlot1.Plot.SetAxisLimits(axisLimits);
+
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
@@ -68,8 +76,6 @@ namespace BezierAirfoilDesigner
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
-
-            formsPlot1.Plot.Clear();
 
             var top = formsPlot1.Plot.AddScatterList(color: Color.Red, lineStyle: ScottPlot.LineStyle.Solid);
             var bottom = formsPlot1.Plot.AddScatterList(color: Color.Red, lineStyle: ScottPlot.LineStyle.Solid);
@@ -86,55 +92,55 @@ namespace BezierAirfoilDesigner
             lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
 
-            Color midLineColor = new();
-            if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
-            var midLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             Color thicknessLineColor = new();
             if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
             var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
-            PointF maxCamber = new();
-            int maxCamberIndex = 0;
+            List<PointF> thicknesses = GetThickness(pointsTop, pointsBottom);
             PointF maxThickness = new();
-            int maxThicknessIndex = 0;
 
-            for (int i = 0; i < pointsTop.Count; i++)
+            for (int i = 0; i < thicknesses.Count; i++)
             {
-                float mid = (pointsTop[i].Y + pointsBottom[i].Y) / 2;
-                float thickness = Math.Abs(pointsTop[i].Y) + Math.Abs(pointsBottom[i].Y);
-
-                if (mid > maxCamber.Y)
+                thicknessLine.Add(thicknesses[i].X, thicknesses[i].Y);
+                if (thicknesses[i].Y > maxThickness.Y)
                 {
-                    maxCamber.X = pointsTop[i].X;
-                    maxCamber.Y = mid;
-                    maxCamberIndex = i;
+                    maxThickness = thicknesses[i];
                 }
-
-                if (thickness > maxThickness.Y)
-                {
-                    maxThickness.X = pointsTop[i].X;
-                    maxThickness.Y = thickness;
-                    maxThicknessIndex = i;
-                }
-
-                midLine.Add(pointsTop[i].X, mid);
-                thicknessLine.Add(pointsTop[i].X, thickness);
             }
-
-            Color maxCamberMarkColor = new();
-            if (showCamber) { maxCamberMarkColor = Color.Gray; } else { maxCamberMarkColor = Color.Transparent; }
-            var maxCamberMark = formsPlot1.Plot.AddScatterList(color: maxCamberMarkColor, lineStyle: ScottPlot.LineStyle.Solid, markerSize: 0, lineWidth: 2);
 
             Color maxThicknessMarkColor = new();
             if (showThickness) { maxThicknessMarkColor = Color.Gray; } else { maxThicknessMarkColor = Color.Transparent; }
             var maxThicknessMark = formsPlot1.Plot.AddScatterList(color: maxThicknessMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+            maxThicknessMark.Add(maxThickness.X, maxThickness.Y);
+            maxThicknessMark.Add(maxThickness.X, 0.0f);
 
-            maxCamberMark.Add(maxCamber.X, 0);
+            //----------------------------------------------------------------------------------------------------------------------------------
+
+            Color midLineColor = new();
+            if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
+            var camberLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+
+            List<PointF> camber = GetCamber(pointsTop, pointsBottom);
+            PointF maxCamber = new();
+
+            for (int i = 0; i < camber.Count; i++)
+            {
+                camberLine.Add(camber[i].X, camber[i].Y);
+                if (Math.Abs(camber[i].Y) > Math.Abs(maxCamber.Y))
+                {
+                    maxCamber = camber[i];
+                }
+            }
+
+            Color maxCamberMarkColor = new();
+            if (showCamber) { maxCamberMarkColor = Color.Gray; } else { maxCamberMarkColor = Color.Transparent; }
+            var maxCamberMark = formsPlot1.Plot.AddScatterList(color: maxCamberMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
             maxCamberMark.Add(maxCamber.X, maxCamber.Y);
+            maxCamberMark.Add(maxCamber.X, 0.0f);
 
-            maxThicknessMark.Add(pointsTop[maxThicknessIndex].X, pointsTop[maxThicknessIndex].Y);
-            maxThicknessMark.Add(pointsBottom[maxThicknessIndex].X, pointsBottom[maxThicknessIndex].Y);
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             PointF midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], pointsTop[0], pointsTop[1]);
             double radius = CircleProperties.CalculateRadius(pointsBottom[1], pointsTop[0], pointsTop[1]);
@@ -142,14 +148,14 @@ namespace BezierAirfoilDesigner
             if (showRadius) { circleColor = Color.Gray; } else { circleColor = Color.Transparent; }
             formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: circleColor, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
 
-
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             richTextBox2.Text = "";
             richTextBox2.AppendText("nose radius: " + radius + System.Environment.NewLine);
             richTextBox2.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
             richTextBox2.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
 
-
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             double[] xT = new double[controlPointsTop.Count];
             double[] yT = new double[controlPointsTop.Count];
@@ -183,40 +189,12 @@ namespace BezierAirfoilDesigner
             controlBottom.MarkerSize = 5;
             formsPlot1.Plot.Add(controlBottom);
 
-            formsPlot1.Render();
+            //----------------------------------------------------------------------------------------------------------------------------------
+
+            formsPlot1.Refresh();
         }
 
-        private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            controlPointsTop = DeCasteljau.IncreaseOrder(controlPointsTop);
-            gridViewAddPoints(dataGridView1, controlPointsTop);
-            calculations();
-        }
-
-        private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
-            controlPointsBottom = DeCasteljau.IncreaseOrder(controlPointsBottom);
-            gridViewAddPoints(dataGridView2, controlPointsBottom);
-            calculations();
-        }
-
-        private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            controlPointsTop = DeCasteljau.DecreaseOrder(controlPointsTop);
-            gridViewAddPoints(dataGridView1, controlPointsTop);
-            calculations();
-        }
-
-        private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
-            controlPointsBottom = DeCasteljau.DecreaseOrder(controlPointsBottom);
-            gridViewAddPoints(dataGridView2, controlPointsBottom);
-            calculations();
-        }
+        //--------------------------------------------------------------------------------------------------------------------------------------
 
         private void FormsPlotSettings()
         {
@@ -225,37 +203,25 @@ namespace BezierAirfoilDesigner
 
 
         }
-
-        double minRange = 0.01;
-        private void formsPlot1_AxesChanged(object sender, EventArgs e)
-        {
-            // Get the current axis limits
-            var limits = formsPlot1.Plot.GetAxisLimits();
-
-            // Check if the x range is below the minimum
-            if (Math.Abs(limits.XMax - limits.XMin) < minRange)
-            {
-                // Calculate the center of the current x range
-                double xCenter = (limits.XMin + limits.XMax) / 2;
-
-                // Set new x limits that maintain the center but increase the range
-                double xMin = xCenter - minRange / 2;
-                double xMax = xCenter + minRange / 2;
-
-                // Set the axis limits to the adjusted values
-                formsPlot1.Plot.SetAxisLimits(xMin, xMax, limits.YMin, limits.YMax);
-            }
-
-            // Render the plot
-            formsPlot1.Plot.Render();
-        }
-
         private void GridViewSettings()
         {
             dataGridView1.AllowUserToResizeColumns = false;
             dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.AllowUserToOrderColumns = false;
+
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+
             dataGridView2.AllowUserToResizeColumns = false;
             dataGridView2.AllowUserToResizeRows = false;
+            dataGridView2.AllowUserToOrderColumns = false;
+
+            foreach (DataGridViewColumn column in dataGridView2.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
         private void AddDefaultPointsTop()
         {
@@ -279,16 +245,26 @@ namespace BezierAirfoilDesigner
             dataGridView2.Rows.Add(0.5, -0.1);
             dataGridView2.Rows.Add(1.0, 0.0);
         }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
         private static void gridViewAddPoints(DataGridView dataGridView, List<PointF> pointFs)
         {
             dataGridView.Rows.Clear();
-            dataGridView.Columns.Clear();
-            dataGridView.Columns.Add("xVal", "X");
-            dataGridView.Columns.Add("yVal", "Y");
+            //dataGridView.Columns.Clear();
+            //dataGridView.Columns.Add("xVal", "X");
+            //dataGridView.Columns.Add("yVal", "Y");
             for (int i = 0; i < pointFs.Count; i++)
             {
                 dataGridView.Rows.Add(pointFs[i].X, pointFs[i].Y);
             }
+        }
+        private static float GetDistanceBetweenPoints(PointF pointA, PointF pointB)
+        {
+            double distanceX = pointA.X - pointB.X;
+            double distanceY = pointA.Y - pointB.Y;
+            float distance = float.Parse((Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2))).ToString());
+            return distance;
         }
         private static List<PointF> GetControlPoints(DataGridView gridView)
         {
@@ -307,7 +283,101 @@ namespace BezierAirfoilDesigner
 
             return controlPointsBottom;
         }
+        private static List<PointF> GetThickness(List<PointF> curve1, List<PointF> curve2)
+        {
+            // Ensure the points are sorted by X in ascending order.
+            curve1 = curve1.OrderBy(p => p.X).ToList();
+            curve2 = curve2.OrderBy(p => p.X).ToList();
 
+            // The X range over which we calculate distances.
+            float minX = Math.Max(curve1.First().X, curve2.First().X);
+            float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
+
+            // Calculate vertical distances at regular intervals within this range.
+            List<PointF> distances = new List<PointF>();
+            for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
+            {
+                float? y1 = InterpolateY(x, curve1);
+                float? y2 = InterpolateY(x, curve2);
+                if (y1.HasValue && y2.HasValue)
+                    distances.Add(new PointF(x, Math.Abs(y1.Value - y2.Value)));
+            }
+
+            // Now `distances` contains the vertical distances between the curves at regular intervals.
+
+            return distances;
+        }
+        private static List<PointF> GetCamber(List<PointF> curve1, List<PointF> curve2)
+        {
+            // Ensure the points are sorted by X in ascending order.
+            curve1 = curve1.OrderBy(p => p.X).ToList();
+            curve2 = curve2.OrderBy(p => p.X).ToList();
+
+            // The X range over which we calculate distances.
+            float minX = Math.Max(curve1.First().X, curve2.First().X);
+            float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
+
+            // Calculate midpoints at regular intervals within this range.
+            List<PointF> midpoints = new List<PointF>();
+            for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
+            {
+                float? y1 = InterpolateY(x, curve1);
+                float? y2 = InterpolateY(x, curve2);
+                if (y1.HasValue && y2.HasValue)
+                    midpoints.Add(new PointF(x, (y1.Value + y2.Value) / 2));
+            }
+
+            // Now `midpoints` contains the midpoints between the curves at regular intervals,
+            // stored as PointF where X is the x-value and Y is the midpoint Y value.
+
+            return midpoints;
+        }
+        static float? InterpolateY(float x, List<PointF> curve)
+        {
+            for (int i = 0; i < curve.Count - 1; i++)
+            {
+                if (curve[i].X <= x && x <= curve[i + 1].X)
+                    return curve[i].Y + (x - curve[i].X) / (curve[i + 1].X - curve[i].X) * (curve[i + 1].Y - curve[i].Y);
+            }
+            return null;  // X is outside the range of the curve.
+        }
+        public void SaveTextToFile(string text, string path)
+        {
+            try
+            {
+                File.WriteAllText(path, text);
+                MessageBox.Show("File Saved Successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        private void formsPlot1_AxesChanged(object sender, EventArgs e)
+        {
+            // Get the current axis limits
+            var limits = formsPlot1.Plot.GetAxisLimits();
+
+            // Check if the x range is below the minimum
+            if (Math.Abs(limits.XMax - limits.XMin) < minZoomRange)
+            {
+                // Calculate the center of the current x range
+                double xCenter = (limits.XMin + limits.XMax) / 2;
+
+                // Set new x limits that maintain the center but increase the range
+                double xMin = xCenter - minZoomRange / 2;
+                double xMax = xCenter + minZoomRange / 2;
+
+                // Set the axis limits to the adjusted values
+                formsPlot1.Plot.SetAxisLimits(xMin, xMax, limits.YMin, limits.YMax);
+            }
+
+            // Render the plot
+            formsPlot1.Plot.Render();
+        }
         private void formsPlot1_PlottableDragged(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
@@ -376,13 +446,51 @@ namespace BezierAirfoilDesigner
             calculations();
         }
 
-        private static float GetDistanceBetweenPoints(PointF pointA, PointF pointB)
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            double distanceX = pointA.X - pointB.X;
-            double distanceY = pointA.Y - pointB.Y;
-            float distance = float.Parse((Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2))).ToString());
-            return distance;
+            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            {
+                if (dataGridView1.Rows[i].Cells[0].Value == null) { dataGridView1.Rows[i].Cells[0].Value = 0.0f; }
+                if (dataGridView1.Rows[i].Cells[1].Value == null) { dataGridView1.Rows[i].Cells[1].Value = 0.0f; }
+            }
+            calculations();
         }
+        private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            for (int i = 0; i < dataGridView2.Rows.Count - 1; i++)
+            {
+                if (dataGridView2.Rows[i].Cells[0].Value == null) { dataGridView2.Rows[i].Cells[0].Value = 0.0f; }
+                if (dataGridView2.Rows[i].Cells[1].Value == null) { dataGridView2.Rows[i].Cells[1].Value = 0.0f; }
+            }
+            calculations();
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        private void chkShowControlPolygon_CheckedChanged(object sender, EventArgs e)
+        {
+            showControlPolygon = chkShowControlPolygon.Checked;
+            calculations();
+        }
+        private void chkShowRadius_CheckedChanged(object sender, EventArgs e)
+        {
+            showRadius = chkShowRadius.Checked;
+            calculations();
+        }
+        private void chkShowThickness_CheckedChanged(object sender, EventArgs e)
+        {
+            showThickness = chkShowThickness.Checked;
+            calculations();
+        }
+        private void chkShowCamber_CheckedChanged(object sender, EventArgs e)
+        {
+            showCamber = chkShowCamber.Checked;
+            calculations();
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
 
         private void btnDefault_Click(object sender, EventArgs e)
         {
@@ -390,8 +498,35 @@ namespace BezierAirfoilDesigner
             AddDefaultPointsBottom();
             calculations();
         }
-
-        private void button1_Click(object sender, EventArgs e)
+        private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
+            controlPointsTop = DeCasteljau.IncreaseOrder(controlPointsTop);
+            gridViewAddPoints(dataGridView1, controlPointsTop);
+            calculations();
+        }
+        private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            controlPointsBottom = DeCasteljau.IncreaseOrder(controlPointsBottom);
+            gridViewAddPoints(dataGridView2, controlPointsBottom);
+            calculations();
+        }
+        private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
+            controlPointsTop = DeCasteljau.DecreaseOrder(controlPointsTop);
+            gridViewAddPoints(dataGridView1, controlPointsTop);
+            calculations();
+        }
+        private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            controlPointsBottom = DeCasteljau.DecreaseOrder(controlPointsBottom);
+            gridViewAddPoints(dataGridView2, controlPointsBottom);
+            calculations();
+        }
+        private void btnSaveDat_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
@@ -433,8 +568,7 @@ namespace BezierAirfoilDesigner
                 }
             }
         }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void btnSaveBezDat_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
@@ -467,62 +601,12 @@ namespace BezierAirfoilDesigner
                 }
             }
         }
-
-        public void SaveTextToFile(string text, string path)
+        private void btnAxisAuto_Click(object sender, EventArgs e)
         {
-            try
-            {
-                File.WriteAllText(path, text);
-                MessageBox.Show("File Saved Successfully!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred: {ex.Message}");
-            }
+            formsPlot1.Plot.AxisAuto();
+            formsPlot1.Refresh();
         }
 
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value == null) { dataGridView1.Rows[i].Cells[0].Value = 0.0f; }
-                if (dataGridView1.Rows[i].Cells[1].Value == null) { dataGridView1.Rows[i].Cells[1].Value = 0.0f; }
-            }
-            calculations();
-        }
-
-        private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            for (int i = 0; i < dataGridView2.Rows.Count - 1; i++)
-            {
-                if (dataGridView2.Rows[i].Cells[0].Value == null) { dataGridView2.Rows[i].Cells[0].Value = 0.0f; }
-                if (dataGridView2.Rows[i].Cells[1].Value == null) { dataGridView2.Rows[i].Cells[1].Value = 0.0f; }
-            }
-            calculations();
-        }
-
-        private void chkShowControlPolygon_CheckedChanged(object sender, EventArgs e)
-        {
-            showControlPolygon = chkShowControlPolygon.Checked;
-            calculations();
-        }
-
-        private void chkShowRadius_CheckedChanged(object sender, EventArgs e)
-        {
-            showRadius = chkShowRadius.Checked;
-            calculations();
-        }
-
-        private void chkShowThickness_CheckedChanged(object sender, EventArgs e)
-        {
-            showThickness = chkShowThickness.Checked;
-            calculations();
-        }
-
-        private void chkShowCamber_CheckedChanged(object sender, EventArgs e)
-        {
-            showCamber = chkShowCamber.Checked;
-            calculations();
-        }
+        //--------------------------------------------------------------------------------------------------------------------------------------
     }
 }
