@@ -1,11 +1,8 @@
-//using MathNet.Numerics.LinearAlgebra;
-//using MathNet.Numerics.LinearAlgebra.Double;
 using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
 using System.Globalization;
 using System.Windows.Forms;
-//using System.Numerics;
 
 namespace BezierAirfoilDesigner
 {
@@ -70,24 +67,12 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.SetAxisLimits(axisLimits);
 
             //----------------------------------------------------------------------------------------------------------------------------------
-
-            var referenceDatPlotTop = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
-            var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
-
-            for (int i = 0; i < referenceDatTop.Count; i++)
-            {
-                referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
-            }
-            for (int i = 0; i < referenceDatBottom.Count; i++)
-            {
-                referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
-            }
-
-            //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating and plotting points on both bezier curves
 
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
+            //try to parse the number of points, if unsucessful (eg not numeric) set to 3
             if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 3) { 
                 txtNumOfPointsTop.Text = "3";
                 numPointsTop = 3;
@@ -116,6 +101,7 @@ namespace BezierAirfoilDesigner
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating and plotting the thickness line
 
             Color thicknessLineColor = new();
             if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
@@ -140,6 +126,7 @@ namespace BezierAirfoilDesigner
             maxThicknessMark.Add(maxThickness.X, 0.0f);
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating and plotting the camber line
 
             Color midLineColor = new();
             if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
@@ -164,6 +151,7 @@ namespace BezierAirfoilDesigner
             maxCamberMark.Add(maxCamber.X, 0.0f);
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating and drawing the LE radius
 
             PointF midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], pointsTop[0], pointsTop[1]);
             double radius = CircleProperties.CalculateRadius(pointsBottom[1], pointsTop[0], pointsTop[1]);
@@ -172,6 +160,7 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: circleColor, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // printing airfoil parameters to the text box
 
             txtAirfoilParam.Text = "";
             txtAirfoilParam.AppendText("nose radius: " + radius + System.Environment.NewLine);
@@ -179,6 +168,7 @@ namespace BezierAirfoilDesigner
             txtAirfoilParam.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // Plotting the control polygons of the top and bottom bezier curves
 
             double[] xT = new double[controlPointsTop.Count];
             double[] yT = new double[controlPointsTop.Count];
@@ -213,11 +203,49 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.Add(controlBottom);
 
             //----------------------------------------------------------------------------------------------------------------------------------
+            // Add the reference .dat airfoil to the plot
+
+            var referenceDatPlotTop = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
+            var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
+
+            for (int i = 0; i < referenceDatTop.Count; i++)
+            {
+                referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
+            }
+            for (int i = 0; i < referenceDatBottom.Count; i++)
+            {
+                referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
+            }
+
+            //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating the error between the bezier airfoil and the reference airfoil and writing results to the text field
+
+            List<PointF> errorTop = GetThickness(pointsTop, referenceDatTop);
+            float totalErrorTop = 0;
+
+            for (int i = 0; i < errorTop.Count; i++)
+            {
+                totalErrorTop += errorTop[i].Y;
+            }
+
+            List<PointF> errorBottom = GetThickness(pointsBottom, referenceDatBottom);
+            float totalErrorBottom = 0;
+
+            for (int i = 0; i < errorBottom.Count; i++)
+            {
+                totalErrorBottom += errorBottom[i].Y;
+            }
+
+            if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top: " + totalErrorTop + System.Environment.NewLine); }
+            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom: " + totalErrorBottom + System.Environment.NewLine); }            
+
+            //----------------------------------------------------------------------------------------------------------------------------------
 
             formsPlot1.Refresh();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // settings
 
         private void FormsPlotSettings()
         {
@@ -284,6 +312,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // helper functions
 
         private static void gridViewAddPoints(DataGridView dataGridView, List<PointF> pointFs)
         {
@@ -322,6 +351,10 @@ namespace BezierAirfoilDesigner
         }
         private static List<PointF> GetThickness(List<PointF> curve1, List<PointF> curve2)
         {
+            List<PointF> distances = new List<PointF>();
+
+            if(!curve1.Any() || !curve2.Any()) { return distances; }
+
             // Ensure the points are sorted by X in ascending order.
             curve1 = curve1.OrderBy(p => p.X).ToList();
             curve2 = curve2.OrderBy(p => p.X).ToList();
@@ -331,7 +364,6 @@ namespace BezierAirfoilDesigner
             float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
 
             // Calculate vertical distances at regular intervals within this range.
-            List<PointF> distances = new List<PointF>();
             for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
             {
                 float? y1 = InterpolateY(x, curve1);
@@ -392,6 +424,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // formsPlot actions
 
         private void formsPlot1_AxesChanged(object sender, EventArgs e)
         {
@@ -496,6 +529,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // dataGridView actions
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -517,6 +551,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // checkbox actions
 
         private void chkShowControlPolygon_CheckedChanged(object sender, EventArgs e)
         {
@@ -540,6 +575,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        // button actions
 
         private void btnDefault_Click(object sender, EventArgs e)
         {
