@@ -51,8 +51,8 @@ namespace BezierAirfoilDesigner
             formsPlot1.Refresh();
         }
 
-        double minZoomRange = 0.01;
-        double maxZoomRange = 10.0;
+        readonly double minZoomRange = 0.01;
+        readonly double maxZoomRange = 10.0;
         List<PointF> referenceDatTop = new();
         List<PointF> referenceDatBottom = new();
         bool showControlPolygon;
@@ -73,11 +73,13 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             //try to parse the number of points, if unsucessful (eg not numeric) set to 3
-            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 3) { 
+            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 3)
+            {
                 txtNumOfPointsTop.Text = "3";
                 numPointsTop = 3;
             }
-            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 3) { 
+            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 3)
+            {
                 txtNumOfPointBottom.Text = "3";
                 numPointsBottom = 3;
             }
@@ -163,9 +165,9 @@ namespace BezierAirfoilDesigner
             // printing airfoil parameters to the text box
 
             txtAirfoilParam.Text = "";
-            txtAirfoilParam.AppendText("nose radius: " + radius + System.Environment.NewLine);
-            txtAirfoilParam.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
-            txtAirfoilParam.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText("nose radius:\t\t" + radius + System.Environment.NewLine);
+            txtAirfoilParam.AppendText("maximum camber:\t" + maxCamber.Y.ToString() + "\t@: " + maxCamber.X.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText("maximum thickness:\t" + maxThickness.Y.ToString() + "\t@: " + maxThickness.X.ToString() + System.Environment.NewLine);
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // Plotting the control polygons of the top and bottom bezier curves
@@ -236,8 +238,8 @@ namespace BezierAirfoilDesigner
                 totalErrorBottom += errorBottom[i].Y;
             }
 
-            if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top: " + totalErrorTop + System.Environment.NewLine); }
-            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom: " + totalErrorBottom + System.Environment.NewLine); }            
+            if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
+            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -277,13 +279,14 @@ namespace BezierAirfoilDesigner
         private void AddToolTips()
         {
             // Create a new instance of ToolTip
-            ToolTip buttonToolTip = new ToolTip();
-
-            // Set up some of the ToolTip settings
-            buttonToolTip.AutoPopDelay = 5000;  // Time for which the ToolTip is shown
-            buttonToolTip.InitialDelay = 500;  // Time delay when hovering over the control before the ToolTip is shown
-            buttonToolTip.ReshowDelay = 500;    // Time delay when the mouse pointer is moved from one control to another
-            buttonToolTip.ShowAlways = true;    // Force the ToolTip text to be displayed whether or not the form is active
+            ToolTip buttonToolTip = new()
+            {
+                // Set up some of the ToolTip settings
+                AutoPopDelay = 5000,  // Time for which the ToolTip is shown
+                InitialDelay = 500,  // Time delay when hovering over the control before the ToolTip is shown
+                ReshowDelay = 500,    // Time delay when the mouse pointer is moved from one control to another
+                ShowAlways = true    // Force the ToolTip text to be displayed whether or not the form is active
+            };
 
             // Set up the ToolTip text
             buttonToolTip.SetToolTip(btnLoadDat, "right click to remove");
@@ -339,9 +342,8 @@ namespace BezierAirfoilDesigner
             for (int i = 0; i < gridView.Rows.Count - 1; i++)
             {
                 // Retrieve the values from the DataGridView
-                float x, y;
-                _ = float.TryParse(s: gridView.Rows[i].Cells[0].Value.ToString(), out x);
-                _ = float.TryParse(s: gridView.Rows[i].Cells[1].Value.ToString(), out y);
+                _ = float.TryParse(s: gridView.Rows[i].Cells[0].Value.ToString(), out float x);
+                _ = float.TryParse(s: gridView.Rows[i].Cells[1].Value.ToString(), out float y);
                 // Create a PointF object
                 PointF point = new(x, y);
                 controlPointsBottom.Add(point);
@@ -351,9 +353,9 @@ namespace BezierAirfoilDesigner
         }
         private static List<PointF> GetThickness(List<PointF> curve1, List<PointF> curve2)
         {
-            List<PointF> distances = new List<PointF>();
+            List<PointF> distances = new();
 
-            if(!curve1.Any() || !curve2.Any()) { return distances; }
+            if (!curve1.Any() || !curve2.Any()) { return distances; }
 
             // Ensure the points are sorted by X in ascending order.
             curve1 = curve1.OrderBy(p => p.X).ToList();
@@ -387,7 +389,7 @@ namespace BezierAirfoilDesigner
             float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
 
             // Calculate midpoints at regular intervals within this range.
-            List<PointF> midpoints = new List<PointF>();
+            List<PointF> midpoints = new();
             for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
             {
                 float? y1 = InterpolateY(x, curve1);
@@ -410,7 +412,7 @@ namespace BezierAirfoilDesigner
             }
             return null;  // X is outside the range of the curve.
         }
-        public void SaveTextToFile(string text, string path)
+        public static void SaveTextToFile(string text, string path)
         {
             try
             {
@@ -467,7 +469,7 @@ namespace BezierAirfoilDesigner
 
             (double mouseCoordX, double mouseCoordY) = formsPlot1.GetMouseCoordinates();
             txtAirfoilParam.Text = $"Mouse coords ({mouseCoordX:N8}, {mouseCoordY:N8})" + System.Environment.NewLine;
-            PointF mouse = new PointF(float.Parse(mouseCoordX.ToString()), float.Parse(mouseCoordY.ToString()));
+            PointF mouse = new(float.Parse(mouseCoordX.ToString()), float.Parse(mouseCoordY.ToString()));
 
             float lowestDistanceTop = float.PositiveInfinity;
             int indexLowestDistanceTop = 0;
@@ -641,16 +643,14 @@ namespace BezierAirfoilDesigner
 
 
 
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Filter = "dat files (*.dat)|*.dat|All files (*.*)|*.*";
-                sfd.FilterIndex = 1;
-                sfd.RestoreDirectory = true;
+            using SaveFileDialog sfd = new();
+            sfd.Filter = "dat files (*.dat)|*.dat|All files (*.*)|*.*";
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    SaveTextToFile(datFile, sfd.FileName);
-                }
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                SaveTextToFile(datFile, sfd.FileName);
             }
         }
         private void btnSaveBezDat_Click(object sender, EventArgs e)
@@ -672,16 +672,14 @@ namespace BezierAirfoilDesigner
 
             datFile = datFile.Replace(',', '.');
 
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*";
-                sfd.FilterIndex = 1;
-                sfd.RestoreDirectory = true;
+            using SaveFileDialog sfd = new();
+            sfd.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*";
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    SaveTextToFile(datFile, sfd.FileName);
-                }
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                SaveTextToFile(datFile, sfd.FileName);
             }
         }
         private void btnAxisAuto_Click(object sender, EventArgs e)
@@ -697,11 +695,12 @@ namespace BezierAirfoilDesigner
             List<PointF> points = new();
 
             // Create a new instance of the OpenFileDialog class
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Set some properties to define how the dialog works
-            openFileDialog.InitialDirectory = "c:\\"; // Starting directory
-            openFileDialog.Filter = "Dat files (*.dat)|*.dat"; // Only show .dat files
+            OpenFileDialog openFileDialog = new()
+            {
+                // Set some properties to define how the dialog works
+                InitialDirectory = "c:\\", // Starting directory
+                Filter = "Dat files (*.dat)|*.dat" // Only show .dat files
+            };
 
             // Show the dialog and get the result
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -709,25 +708,23 @@ namespace BezierAirfoilDesigner
                 // The user selected a file and clicked OK, so the FileName property now contains the selected file path
                 string path = openFileDialog.FileName;
 
-                using (StreamReader reader = new StreamReader(path)) // Use the path chosen by the user
+                using StreamReader reader = new(path); // Use the path chosen by the user
+                                                       // skip the header line
+                string line = reader.ReadLine();
+
+                while ((line = reader.ReadLine()) != null)
                 {
-                    // skip the header line
-                    string line = reader.ReadLine();
+                    // split the line on whitespace
+                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    while ((line = reader.ReadLine()) != null)
+                    if (parts.Length == 2)
                     {
-                        // split the line on whitespace
-                        string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (parts.Length == 2)
+                        // parse the parts as floats
+                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
                         {
-                            // parse the parts as floats
-                            if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
-                            && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
-                            {
-                                // add the point to the list
-                                points.Add(new PointF(x, y));
-                            }
+                            // add the point to the list
+                            points.Add(new PointF(x, y));
                         }
                     }
                 }
@@ -736,8 +733,8 @@ namespace BezierAirfoilDesigner
             PointF minPoint = points.Aggregate((minPoint, nextPoint) => nextPoint.X < minPoint.X ? nextPoint : minPoint);
             int index = points.IndexOf(minPoint);
 
-            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum (inclusive)
-            referenceDatBottom = points.GetRange(index + 1, points.Count - index - 1);  // From minimum (exclusive) to end
+            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum
+            referenceDatBottom = points.GetRange(index, points.Count - index - 1);  // From minimum to end
 
 
             calculations();
@@ -747,11 +744,12 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPoints = new();
 
             // Create a new instance of the OpenFileDialog class
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Set some properties to define how the dialog works
-            openFileDialog.InitialDirectory = "c:\\"; // Starting directory
-            openFileDialog.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat"; // Only show .dat files
+            OpenFileDialog openFileDialog = new()
+            {
+                // Set some properties to define how the dialog works
+                InitialDirectory = "c:\\", // Starting directory
+                Filter = "Bezier dat files (*.bez.dat)|*.bez.dat" // Only show .bez.dat files
+            };
 
             // Show the dialog and get the result
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -759,25 +757,23 @@ namespace BezierAirfoilDesigner
                 // The user selected a file and clicked OK, so the FileName property now contains the selected file path
                 string path = openFileDialog.FileName;
 
-                using (StreamReader reader = new StreamReader(path)) // Use the path chosen by the user
+                using StreamReader reader = new(path); // Use the path chosen by the user
+                                                       // skip the header line
+                string line = reader.ReadLine();
+
+                while ((line = reader.ReadLine()) != null)
                 {
-                    // skip the header line
-                    string line = reader.ReadLine();
+                    // split the line on whitespace
+                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    while ((line = reader.ReadLine()) != null)
+                    if (parts.Length == 2)
                     {
-                        // split the line on whitespace
-                        string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                        if (parts.Length == 2)
+                        // parse the parts as floats
+                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
                         {
-                            // parse the parts as floats
-                            if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
-                            && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
-                            {
-                                // add the point to the list
-                                controlPoints.Add(new PointF(x, y));
-                            }
+                            // add the point to the list
+                            controlPoints.Add(new PointF(x, y));
                         }
                     }
                 }
@@ -786,11 +782,11 @@ namespace BezierAirfoilDesigner
             PointF minPoint = controlPoints.Aggregate((minPoint, nextPoint) => nextPoint.X < minPoint.X ? nextPoint : minPoint);
             int index = controlPoints.IndexOf(minPoint);
 
-            List<PointF> controlPointsTop = controlPoints.GetRange(0, index + 1 + 1);  // From start to minimum (inclusive)
+            List<PointF> controlPointsTop = controlPoints.GetRange(0, index + 1 );  // From start to minimum (inclusive)
             controlPointsTop.Reverse(); //control Points are stored just like in a .dat from TE over the top to LE under the bottom to TE
                                         //LE point has to be duplicated in split
 
-            List<PointF> controlPointsBottom = controlPoints.GetRange(index + 1, controlPoints.Count - index - 1);  // From minimum (exclusive) to end
+            List<PointF> controlPointsBottom = controlPoints.GetRange(index, controlPoints.Count - index - 1 + 1);  // From minimum (exclusive) to end
 
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
