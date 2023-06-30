@@ -62,6 +62,8 @@
             btnLoadDat = new Button();
             lblSave = new Label();
             lblLoad = new Label();
+            chkShowReferenceTop = new CheckBox();
+            chkShowReferenceBottom = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
@@ -126,7 +128,7 @@
             // btnSaveDat
             // 
             btnSaveDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSaveDat.Location = new Point(1244, 669);
+            btnSaveDat.Location = new Point(1244, 638);
             btnSaveDat.Name = "btnSaveDat";
             btnSaveDat.Size = new Size(64, 26);
             btnSaveDat.TabIndex = 5;
@@ -243,7 +245,7 @@
             txtAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             txtAirfoilParam.Location = new Point(1174, 419);
             txtAirfoilParam.Name = "txtAirfoilParam";
-            txtAirfoilParam.Size = new Size(390, 225);
+            txtAirfoilParam.Size = new Size(390, 194);
             txtAirfoilParam.TabIndex = 18;
             txtAirfoilParam.Text = "";
             // 
@@ -260,7 +262,7 @@
             // btnDefault
             // 
             btnDefault.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnDefault.Location = new Point(1174, 701);
+            btnDefault.Location = new Point(1174, 670);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(64, 26);
             btnDefault.TabIndex = 20;
@@ -271,7 +273,7 @@
             // btnSaveBezDat
             // 
             btnSaveBezDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSaveBezDat.Location = new Point(1244, 701);
+            btnSaveBezDat.Location = new Point(1244, 670);
             btnSaveBezDat.Name = "btnSaveBezDat";
             btnSaveBezDat.Size = new Size(64, 26);
             btnSaveBezDat.TabIndex = 21;
@@ -283,7 +285,7 @@
             // 
             chkShowControlPolygon.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowControlPolygon.AutoSize = true;
-            chkShowControlPolygon.Location = new Point(1384, 672);
+            chkShowControlPolygon.Location = new Point(1384, 641);
             chkShowControlPolygon.Name = "chkShowControlPolygon";
             chkShowControlPolygon.Size = new Size(71, 23);
             chkShowControlPolygon.TabIndex = 25;
@@ -295,7 +297,7 @@
             // 
             chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(1384, 704);
+            chkShowThickness.Location = new Point(1384, 673);
             chkShowThickness.Name = "chkShowThickness";
             chkShowThickness.Size = new Size(84, 23);
             chkShowThickness.TabIndex = 26;
@@ -307,7 +309,7 @@
             // 
             chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(1474, 672);
+            chkShowRadius.Location = new Point(1474, 641);
             chkShowRadius.Name = "chkShowRadius";
             chkShowRadius.Size = new Size(65, 23);
             chkShowRadius.TabIndex = 27;
@@ -319,7 +321,7 @@
             // 
             lblShow.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblShow.AutoSize = true;
-            lblShow.Location = new Point(1384, 647);
+            lblShow.Location = new Point(1375, 616);
             lblShow.Name = "lblShow";
             lblShow.Size = new Size(44, 19);
             lblShow.TabIndex = 28;
@@ -329,7 +331,7 @@
             // 
             chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(1474, 704);
+            chkShowCamber.Location = new Point(1474, 673);
             chkShowCamber.Name = "chkShowCamber";
             chkShowCamber.Size = new Size(73, 23);
             chkShowCamber.TabIndex = 29;
@@ -340,7 +342,7 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnAxisAuto.Location = new Point(1174, 669);
+            btnAxisAuto.Location = new Point(1174, 638);
             btnAxisAuto.Name = "btnAxisAuto";
             btnAxisAuto.Size = new Size(64, 26);
             btnAxisAuto.TabIndex = 30;
@@ -351,7 +353,7 @@
             // btnLoadBezDat
             // 
             btnLoadBezDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnLoadBezDat.Location = new Point(1314, 701);
+            btnLoadBezDat.Location = new Point(1314, 670);
             btnLoadBezDat.Name = "btnLoadBezDat";
             btnLoadBezDat.Size = new Size(64, 26);
             btnLoadBezDat.TabIndex = 32;
@@ -362,7 +364,7 @@
             // btnLoadDat
             // 
             btnLoadDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnLoadDat.Location = new Point(1314, 669);
+            btnLoadDat.Location = new Point(1314, 638);
             btnLoadDat.Name = "btnLoadDat";
             btnLoadDat.Size = new Size(64, 26);
             btnLoadDat.TabIndex = 31;
@@ -375,7 +377,7 @@
             // 
             lblSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblSave.AutoSize = true;
-            lblSave.Location = new Point(1247, 647);
+            lblSave.Location = new Point(1247, 616);
             lblSave.Name = "lblSave";
             lblSave.Size = new Size(39, 19);
             lblSave.TabIndex = 33;
@@ -385,17 +387,43 @@
             // 
             lblLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblLoad.AutoSize = true;
-            lblLoad.Location = new Point(1314, 647);
+            lblLoad.Location = new Point(1314, 616);
             lblLoad.Name = "lblLoad";
             lblLoad.Size = new Size(38, 19);
             lblLoad.TabIndex = 34;
             lblLoad.Text = "load:";
+            // 
+            // chkShowReferenceTop
+            // 
+            chkShowReferenceTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            chkShowReferenceTop.AutoSize = true;
+            chkShowReferenceTop.Location = new Point(1384, 702);
+            chkShowReferenceTop.Name = "chkShowReferenceTop";
+            chkShowReferenceTop.Size = new Size(69, 23);
+            chkShowReferenceTop.TabIndex = 35;
+            chkShowReferenceTop.Text = "ref top";
+            chkShowReferenceTop.UseVisualStyleBackColor = true;
+            chkShowReferenceTop.CheckedChanged += chkShowReferenceTop_CheckedChanged;
+            // 
+            // chkShowReferenceBottom
+            // 
+            chkShowReferenceBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            chkShowReferenceBottom.AutoSize = true;
+            chkShowReferenceBottom.Location = new Point(1474, 702);
+            chkShowReferenceBottom.Name = "chkShowReferenceBottom";
+            chkShowReferenceBottom.Size = new Size(69, 23);
+            chkShowReferenceBottom.TabIndex = 36;
+            chkShowReferenceBottom.Text = "ref bot";
+            chkShowReferenceBottom.UseVisualStyleBackColor = true;
+            chkShowReferenceBottom.CheckedChanged += chkShowReferenceBottom_CheckedChanged;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(chkShowReferenceBottom);
+            Controls.Add(chkShowReferenceTop);
             Controls.Add(lblLoad);
             Controls.Add(lblSave);
             Controls.Add(btnLoadBezDat);
@@ -473,5 +501,7 @@
         private Button btnLoadDat;
         private Label lblSave;
         private Label lblLoad;
+        private CheckBox chkShowReferenceTop;
+        private CheckBox chkShowReferenceBottom;
     }
 }
