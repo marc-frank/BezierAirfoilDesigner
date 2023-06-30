@@ -31,36 +31,40 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             formsPlot1 = new ScottPlot.FormsPlot();
-            dataGridView1 = new DataGridView();
+            dataGridViewTop = new DataGridView();
             topBindingSource = new BindingSource(components);
-            dataGridView2 = new DataGridView();
+            dataGridViewBottom = new DataGridView();
             bottomBindingSource = new BindingSource(components);
-            label1 = new Label();
-            label2 = new Label();
+            lblTop = new Label();
+            lblBottom = new Label();
             btnSaveDat = new Button();
             btnIncreaseOrderTop = new Button();
             btnIncreaseOrderBottom = new Button();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
-            label4 = new Label();
-            label5 = new Label();
+            txtNumOfPointsTop = new TextBox();
+            txtNumOfPointBottom = new TextBox();
+            lblNumOfPointTop = new Label();
+            lblNumOfPointBottom = new Label();
             lblOrderTop = new Label();
             lblOrderBottom = new Label();
             btnDecreaseOrderTop = new Button();
             btnDecreaseOrderBottom = new Button();
-            richTextBox2 = new RichTextBox();
-            label6 = new Label();
+            txtAirfoilParam = new RichTextBox();
+            lblAirfoilParam = new Label();
             btnDefault = new Button();
             btnSaveBezDat = new Button();
             chkShowControlPolygon = new CheckBox();
             chkShowThickness = new CheckBox();
             chkShowRadius = new CheckBox();
-            label3 = new Label();
+            lblShow = new Label();
             chkShowCamber = new CheckBox();
             btnAxisAuto = new Button();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            btnLoadBezDat = new Button();
+            btnLoadDat = new Button();
+            lblSave = new Label();
+            lblLoad = new Label();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bottomBindingSource).BeginInit();
             SuspendLayout();
             // 
@@ -74,58 +78,58 @@
             formsPlot1.TabIndex = 0;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
             // 
-            // dataGridView1
+            // dataGridViewTop
             // 
-            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(1174, 31);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 47;
-            dataGridView1.RowTemplate.Height = 28;
-            dataGridView1.Size = new Size(298, 169);
-            dataGridView1.TabIndex = 1;
-            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            dataGridViewTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dataGridViewTop.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewTop.Location = new Point(1174, 31);
+            dataGridViewTop.Name = "dataGridViewTop";
+            dataGridViewTop.RowHeadersWidth = 47;
+            dataGridViewTop.RowTemplate.Height = 28;
+            dataGridViewTop.Size = new Size(298, 169);
+            dataGridViewTop.TabIndex = 1;
+            dataGridViewTop.CellValueChanged += dataGridView1_CellValueChanged;
             // 
-            // dataGridView2
+            // dataGridViewBottom
             // 
-            dataGridView2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(1174, 225);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.RowHeadersWidth = 47;
-            dataGridView2.RowTemplate.Height = 28;
-            dataGridView2.Size = new Size(298, 169);
-            dataGridView2.TabIndex = 2;
-            dataGridView2.CellValueChanged += dataGridView2_CellValueChanged;
+            dataGridViewBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            dataGridViewBottom.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewBottom.Location = new Point(1174, 225);
+            dataGridViewBottom.Name = "dataGridViewBottom";
+            dataGridViewBottom.RowHeadersWidth = 47;
+            dataGridViewBottom.RowTemplate.Height = 28;
+            dataGridViewBottom.Size = new Size(298, 169);
+            dataGridViewBottom.TabIndex = 2;
+            dataGridViewBottom.CellValueChanged += dataGridView2_CellValueChanged;
             // 
-            // label1
+            // lblTop
             // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label1.AutoSize = true;
-            label1.Location = new Point(1183, 9);
-            label1.Name = "label1";
-            label1.Size = new Size(31, 19);
-            label1.TabIndex = 3;
-            label1.Text = "Top";
+            lblTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblTop.AutoSize = true;
+            lblTop.Location = new Point(1183, 9);
+            lblTop.Name = "lblTop";
+            lblTop.Size = new Size(31, 19);
+            lblTop.TabIndex = 3;
+            lblTop.Text = "Top";
             // 
-            // label2
+            // lblBottom
             // 
-            label2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label2.AutoSize = true;
-            label2.Location = new Point(1174, 203);
-            label2.Name = "label2";
-            label2.Size = new Size(55, 19);
-            label2.TabIndex = 4;
-            label2.Text = "Bottom";
+            lblBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblBottom.AutoSize = true;
+            lblBottom.Location = new Point(1174, 203);
+            lblBottom.Name = "lblBottom";
+            lblBottom.Size = new Size(55, 19);
+            lblBottom.TabIndex = 4;
+            lblBottom.Text = "Bottom";
             // 
             // btnSaveDat
             // 
             btnSaveDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSaveDat.Location = new Point(1358, 698);
+            btnSaveDat.Location = new Point(1244, 669);
             btnSaveDat.Name = "btnSaveDat";
-            btnSaveDat.Size = new Size(86, 26);
+            btnSaveDat.Size = new Size(64, 26);
             btnSaveDat.TabIndex = 5;
-            btnSaveDat.Text = "save .dat";
+            btnSaveDat.Text = ".dat";
             btnSaveDat.UseVisualStyleBackColor = true;
             btnSaveDat.Click += btnSaveDat_Click;
             // 
@@ -151,43 +155,43 @@
             btnIncreaseOrderBottom.UseVisualStyleBackColor = true;
             btnIncreaseOrderBottom.Click += btnIncreaseOrderBottom_Click;
             // 
-            // textBox1
+            // txtNumOfPointsTop
             // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox1.Location = new Point(1478, 104);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(86, 26);
-            textBox1.TabIndex = 10;
-            textBox1.Text = "100";
+            txtNumOfPointsTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtNumOfPointsTop.Location = new Point(1478, 104);
+            txtNumOfPointsTop.Name = "txtNumOfPointsTop";
+            txtNumOfPointsTop.Size = new Size(86, 26);
+            txtNumOfPointsTop.TabIndex = 10;
+            txtNumOfPointsTop.Text = "100";
             // 
-            // textBox2
+            // txtNumOfPointBottom
             // 
-            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            textBox2.Location = new Point(1478, 298);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(86, 26);
-            textBox2.TabIndex = 11;
-            textBox2.Text = "100";
+            txtNumOfPointBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtNumOfPointBottom.Location = new Point(1478, 298);
+            txtNumOfPointBottom.Name = "txtNumOfPointBottom";
+            txtNumOfPointBottom.Size = new Size(86, 26);
+            txtNumOfPointBottom.TabIndex = 11;
+            txtNumOfPointBottom.Text = "100";
             // 
-            // label4
+            // lblNumOfPointTop
             // 
-            label4.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label4.AutoSize = true;
-            label4.Location = new Point(1478, 82);
-            label4.Name = "label4";
-            label4.Size = new Size(75, 19);
-            label4.TabIndex = 12;
-            label4.Text = "# of points";
+            lblNumOfPointTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNumOfPointTop.AutoSize = true;
+            lblNumOfPointTop.Location = new Point(1478, 82);
+            lblNumOfPointTop.Name = "lblNumOfPointTop";
+            lblNumOfPointTop.Size = new Size(75, 19);
+            lblNumOfPointTop.TabIndex = 12;
+            lblNumOfPointTop.Text = "# of points";
             // 
-            // label5
+            // lblNumOfPointBottom
             // 
-            label5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label5.AutoSize = true;
-            label5.Location = new Point(1478, 276);
-            label5.Name = "label5";
-            label5.Size = new Size(75, 19);
-            label5.TabIndex = 13;
-            label5.Text = "# of points";
+            lblNumOfPointBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblNumOfPointBottom.AutoSize = true;
+            lblNumOfPointBottom.Location = new Point(1478, 276);
+            lblNumOfPointBottom.Name = "lblNumOfPointBottom";
+            lblNumOfPointBottom.Size = new Size(75, 19);
+            lblNumOfPointBottom.TabIndex = 13;
+            lblNumOfPointBottom.Text = "# of points";
             // 
             // lblOrderTop
             // 
@@ -233,31 +237,31 @@
             btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
             btnDecreaseOrderBottom.Click += btnDecreaseOrderBottom_Click;
             // 
-            // richTextBox2
+            // txtAirfoilParam
             // 
-            richTextBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            richTextBox2.Location = new Point(1174, 419);
-            richTextBox2.Name = "richTextBox2";
-            richTextBox2.Size = new Size(390, 244);
-            richTextBox2.TabIndex = 18;
-            richTextBox2.Text = "";
+            txtAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            txtAirfoilParam.Location = new Point(1174, 419);
+            txtAirfoilParam.Name = "txtAirfoilParam";
+            txtAirfoilParam.Size = new Size(390, 225);
+            txtAirfoilParam.TabIndex = 18;
+            txtAirfoilParam.Text = "";
             // 
-            // label6
+            // lblAirfoilParam
             // 
-            label6.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label6.AutoSize = true;
-            label6.Location = new Point(1174, 397);
-            label6.Name = "label6";
-            label6.Size = new Size(117, 19);
-            label6.TabIndex = 19;
-            label6.Text = "Airfoil Parameters";
+            lblAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lblAirfoilParam.AutoSize = true;
+            lblAirfoilParam.Location = new Point(1174, 397);
+            lblAirfoilParam.Name = "lblAirfoilParam";
+            lblAirfoilParam.Size = new Size(117, 19);
+            lblAirfoilParam.TabIndex = 19;
+            lblAirfoilParam.Text = "Airfoil Parameters";
             // 
             // btnDefault
             // 
             btnDefault.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnDefault.Location = new Point(1266, 698);
+            btnDefault.Location = new Point(1174, 701);
             btnDefault.Name = "btnDefault";
-            btnDefault.Size = new Size(86, 26);
+            btnDefault.Size = new Size(64, 26);
             btnDefault.TabIndex = 20;
             btnDefault.Text = "default";
             btnDefault.UseVisualStyleBackColor = true;
@@ -266,11 +270,11 @@
             // btnSaveBezDat
             // 
             btnSaveBezDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSaveBezDat.Location = new Point(1450, 698);
+            btnSaveBezDat.Location = new Point(1244, 701);
             btnSaveBezDat.Name = "btnSaveBezDat";
-            btnSaveBezDat.Size = new Size(95, 26);
+            btnSaveBezDat.Size = new Size(64, 26);
             btnSaveBezDat.TabIndex = 21;
-            btnSaveBezDat.Text = "save .bez.dat";
+            btnSaveBezDat.Text = ".bez.dat";
             btnSaveBezDat.UseVisualStyleBackColor = true;
             btnSaveBezDat.Click += btnSaveBezDat_Click;
             // 
@@ -278,7 +282,7 @@
             // 
             chkShowControlPolygon.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowControlPolygon.AutoSize = true;
-            chkShowControlPolygon.Location = new Point(1224, 669);
+            chkShowControlPolygon.Location = new Point(1384, 672);
             chkShowControlPolygon.Name = "chkShowControlPolygon";
             chkShowControlPolygon.Size = new Size(71, 23);
             chkShowControlPolygon.TabIndex = 25;
@@ -290,7 +294,7 @@
             // 
             chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(1301, 669);
+            chkShowThickness.Location = new Point(1384, 704);
             chkShowThickness.Name = "chkShowThickness";
             chkShowThickness.Size = new Size(84, 23);
             chkShowThickness.TabIndex = 26;
@@ -302,7 +306,7 @@
             // 
             chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(1470, 669);
+            chkShowRadius.Location = new Point(1474, 672);
             chkShowRadius.Name = "chkShowRadius";
             chkShowRadius.Size = new Size(65, 23);
             chkShowRadius.TabIndex = 27;
@@ -310,21 +314,21 @@
             chkShowRadius.UseVisualStyleBackColor = true;
             chkShowRadius.CheckedChanged += chkShowRadius_CheckedChanged;
             // 
-            // label3
+            // lblShow
             // 
-            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label3.AutoSize = true;
-            label3.Location = new Point(1174, 670);
-            label3.Name = "label3";
-            label3.Size = new Size(44, 19);
-            label3.TabIndex = 28;
-            label3.Text = "show:";
+            lblShow.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lblShow.AutoSize = true;
+            lblShow.Location = new Point(1384, 647);
+            lblShow.Name = "lblShow";
+            lblShow.Size = new Size(44, 19);
+            lblShow.TabIndex = 28;
+            lblShow.Text = "show:";
             // 
             // chkShowCamber
             // 
             chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(1391, 669);
+            chkShowCamber.Location = new Point(1474, 704);
             chkShowCamber.Name = "chkShowCamber";
             chkShowCamber.Size = new Size(73, 23);
             chkShowCamber.TabIndex = 29;
@@ -335,53 +339,100 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnAxisAuto.Location = new Point(1174, 698);
+            btnAxisAuto.Location = new Point(1174, 669);
             btnAxisAuto.Name = "btnAxisAuto";
-            btnAxisAuto.Size = new Size(86, 26);
+            btnAxisAuto.Size = new Size(64, 26);
             btnAxisAuto.TabIndex = 30;
-            btnAxisAuto.Text = "AxisAuto";
+            btnAxisAuto.Text = "Zoom";
             btnAxisAuto.UseVisualStyleBackColor = true;
             btnAxisAuto.Click += btnAxisAuto_Click;
+            // 
+            // btnLoadBezDat
+            // 
+            btnLoadBezDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnLoadBezDat.Location = new Point(1314, 701);
+            btnLoadBezDat.Name = "btnLoadBezDat";
+            btnLoadBezDat.Size = new Size(64, 26);
+            btnLoadBezDat.TabIndex = 32;
+            btnLoadBezDat.Text = ".bez.dat";
+            btnLoadBezDat.UseVisualStyleBackColor = true;
+            btnLoadBezDat.Click += btnLoadBezDat_Click;
+            // 
+            // btnLoadDat
+            // 
+            btnLoadDat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnLoadDat.Location = new Point(1314, 669);
+            btnLoadDat.Name = "btnLoadDat";
+            btnLoadDat.Size = new Size(64, 26);
+            btnLoadDat.TabIndex = 31;
+            btnLoadDat.Text = ".dat";
+            btnLoadDat.UseVisualStyleBackColor = true;
+            btnLoadDat.Click += btnLoadDat_Click;
+            btnLoadDat.MouseDown += btnLoadDat_MouseDown;
+            // 
+            // lblSave
+            // 
+            lblSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lblSave.AutoSize = true;
+            lblSave.Location = new Point(1247, 647);
+            lblSave.Name = "lblSave";
+            lblSave.Size = new Size(39, 19);
+            lblSave.TabIndex = 33;
+            lblSave.Text = "save:";
+            // 
+            // lblLoad
+            // 
+            lblLoad.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lblLoad.AutoSize = true;
+            lblLoad.Location = new Point(1314, 647);
+            lblLoad.Name = "lblLoad";
+            lblLoad.Size = new Size(38, 19);
+            lblLoad.TabIndex = 34;
+            lblLoad.Text = "load:";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(lblLoad);
+            Controls.Add(lblSave);
+            Controls.Add(btnLoadBezDat);
+            Controls.Add(btnLoadDat);
             Controls.Add(btnAxisAuto);
             Controls.Add(chkShowCamber);
-            Controls.Add(label3);
+            Controls.Add(lblShow);
             Controls.Add(chkShowRadius);
             Controls.Add(chkShowThickness);
             Controls.Add(chkShowControlPolygon);
             Controls.Add(btnSaveBezDat);
             Controls.Add(btnDefault);
-            Controls.Add(label6);
-            Controls.Add(richTextBox2);
+            Controls.Add(lblAirfoilParam);
+            Controls.Add(txtAirfoilParam);
             Controls.Add(btnDecreaseOrderBottom);
             Controls.Add(btnDecreaseOrderTop);
             Controls.Add(lblOrderBottom);
             Controls.Add(lblOrderTop);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
+            Controls.Add(lblNumOfPointBottom);
+            Controls.Add(lblNumOfPointTop);
+            Controls.Add(txtNumOfPointBottom);
+            Controls.Add(txtNumOfPointsTop);
             Controls.Add(btnIncreaseOrderBottom);
             Controls.Add(btnIncreaseOrderTop);
             Controls.Add(btnSaveDat);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(dataGridView2);
-            Controls.Add(dataGridView1);
+            Controls.Add(lblBottom);
+            Controls.Add(lblTop);
+            Controls.Add(dataGridViewBottom);
+            Controls.Add(dataGridViewTop);
             Controls.Add(formsPlot1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "BezierAirfoilDesigner";
             Load += Form1_Load;
             Resize += Form1_Resize;
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewTop).EndInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).EndInit();
             ((System.ComponentModel.ISupportInitialize)bottomBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -390,32 +441,36 @@
         #endregion
 
         private ScottPlot.FormsPlot formsPlot1;
-        private DataGridView dataGridView1;
+        private DataGridView dataGridViewTop;
         private BindingSource topBindingSource;
-        private DataGridView dataGridView2;
+        private DataGridView dataGridViewBottom;
         private BindingSource bottomBindingSource;
-        private Label label1;
-        private Label label2;
+        private Label lblTop;
+        private Label lblBottom;
         private Button btnSaveDat;
         private Button btnIncreaseOrderTop;
         private Button btnIncreaseOrderBottom;
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private Label label4;
-        private Label label5;
+        private TextBox txtNumOfPointsTop;
+        private TextBox txtNumOfPointBottom;
+        private Label lblNumOfPointTop;
+        private Label lblNumOfPointBottom;
         private Label lblOrderTop;
         private Label lblOrderBottom;
         private Button btnDecreaseOrderTop;
         private Button btnDecreaseOrderBottom;
-        private RichTextBox richTextBox2;
-        private Label label6;
+        private RichTextBox txtAirfoilParam;
+        private Label lblAirfoilParam;
         private Button btnDefault;
         private Button btnSaveBezDat;
         private CheckBox chkShowControlPolygon;
         private CheckBox chkShowThickness;
         private CheckBox chkShowRadius;
-        private Label label3;
+        private Label lblShow;
         private CheckBox chkShowCamber;
         private Button btnAxisAuto;
+        private Button btnLoadBezDat;
+        private Button btnLoadDat;
+        private Label lblSave;
+        private Label lblLoad;
     }
 }

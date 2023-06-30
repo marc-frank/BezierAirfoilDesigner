@@ -1,7 +1,9 @@
 //using MathNet.Numerics.LinearAlgebra;
 //using MathNet.Numerics.LinearAlgebra.Double;
 using ScottPlot;
+using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
+using System.Globalization;
 using System.Windows.Forms;
 //using System.Numerics;
 
@@ -22,15 +24,15 @@ namespace BezierAirfoilDesigner
                 //if (Form1.ActiveForm.Height < 783) { Form1.ActiveForm.Height = 783; }
 
                 formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1152), Form1.ActiveForm.Height - (783 - 713));
-                dataGridView1.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
-                dataGridView2.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
+                dataGridViewTop.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
+                dataGridViewBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
 
-                label2.SetBounds(Form1.ActiveForm.Width - (1588 - 1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
+                lblBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
                 lblOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 45, 19);
                 btnIncreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
                 btnDecreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1513), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
-                label5.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 51, 75, 19);
-                textBox2.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
+                lblNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 51, 75, 19);
+                txtNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
             }
         }
 
@@ -38,6 +40,7 @@ namespace BezierAirfoilDesigner
         {
             FormsPlotSettings();
             GridViewSettings();
+            AddToolTips();
             AddDefaultPointsTop();
             AddDefaultPointsBottom();
 
@@ -52,6 +55,8 @@ namespace BezierAirfoilDesigner
         }
 
         double minZoomRange = 0.01;
+        List<PointF> referenceDatTop = new();
+        List<PointF> referenceDatBottom = new();
         bool showControlPolygon;
         bool showThickness;
         bool showCamber;
@@ -65,14 +70,28 @@ namespace BezierAirfoilDesigner
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            var referenceDatPlotTop = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
+            var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: Color.Blue, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
 
-            if (int.Parse(textBox1.Text) < 3) { textBox1.Text = "3"; }
-            if (int.Parse(textBox2.Text) < 3) { textBox2.Text = "3"; }
+            for (int i = 0; i < referenceDatTop.Count; i++)
+            {
+                referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
+            }
+            for (int i = 0; i < referenceDatBottom.Count; i++)
+            {
+                referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
+            }
 
-            int numPointsTop = int.Parse(textBox1.Text);
-            int numPointsBottom = int.Parse(textBox2.Text);
+            //----------------------------------------------------------------------------------------------------------------------------------
+
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+
+            if (int.Parse(txtNumOfPointsTop.Text) < 3) { txtNumOfPointsTop.Text = "3"; }
+            if (int.Parse(txtNumOfPointBottom.Text) < 3) { txtNumOfPointBottom.Text = "3"; }
+
+            int numPointsTop = int.Parse(txtNumOfPointsTop.Text);
+            int numPointsBottom = int.Parse(txtNumOfPointBottom.Text);
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
@@ -150,10 +169,10 @@ namespace BezierAirfoilDesigner
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
-            richTextBox2.Text = "";
-            richTextBox2.AppendText("nose radius: " + radius + System.Environment.NewLine);
-            richTextBox2.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
-            richTextBox2.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.Text = "";
+            txtAirfoilParam.AppendText("nose radius: " + radius + System.Environment.NewLine);
+            txtAirfoilParam.AppendText("maximum camber: " + maxCamber.Y.ToString() + " @: " + maxCamber.X.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText("maximum thickness: " + maxThickness.Y.ToString() + " @: " + maxThickness.X.ToString() + System.Environment.NewLine);
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -205,45 +224,59 @@ namespace BezierAirfoilDesigner
         }
         private void GridViewSettings()
         {
-            dataGridView1.AllowUserToResizeColumns = false;
-            dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.AllowUserToOrderColumns = false;
+            dataGridViewTop.AllowUserToResizeColumns = false;
+            dataGridViewTop.AllowUserToResizeRows = false;
+            dataGridViewTop.AllowUserToOrderColumns = false;
 
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            foreach (DataGridViewColumn column in dataGridViewTop.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
 
-            dataGridView2.AllowUserToResizeColumns = false;
-            dataGridView2.AllowUserToResizeRows = false;
-            dataGridView2.AllowUserToOrderColumns = false;
+            dataGridViewBottom.AllowUserToResizeColumns = false;
+            dataGridViewBottom.AllowUserToResizeRows = false;
+            dataGridViewBottom.AllowUserToOrderColumns = false;
 
-            foreach (DataGridViewColumn column in dataGridView2.Columns)
+            foreach (DataGridViewColumn column in dataGridViewBottom.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+        }
+        private void AddToolTips()
+        {
+            // Create a new instance of ToolTip
+            ToolTip buttonToolTip = new ToolTip();
+
+            // Set up some of the ToolTip settings
+            buttonToolTip.AutoPopDelay = 5000;  // Time for which the ToolTip is shown
+            buttonToolTip.InitialDelay = 500;  // Time delay when hovering over the control before the ToolTip is shown
+            buttonToolTip.ReshowDelay = 500;    // Time delay when the mouse pointer is moved from one control to another
+            buttonToolTip.ShowAlways = true;    // Force the ToolTip text to be displayed whether or not the form is active
+
+            // Set up the ToolTip text
+            buttonToolTip.SetToolTip(btnLoadDat, "right click to remove");
         }
         private void AddDefaultPointsTop()
         {
-            dataGridView1.Rows.Clear();
-            dataGridView1.Columns.Clear();
-            dataGridView1.Columns.Add("xVal", "X");
-            dataGridView1.Columns.Add("yVal", "Y");
-            dataGridView1.Rows.Add(0, 0);
-            dataGridView1.Rows.Add(0, 0.15);
-            dataGridView1.Rows.Add(0.5, 0.15);
-            dataGridView1.Rows.Add(1.0, 0.0);
+            dataGridViewTop.Rows.Clear();
+            dataGridViewTop.Columns.Clear();
+            dataGridViewTop.Columns.Add("xVal", "X");
+            dataGridViewTop.Columns.Add("yVal", "Y");
+            dataGridViewTop.Rows.Add(0, 0);
+            dataGridViewTop.Rows.Add(0, 0.15);
+            dataGridViewTop.Rows.Add(0.5, 0.15);
+            dataGridViewTop.Rows.Add(1.0, 0.0);
         }
         private void AddDefaultPointsBottom()
         {
-            dataGridView2.Rows.Clear();
-            dataGridView2.Columns.Clear();
-            dataGridView2.Columns.Add("xVal", "X");
-            dataGridView2.Columns.Add("yVal", "Y");
-            dataGridView2.Rows.Add(0, 0);
-            dataGridView2.Rows.Add(0, -0.1);
-            dataGridView2.Rows.Add(0.5, -0.1);
-            dataGridView2.Rows.Add(1.0, 0.0);
+            dataGridViewBottom.Rows.Clear();
+            dataGridViewBottom.Columns.Clear();
+            dataGridViewBottom.Columns.Add("xVal", "X");
+            dataGridViewBottom.Columns.Add("yVal", "Y");
+            dataGridViewBottom.Rows.Add(0, 0);
+            dataGridViewBottom.Rows.Add(0, -0.1);
+            dataGridViewBottom.Rows.Add(0.5, -0.1);
+            dataGridViewBottom.Rows.Add(1.0, 0.0);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -380,11 +413,11 @@ namespace BezierAirfoilDesigner
         }
         private void formsPlot1_PlottableDragged(object sender, EventArgs e)
         {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             (double mouseCoordX, double mouseCoordY) = formsPlot1.GetMouseCoordinates();
-            richTextBox2.Text = $"Mouse coords ({mouseCoordX:N8}, {mouseCoordY:N8})" + System.Environment.NewLine;
+            txtAirfoilParam.Text = $"Mouse coords ({mouseCoordX:N8}, {mouseCoordY:N8})" + System.Environment.NewLine;
             PointF mouse = new PointF(float.Parse(mouseCoordX.ToString()), float.Parse(mouseCoordY.ToString()));
 
             float lowestDistanceTop = float.PositiveInfinity;
@@ -428,19 +461,19 @@ namespace BezierAirfoilDesigner
                 topOrBottom = false;
             }
 
-            richTextBox2.AppendText(lowestDistance.ToString() + System.Environment.NewLine);
-            richTextBox2.AppendText(indexLowestDistance.ToString() + System.Environment.NewLine);
-            richTextBox2.AppendText(topOrBottom.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText(lowestDistance.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText(indexLowestDistance.ToString() + System.Environment.NewLine);
+            txtAirfoilParam.AppendText(topOrBottom.ToString() + System.Environment.NewLine);
 
             if (topOrBottom)
             {
                 controlPointsTop[indexLowestDistance] = mouse;
-                gridViewAddPoints(dataGridView1, controlPointsTop);
+                gridViewAddPoints(dataGridViewTop, controlPointsTop);
             }
             else
             {
                 controlPointsBottom[indexLowestDistance] = mouse;
-                gridViewAddPoints(dataGridView2, controlPointsBottom);
+                gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             }
 
             calculations();
@@ -450,19 +483,19 @@ namespace BezierAirfoilDesigner
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewTop.Rows.Count - 1; i++)
             {
-                if (dataGridView1.Rows[i].Cells[0].Value == null) { dataGridView1.Rows[i].Cells[0].Value = 0.0f; }
-                if (dataGridView1.Rows[i].Cells[1].Value == null) { dataGridView1.Rows[i].Cells[1].Value = 0.0f; }
+                if (dataGridViewTop.Rows[i].Cells[0].Value == null) { dataGridViewTop.Rows[i].Cells[0].Value = 0.0f; }
+                if (dataGridViewTop.Rows[i].Cells[1].Value == null) { dataGridViewTop.Rows[i].Cells[1].Value = 0.0f; }
             }
             calculations();
         }
         private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            for (int i = 0; i < dataGridView2.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewBottom.Rows.Count - 1; i++)
             {
-                if (dataGridView2.Rows[i].Cells[0].Value == null) { dataGridView2.Rows[i].Cells[0].Value = 0.0f; }
-                if (dataGridView2.Rows[i].Cells[1].Value == null) { dataGridView2.Rows[i].Cells[1].Value = 0.0f; }
+                if (dataGridViewBottom.Rows[i].Cells[0].Value == null) { dataGridViewBottom.Rows[i].Cells[0].Value = 0.0f; }
+                if (dataGridViewBottom.Rows[i].Cells[1].Value == null) { dataGridViewBottom.Rows[i].Cells[1].Value = 0.0f; }
             }
             calculations();
         }
@@ -500,42 +533,42 @@ namespace BezierAirfoilDesigner
         }
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             controlPointsTop = DeCasteljau.IncreaseOrder(controlPointsTop);
-            gridViewAddPoints(dataGridView1, controlPointsTop);
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
         }
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             controlPointsBottom = DeCasteljau.IncreaseOrder(controlPointsBottom);
-            gridViewAddPoints(dataGridView2, controlPointsBottom);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
         }
         private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             controlPointsTop = DeCasteljau.DecreaseOrder(controlPointsTop);
-            gridViewAddPoints(dataGridView1, controlPointsTop);
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
         }
         private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             controlPointsBottom = DeCasteljau.DecreaseOrder(controlPointsBottom);
-            gridViewAddPoints(dataGridView2, controlPointsBottom);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
         }
         private void btnSaveDat_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
-            if (int.Parse(textBox1.Text) < 3) { textBox1.Text = "3"; }
-            if (int.Parse(textBox2.Text) < 3) { textBox2.Text = "3"; }
+            if (int.Parse(txtNumOfPointsTop.Text) < 3) { txtNumOfPointsTop.Text = "3"; }
+            if (int.Parse(txtNumOfPointBottom.Text) < 3) { txtNumOfPointBottom.Text = "3"; }
 
-            int numPointsTop = int.Parse(textBox1.Text);
-            int numPointsBottom = int.Parse(textBox2.Text);
+            int numPointsTop = int.Parse(txtNumOfPointsTop.Text);
+            int numPointsBottom = int.Parse(txtNumOfPointBottom.Text);
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
@@ -570,8 +603,8 @@ namespace BezierAirfoilDesigner
         }
         private void btnSaveBezDat_Click(object sender, EventArgs e)
         {
-            List<PointF> controlPointsTop = GetControlPoints(dataGridView1);
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridView2);
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             string datFile = "" + "Airfoil Name" + System.Environment.NewLine;
 
@@ -586,8 +619,6 @@ namespace BezierAirfoilDesigner
             }
 
             datFile = datFile.Replace(',', '.');
-
-
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
@@ -605,6 +636,91 @@ namespace BezierAirfoilDesigner
         {
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
+        }
+        private void btnLoadDat_Click(object sender, EventArgs e)
+        {
+            referenceDatTop.Clear();
+            referenceDatBottom.Clear();
+
+            List<PointF> points = new();
+
+            // Create a new instance of the OpenFileDialog class
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            // Set some properties to define how the dialog works
+            openFileDialog.InitialDirectory = "c:\\"; // Starting directory
+            openFileDialog.Filter = "Dat files (*.dat)|*.dat"; // Only show .dat files
+
+            // Show the dialog and get the result
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
+                string path = openFileDialog.FileName;
+
+                using (StreamReader reader = new StreamReader(path)) // Use the path chosen by the user
+                {
+                    // skip the header line
+                    string line = reader.ReadLine();
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        // split the line on whitespace
+                        string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (parts.Length == 2)
+                        {
+                            // parse the parts as floats
+                            if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                            && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                            {
+                                // add the point to the list
+                                points.Add(new PointF(x, y));
+                            }
+                        }
+                    }
+                }
+            }
+
+            PointF minPoint = points.Aggregate((minPoint, nextPoint) => nextPoint.X < minPoint.X ? nextPoint : minPoint);
+            int index = points.IndexOf(minPoint);
+
+            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum (inclusive)
+            referenceDatBottom = points.GetRange(index + 1, points.Count - index - 1);  // From minimum (exclusive) to end
+
+
+            calculations();
+        }
+        private void btnLoadBezDat_Click(object sender, EventArgs e)
+        {
+            // Create a new instance of the OpenFileDialog class
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            // Set some properties to define how the dialog works
+            openFileDialog.InitialDirectory = "c:\\"; // Starting directory
+            openFileDialog.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat"; // Only show .bez.dat files
+
+            // Show the dialog and get the result
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
+                string path = openFileDialog.FileName;
+
+                // Now you can load the file...
+                string allText = File.ReadAllText(path);
+            }
+
+        }
+
+        private void btnLoadDat_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // The right mouse button was pressed
+                referenceDatTop.Clear();
+                referenceDatBottom.Clear();
+            }
+
+            calculations();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
