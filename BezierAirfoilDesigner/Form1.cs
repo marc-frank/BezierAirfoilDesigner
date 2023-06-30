@@ -55,6 +55,7 @@ namespace BezierAirfoilDesigner
         }
 
         double minZoomRange = 0.01;
+        double maxZoomRange = 10.0;
         List<PointF> referenceDatTop = new();
         List<PointF> referenceDatBottom = new();
         bool showControlPolygon;
@@ -87,11 +88,14 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
-            if (int.Parse(txtNumOfPointsTop.Text) < 3) { txtNumOfPointsTop.Text = "3"; }
-            if (int.Parse(txtNumOfPointBottom.Text) < 3) { txtNumOfPointBottom.Text = "3"; }
-
-            int numPointsTop = int.Parse(txtNumOfPointsTop.Text);
-            int numPointsBottom = int.Parse(txtNumOfPointBottom.Text);
+            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 3) { 
+                txtNumOfPointsTop.Text = "3";
+                numPointsTop = 3;
+            }
+            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 3) { 
+                txtNumOfPointBottom.Text = "3";
+                numPointsBottom = 3;
+            }
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
@@ -407,6 +411,18 @@ namespace BezierAirfoilDesigner
                 // Set the axis limits to the adjusted values
                 formsPlot1.Plot.SetAxisLimits(xMin, xMax, limits.YMin, limits.YMax);
             }
+            else if (Math.Abs(limits.XMax - limits.XMin) > maxZoomRange)
+            {
+                // Calculate the center of the current x range
+                double xCenter = (limits.XMin + limits.XMax) / 2;
+
+                // Set new x limits that maintain the center but decrease the range
+                double xMin = xCenter - maxZoomRange / 2;
+                double xMax = xCenter + maxZoomRange / 2;
+
+                // Set the axis limits to the adjusted values
+                formsPlot1.Plot.SetAxisLimits(xMin, xMax, limits.YMin, limits.YMax);
+            }
 
             // Render the plot
             formsPlot1.Plot.Render();
@@ -692,12 +708,14 @@ namespace BezierAirfoilDesigner
         }
         private void btnLoadBezDat_Click(object sender, EventArgs e)
         {
+            List<PointF> controlPoints = new();
+
             // Create a new instance of the OpenFileDialog class
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             // Set some properties to define how the dialog works
             openFileDialog.InitialDirectory = "c:\\"; // Starting directory
-            openFileDialog.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat"; // Only show .bez.dat files
+            openFileDialog.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat"; // Only show .dat files
 
             // Show the dialog and get the result
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -705,12 +723,44 @@ namespace BezierAirfoilDesigner
                 // The user selected a file and clicked OK, so the FileName property now contains the selected file path
                 string path = openFileDialog.FileName;
 
-                // Now you can load the file...
-                string allText = File.ReadAllText(path);
+                using (StreamReader reader = new StreamReader(path)) // Use the path chosen by the user
+                {
+                    // skip the header line
+                    string line = reader.ReadLine();
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        // split the line on whitespace
+                        string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (parts.Length == 2)
+                        {
+                            // parse the parts as floats
+                            if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                            && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                            {
+                                // add the point to the list
+                                controlPoints.Add(new PointF(x, y));
+                            }
+                        }
+                    }
+                }
             }
 
-        }
+            PointF minPoint = controlPoints.Aggregate((minPoint, nextPoint) => nextPoint.X < minPoint.X ? nextPoint : minPoint);
+            int index = controlPoints.IndexOf(minPoint);
 
+            List<PointF> controlPointsTop = controlPoints.GetRange(0, index + 1 + 1);  // From start to minimum (inclusive)
+            controlPointsTop.Reverse(); //control Points are stored just like in a .dat from TE over the top to LE under the bottom to TE
+                                        //LE point has to be duplicated in split
+
+            List<PointF> controlPointsBottom = controlPoints.GetRange(index + 1, controlPoints.Count - index - 1);  // From minimum (exclusive) to end
+
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+
+            calculations();
+        }
         private void btnLoadDat_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)

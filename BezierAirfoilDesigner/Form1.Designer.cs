@@ -76,6 +76,7 @@
             formsPlot1.Name = "formsPlot1";
             formsPlot1.Size = new Size(1152, 713);
             formsPlot1.TabIndex = 0;
+            formsPlot1.AxesChanged += formsPlot1_AxesChanged;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
             // 
             // dataGridViewTop
