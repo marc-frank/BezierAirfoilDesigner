@@ -245,12 +245,9 @@ namespace BezierAirfoilDesigner
             {
                 totalErrorBottom += errorBottom[i].Y;
             }
-            
-            txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine);
-            txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine);
-            
-            if (totalErrorTop > 0) { }
-            if (totalErrorBottom > 0) {  }
+
+            if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
+            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
