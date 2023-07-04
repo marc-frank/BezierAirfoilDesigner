@@ -2,6 +2,7 @@ using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
 using System.Globalization;
+using System.Net.Http.Headers;
 using System.Windows.Forms;
 
 namespace BezierAirfoilDesigner
@@ -61,6 +62,12 @@ namespace BezierAirfoilDesigner
         bool showRadius;
         bool showReferenceTop;
         bool showReferenceBottom;
+        bool cancelAutoSearch = false;
+
+        List<PointF> errorTop = new();
+        List<PointF> errorBottom = new();
+        float totalErrorTop;
+        float totalErrorBottom;
 
         void calculations()
         {
@@ -230,16 +237,18 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating the error between the bezier airfoil and the reference airfoil and writing results to the text field
 
-            List<PointF> errorTop = GetThickness(pointsTop, referenceDatTop);
-            float totalErrorTop = 0;
+            errorTop.Clear();
+            errorTop = GetThickness(pointsTop, referenceDatTop);
+            totalErrorTop = 0;
 
             for (int i = 0; i < errorTop.Count; i++)
             {
                 totalErrorTop += errorTop[i].Y;
             }
 
-            List<PointF> errorBottom = GetThickness(pointsBottom, referenceDatBottom);
-            float totalErrorBottom = 0;
+            errorBottom.Clear();
+            errorBottom = GetThickness(pointsBottom, referenceDatBottom);
+            totalErrorBottom = 0;
 
             for (int i = 0; i < errorBottom.Count; i++)
             {
@@ -298,6 +307,7 @@ namespace BezierAirfoilDesigner
 
             // Set up the ToolTip text
             buttonToolTip.SetToolTip(btnLoadDat, "right click to remove");
+            buttonToolTip.SetToolTip(btnSearchAuto, "right click to cancel");
         }
         private void AddDefaultPointsTop()
         {
@@ -838,6 +848,155 @@ namespace BezierAirfoilDesigner
             }
 
             calculations();
+        }
+
+        private void btnSearchTop_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPoints = GetControlPoints(dataGridViewTop);
+            SearchControlPoints(controlPoints, dataGridViewTop);
+
+            Console.Beep();
+        }
+
+        private void btnSearchBottom_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPoints = GetControlPoints(dataGridViewBottom);
+            SearchControlPoints(controlPoints, dataGridViewBottom);
+
+            Console.Beep();
+        }
+
+        private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
+        {
+            float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
+            List<PointF> controlPointsWithLowestError = new List<PointF>(controlPoints); // Store initial state
+            int numPoints = 3; // Start with searching two points: current point and one extra point
+
+            bool betterCombinationFound = false;
+
+            while (!betterCombinationFound)
+            {
+                float searchDistance = currentLowestError / 100; // Total search distance
+                float searchStep = searchDistance / (numPoints - 1); // Defines the step size
+
+                SearchCombinations(controlPoints, 1, searchStep, numPoints);
+
+                void SearchCombinations(List<PointF> points, int currentIndex, float step, int numSteps)
+                {
+                    if (currentIndex >= points.Count - 1)
+                    {
+                        gridViewAddPoints(gridView, points);
+                        calculations();
+                        float currentError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
+                        if (currentError < currentLowestError)
+                        {
+                            currentLowestError = currentError;
+                            controlPointsWithLowestError.Clear();
+                            controlPointsWithLowestError.AddRange(points);
+                            betterCombinationFound = true;
+                        }
+                        return;
+                    }
+
+                    PointF originalPoint = points[currentIndex];
+                    float searchMin = originalPoint.Y - searchDistance / 2; // Start from below the current Y-coordinate
+
+                    // Iterates over numPoints specific points around the current Y-coordinate
+                    for (int i = 0; i < numSteps; i++)
+                    {
+                        float y = searchMin + i * step;
+                        points[currentIndex] = new PointF(originalPoint.X, y);
+                        SearchCombinations(points, currentIndex + 1, step, numSteps);
+                    }
+
+                    points[currentIndex] = originalPoint; // Restore original point before returning.
+                }
+
+                Console.Beep();
+                numPoints++; // Increase number of points for next iteration
+            }
+
+            //if (controlPointsWithLowestError.Count > 0)
+            //{
+            gridViewAddPoints(gridView, controlPointsWithLowestError);
+            calculations();
+            //}
+        }
+
+        private void btnSearchAuto_Click(object sender, EventArgs e)
+        {
+            // Record the start time
+            DateTime startTime = DateTime.Now;
+
+            // Define thresholds
+            float errorThresholdTop = 0.075f;
+            float errorThresholdBottom = 0.075f;
+            float improvementThreshold = 0.05f;
+
+            bool increaseOrderFlag = false;
+
+            while (totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
+            {
+                // Check if the operation should be cancelled
+                if (cancelAutoSearch)
+                    break;
+
+                float previousErrorTop = totalErrorTop;
+                float previousErrorBottom = totalErrorBottom;
+                float currentErrorTop;
+                float currentErrorBottom;
+                float errorImprovementTop = 1.0f;
+                float errorImprovementBottom = 1.0f;
+
+                if (increaseOrderFlag)
+                {
+                    btnIncreaseOrderTop.PerformClick();
+                    btnIncreaseOrderBottom.PerformClick();
+                    increaseOrderFlag = false;
+                }
+
+                while ((totalErrorTop > errorThresholdTop && errorImprovementTop >= improvementThreshold) ||
+                       (totalErrorBottom > errorThresholdBottom && errorImprovementBottom >= improvementThreshold))
+                {
+                    // Check if the operation should be cancelled
+                    if (cancelAutoSearch)
+                        break;
+
+                    if (totalErrorTop > errorThresholdTop)
+                    {
+                        btnSearchTop.PerformClick();
+                        currentErrorTop = totalErrorTop;
+                        errorImprovementTop = (previousErrorTop - currentErrorTop) / previousErrorTop;
+                        previousErrorTop = currentErrorTop;
+                    }
+
+                    if (totalErrorBottom > errorThresholdBottom)
+                    {
+                        btnSearchBottom.PerformClick();
+                        currentErrorBottom = totalErrorBottom;
+                        errorImprovementBottom = (previousErrorBottom - currentErrorBottom) / previousErrorBottom;
+                        previousErrorBottom = currentErrorBottom;
+                    }
+                }
+
+                increaseOrderFlag = true;
+            }
+
+            // Record the end time and calculate elapsed time
+            DateTime endTime = DateTime.Now;
+            TimeSpan elapsedTime = endTime - startTime;
+
+            // If operation wasn't cancelled, play a beep and show a message box with start time, end time and elapsed time
+            if (!cancelAutoSearch)
+            {
+                // Play a beep
+                Console.Beep();
+                Console.Beep();
+                Console.Beep();
+
+                // Show a message box with start time, end time and elapsed time
+                MessageBox.Show($"Start time: {startTime}\nEnd time: {endTime}\nElapsed time: {elapsedTime}");
+            }
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System.Numerics;
+using MathNet.Numerics.Optimization;
 
 namespace BezierAirfoilDesigner
 {

@@ -64,6 +64,9 @@
             lblLoad = new Label();
             chkShowReferenceTop = new CheckBox();
             chkShowReferenceBottom = new CheckBox();
+            btnSearchTop = new Button();
+            btnSearchBottom = new Button();
+            btnSearchAuto = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
@@ -417,11 +420,47 @@
             chkShowReferenceBottom.UseVisualStyleBackColor = true;
             chkShowReferenceBottom.CheckedChanged += chkShowReferenceBottom_CheckedChanged;
             // 
+            // btnSearchTop
+            // 
+            btnSearchTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSearchTop.Location = new Point(1174, 702);
+            btnSearchTop.Name = "btnSearchTop";
+            btnSearchTop.Size = new Size(74, 26);
+            btnSearchTop.TabIndex = 37;
+            btnSearchTop.Text = "srch top";
+            btnSearchTop.UseVisualStyleBackColor = true;
+            btnSearchTop.Click += btnSearchTop_Click;
+            // 
+            // btnSearchBottom
+            // 
+            btnSearchBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSearchBottom.Location = new Point(1254, 702);
+            btnSearchBottom.Name = "btnSearchBottom";
+            btnSearchBottom.Size = new Size(74, 26);
+            btnSearchBottom.TabIndex = 38;
+            btnSearchBottom.Text = "srch bot";
+            btnSearchBottom.UseVisualStyleBackColor = true;
+            btnSearchBottom.Click += btnSearchBottom_Click;
+            // 
+            // btnSearchAuto
+            // 
+            btnSearchAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnSearchAuto.Location = new Point(1333, 702);
+            btnSearchAuto.Name = "btnSearchAuto";
+            btnSearchAuto.Size = new Size(45, 26);
+            btnSearchAuto.TabIndex = 39;
+            btnSearchAuto.Text = "auto";
+            btnSearchAuto.UseVisualStyleBackColor = true;
+            btnSearchAuto.Click += btnSearchAuto_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(btnSearchAuto);
+            Controls.Add(btnSearchBottom);
+            Controls.Add(btnSearchTop);
             Controls.Add(chkShowReferenceBottom);
             Controls.Add(chkShowReferenceTop);
             Controls.Add(lblLoad);
@@ -503,5 +542,8 @@
         private Label lblLoad;
         private CheckBox chkShowReferenceTop;
         private CheckBox chkShowReferenceBottom;
+        private Button btnSearchTop;
+        private Button btnSearchBottom;
+        private Button btnSearchAuto;
     }
 }
