@@ -550,6 +550,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "BezierAirfoilDesigner";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             Resize += Form1_Resize;
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).EndInit();
