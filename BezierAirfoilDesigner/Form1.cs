@@ -11,15 +11,14 @@ namespace BezierAirfoilDesigner
     {
         readonly double minZoomRange = 0.01;
         readonly double maxZoomRange = 10.0;
-        
-        List<PointF> defaultControlPointsTop = new()
+        readonly List<PointF> defaultControlPointsTop = new()
         {
             new PointF(0, 0),
             new PointF(0, 0.15f),
             new PointF(0.5f, 0.15f),
             new PointF(1.0f, 0)
         };
-        List<PointF> defaultControlPointsBottom = new()
+        readonly List<PointF> defaultControlPointsBottom = new()
         {
             new PointF(0, 0),
             new PointF(0, -0.1f),
@@ -948,7 +947,7 @@ namespace BezierAirfoilDesigner
         private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
         {
             float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
-            List<PointF> controlPointsWithLowestError = new List<PointF>(controlPoints); // Store initial state
+            List<PointF> controlPointsWithLowestError = new(controlPoints); // Store initial state
             int numPoints = 3; // Start with searching two points: current point and one extra point
 
             bool betterCombinationFound = false;
