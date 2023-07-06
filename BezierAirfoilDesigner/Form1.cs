@@ -21,7 +21,7 @@ namespace BezierAirfoilDesigner
                 //if (Form1.ActiveForm.Width < 1588) { Form1.ActiveForm.Width = 1588; }
                 //if (Form1.ActiveForm.Height < 783) { Form1.ActiveForm.Height = 783; }
 
-                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1152), Form1.ActiveForm.Height - (783 - 713));
+                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1085), Form1.ActiveForm.Height - (783 - 713));
                 dataGridViewTop.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
                 dataGridViewBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
 
@@ -42,10 +42,16 @@ namespace BezierAirfoilDesigner
             AddDefaultPointsTop();
             AddDefaultPointsBottom();
 
-            chkShowControlPolygon.Checked = true;
-            chkShowThickness.Checked = false;
-            chkShowCamber.Checked = false;
-            chkShowRadius.Checked = false;
+            chkShowControlTop.Checked = true;
+            chkShowControlBottom.Checked = true;
+            chkShowTop.Checked = true;
+            chkShowBottom.Checked = true;
+
+            chkShowReferenceTop.Enabled = false;
+            chkShowReferenceBottom.Enabled = false;
+            btnSearchTop.Enabled = false;
+            btnSearchBottom.Enabled = false;
+            btnAutoSearch.Enabled = false;
 
             calculations();
             formsPlot1.Plot.AxisAuto();
@@ -56,7 +62,10 @@ namespace BezierAirfoilDesigner
         readonly double maxZoomRange = 10.0;
         List<PointF> referenceDatTop = new();
         List<PointF> referenceDatBottom = new();
-        bool showControlPolygon;
+        bool showControlTop;
+        bool showControlBottom;
+        bool showTop;
+        bool showBottom;
         bool showThickness;
         bool showCamber;
         bool showRadius;
@@ -96,8 +105,12 @@ namespace BezierAirfoilDesigner
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
-            var top = formsPlot1.Plot.AddScatterList(color: Color.Red, lineStyle: ScottPlot.LineStyle.Solid);
-            var bottom = formsPlot1.Plot.AddScatterList(color: Color.Red, lineStyle: ScottPlot.LineStyle.Solid);
+            Color colorTop;
+            if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
+            var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
+            Color colorBottom;
+            if (showBottom) { colorBottom = Color.Red; } else { colorBottom = Color.Transparent; }
+            var bottom = formsPlot1.Plot.AddScatterList(color: colorBottom, lineStyle: ScottPlot.LineStyle.Solid);
 
             for (int i = 0; i < pointsTop.Count; i++)
             {
@@ -193,7 +206,7 @@ namespace BezierAirfoilDesigner
             var controlTop = new ScottPlot.Plottable.ScatterPlotListDraggable();
             controlTop.AddRange(xT, yT);
             controlTop.LineStyle = LineStyle.Dash;
-            if (showControlPolygon) { controlTop.Color = Color.Gray; } else { controlTop.Color = Color.Transparent; }
+            if (showControlTop) { controlTop.Color = Color.Gray; } else { controlTop.Color = Color.Transparent; }
             controlTop.MarkerSize = 5;
             formsPlot1.Plot.Add(controlTop);
 
@@ -209,7 +222,7 @@ namespace BezierAirfoilDesigner
             var controlBottom = new ScottPlot.Plottable.ScatterPlotListDraggable();
             controlBottom.AddRange(xB, yB);
             controlBottom.LineStyle = LineStyle.Dash;
-            if (showControlPolygon) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
+            if (showControlBottom) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
             controlBottom.MarkerSize = 5;
             formsPlot1.Plot.Add(controlBottom);
 
@@ -239,21 +252,11 @@ namespace BezierAirfoilDesigner
 
             errorTop.Clear();
             errorTop = GetThickness(pointsTop, referenceDatTop);
-            totalErrorTop = 0;
-
-            for (int i = 0; i < errorTop.Count; i++)
-            {
-                totalErrorTop += errorTop[i].Y;
-            }
+            totalErrorTop = CalculateAreaUnderCurve(errorTop) * 1000;
 
             errorBottom.Clear();
             errorBottom = GetThickness(pointsBottom, referenceDatBottom);
-            totalErrorBottom = 0;
-
-            for (int i = 0; i < errorBottom.Count; i++)
-            {
-                totalErrorBottom += errorBottom[i].Y;
-            }
+            totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
 
             if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
             if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
@@ -307,7 +310,7 @@ namespace BezierAirfoilDesigner
 
             // Set up the ToolTip text
             buttonToolTip.SetToolTip(btnLoadDat, "right click to remove");
-            buttonToolTip.SetToolTip(btnSearchAuto, "right click to cancel");
+            buttonToolTip.SetToolTip(btnAutoSearch, "right click to cancel");
         }
         private void AddDefaultPointsTop()
         {
@@ -442,6 +445,27 @@ namespace BezierAirfoilDesigner
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
+        public static float CalculateAreaBetweenCurves(List<PointF> curve1Points, List<PointF> curve2Points)
+        {
+            float areaCurve1 = CalculateAreaUnderCurve(curve1Points);
+            float areaCurve2 = CalculateAreaUnderCurve(curve2Points);
+
+            return Math.Abs(areaCurve1 - areaCurve2);
+        }
+        public static float CalculateAreaUnderCurve(List<PointF> curvePoints)
+        {
+            float area = 0.0f;
+
+            for (int i = 0; i < curvePoints.Count - 1; i++)
+            {
+                float h = curvePoints[i + 1].X - curvePoints[i].X;
+                float avgY = (curvePoints[i].Y + curvePoints[i + 1].Y) / 2.0f;
+                area += h * avgY;
+            }
+
+            return area;
+        }
+
 
         //--------------------------------------------------------------------------------------------------------------------------------------
         // formsPlot actions
@@ -573,9 +597,24 @@ namespace BezierAirfoilDesigner
         //--------------------------------------------------------------------------------------------------------------------------------------
         // checkbox actions
 
-        private void chkShowControlPolygon_CheckedChanged(object sender, EventArgs e)
+        private void chkShowControlTop_CheckedChanged(object sender, EventArgs e)
         {
-            showControlPolygon = chkShowControlPolygon.Checked;
+            showControlTop = chkShowControlTop.Checked;
+            calculations();
+        }
+        private void chkShowControlBottom_CheckedChanged(object sender, EventArgs e)
+        {
+            showControlBottom = chkShowControlBottom.Checked;
+            calculations();
+        }
+        private void chkShowTop_CheckedChanged(object sender, EventArgs e)
+        {
+            showTop = chkShowTop.Checked;
+            calculations();
+        }
+        private void chkShowBottom_CheckedChanged(object sender, EventArgs e)
+        {
+            showBottom = chkShowBottom.Checked;
             calculations();
         }
         private void chkShowRadius_CheckedChanged(object sender, EventArgs e)
@@ -775,8 +814,14 @@ namespace BezierAirfoilDesigner
 
             referenceDatBottom = points.GetRange(index, points.Count - index);  // From minimum to end
 
+            chkShowReferenceTop.Enabled = true;
+            chkShowReferenceBottom.Enabled = true;
             chkShowReferenceTop.Checked = true;
             chkShowReferenceBottom.Checked = true;
+
+            btnSearchTop.Enabled = true;
+            btnSearchBottom.Enabled = true;
+            btnAutoSearch.Enabled = true;
 
             calculations();
         }
@@ -845,6 +890,15 @@ namespace BezierAirfoilDesigner
                 // The right mouse button was pressed
                 referenceDatTop.Clear();
                 referenceDatBottom.Clear();
+
+                chkShowReferenceTop.Enabled = false;
+                chkShowReferenceBottom.Enabled = false;
+                chkShowReferenceTop.Checked = false;
+                chkShowReferenceBottom.Checked = false;
+
+                btnSearchTop.Enabled = false;
+                btnSearchBottom.Enabled = false;
+                btnAutoSearch.Enabled = false;
             }
 
             calculations();
@@ -922,8 +976,7 @@ namespace BezierAirfoilDesigner
             calculations();
             //}
         }
-
-        private void btnSearchAuto_Click(object sender, EventArgs e)
+        private void btnAutoSearch_Click(object sender, EventArgs e)
         {
             // Record the start time
             DateTime startTime = DateTime.Now;
