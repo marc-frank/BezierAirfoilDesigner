@@ -17,4 +17,5 @@ The resulting coordinates are naturally spaced based on the curvature.
 Using a continous bezier curve creates a very smooth curve, without waves or bumps, such as a simple spline interpolation would do.  
 This also leads to very nice velocity distributions.  
 
-![image](https://github.com/Marc-Frank/BezierAirfoilDesigner/assets/74321912/082b2ecd-d924-40ab-b5bd-c399ceaf596f)
+![image](https://github.com/Marc-Frank/BezierAirfoilDesigner/assets/74321912/b572f173-d2e7-4fdb-9550-56a171111f51)
+
