@@ -9,11 +9,46 @@ namespace BezierAirfoilDesigner
 {
     public partial class Form1 : Form
     {
+        readonly double minZoomRange = 0.01;
+        readonly double maxZoomRange = 10.0;
+        
+        List<PointF> defaultControlPointsTop = new()
+        {
+            new PointF(0, 0),
+            new PointF(0, 0.15f),
+            new PointF(0.5f, 0.15f),
+            new PointF(1.0f, 0)
+        };
+        List<PointF> defaultControlPointsBottom = new()
+        {
+            new PointF(0, 0),
+            new PointF(0, -0.1f),
+            new PointF(0.5f, -0.1f),
+            new PointF(1.0f, 0)
+        };
+        List<PointF> referenceDatTop = new();
+        List<PointF> referenceDatBottom = new();
+
+        bool showControlTop;
+        bool showControlBottom;
+        bool showTop;
+        bool showBottom;
+        bool showThickness;
+        bool showCamber;
+        bool showRadius;
+        bool showReferenceTop;
+        bool showReferenceBottom;
+        bool cancelAutoSearch = false;
+
+        List<PointF> errorTop = new();
+        List<PointF> errorBottom = new();
+        float totalErrorTop;
+        float totalErrorBottom;
+        
         public Form1()
         {
             InitializeComponent();
         }
-
         private void Form1_Resize(object sender, EventArgs e)
         {
             if (Form1.ActiveForm != null)
@@ -33,7 +68,6 @@ namespace BezierAirfoilDesigner
                 txtNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
             }
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             FormsPlotSettings();
@@ -57,27 +91,7 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
         }
-
-        readonly double minZoomRange = 0.01;
-        readonly double maxZoomRange = 10.0;
-        List<PointF> referenceDatTop = new();
-        List<PointF> referenceDatBottom = new();
-        bool showControlTop;
-        bool showControlBottom;
-        bool showTop;
-        bool showBottom;
-        bool showThickness;
-        bool showCamber;
-        bool showRadius;
-        bool showReferenceTop;
-        bool showReferenceBottom;
-        bool cancelAutoSearch = false;
-
-        List<PointF> errorTop = new();
-        List<PointF> errorBottom = new();
-        float totalErrorTop;
-        float totalErrorBottom;
-
+        
         void calculations()
         {
             var axisLimits = formsPlot1.Plot.GetAxisLimits();
@@ -318,10 +332,7 @@ namespace BezierAirfoilDesigner
             dataGridViewTop.Columns.Clear();
             dataGridViewTop.Columns.Add("xVal", "X");
             dataGridViewTop.Columns.Add("yVal", "Y");
-            dataGridViewTop.Rows.Add(0, 0);
-            dataGridViewTop.Rows.Add(0, 0.15);
-            dataGridViewTop.Rows.Add(0.5, 0.15);
-            dataGridViewTop.Rows.Add(1.0, 0.0);
+            gridViewAddPoints(dataGridViewTop, defaultControlPointsTop);
         }
         private void AddDefaultPointsBottom()
         {
@@ -329,10 +340,7 @@ namespace BezierAirfoilDesigner
             dataGridViewBottom.Columns.Clear();
             dataGridViewBottom.Columns.Add("xVal", "X");
             dataGridViewBottom.Columns.Add("yVal", "Y");
-            dataGridViewBottom.Rows.Add(0, 0);
-            dataGridViewBottom.Rows.Add(0, -0.1);
-            dataGridViewBottom.Rows.Add(0.5, -0.1);
-            dataGridViewBottom.Rows.Add(1.0, 0.0);
+            gridViewAddPoints(dataGridViewBottom, defaultControlPointsBottom);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -465,10 +473,28 @@ namespace BezierAirfoilDesigner
 
             return area;
         }
+        
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // Form events
+        
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
+            if (!controlPointsTop.SequenceEqual(defaultControlPointsTop) ||
+                !controlPointsBottom.SequenceEqual(defaultControlPointsBottom))
+            {
+                var result = MessageBox.Show("There are unsaved changes. Do you really want to close?", "Unsaved changes", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        // formsPlot actions
+        // formsPlot events
 
         private void formsPlot1_AxesChanged(object sender, EventArgs e)
         {
@@ -554,26 +580,26 @@ namespace BezierAirfoilDesigner
                 topOrBottom = false;
             }
 
-            txtAirfoilParam.AppendText(lowestDistance.ToString() + System.Environment.NewLine);
-            txtAirfoilParam.AppendText(indexLowestDistance.ToString() + System.Environment.NewLine);
-            txtAirfoilParam.AppendText(topOrBottom.ToString() + System.Environment.NewLine);
+            if (indexLowestDistance > 0) //protect against dragging the LE point
+            {
+                if (topOrBottom && indexLowestDistance < controlPointsTop.Count - 1) //chose top or bottom and protect against dragging the TE point
+                {
+                    controlPointsTop[indexLowestDistance] = mouse;
+                    gridViewAddPoints(dataGridViewTop, controlPointsTop);
+                }
+                else if (!topOrBottom && indexLowestDistance < controlPointsBottom.Count - 1) //chose top or bottom and protect against dragging the TE point
+                {
+                    controlPointsBottom[indexLowestDistance] = mouse;
+                    gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+                }
+            }
 
-            if (topOrBottom)
-            {
-                controlPointsTop[indexLowestDistance] = mouse;
-                gridViewAddPoints(dataGridViewTop, controlPointsTop);
-            }
-            else
-            {
-                controlPointsBottom[indexLowestDistance] = mouse;
-                gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
-            }
 
             calculations();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        // dataGridView actions
+        // dataGridView events
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -595,7 +621,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        // checkbox actions
+        // checkbox events
 
         private void chkShowControlTop_CheckedChanged(object sender, EventArgs e)
         {
@@ -644,7 +670,7 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        // button actions
+        // button events
 
         private void btnDefault_Click(object sender, EventArgs e)
         {
@@ -765,7 +791,7 @@ namespace BezierAirfoilDesigner
             OpenFileDialog openFileDialog = new()
             {
                 // Set some properties to define how the dialog works
-                InitialDirectory = "c:\\", // Starting directory
+                //InitialDirectory = "c:\\", // Starting directory
                 Filter = "Dat files (*.dat)|*.dat" // Only show .dat files
             };
 
@@ -796,6 +822,7 @@ namespace BezierAirfoilDesigner
                     }
                 }
             }
+            else { return; } // The user did not select a file and clicked Cancel, so exit the method
 
             int index = 0;
             float minumum = float.PositiveInfinity;
@@ -833,7 +860,7 @@ namespace BezierAirfoilDesigner
             OpenFileDialog openFileDialog = new()
             {
                 // Set some properties to define how the dialog works
-                InitialDirectory = "c:\\", // Starting directory
+                //InitialDirectory = "c:\\", // Starting directory
                 Filter = "Bezier dat files (*.bez.dat)|*.bez.dat" // Only show .bez.dat files
             };
 
@@ -864,6 +891,7 @@ namespace BezierAirfoilDesigner
                     }
                 }
             }
+            else { return; } // The user did not select a file and clicked Cancel, so exit the method
 
             int index = 0;
 
@@ -903,7 +931,6 @@ namespace BezierAirfoilDesigner
 
             calculations();
         }
-
         private void btnSearchTop_Click(object sender, EventArgs e)
         {
             List<PointF> controlPoints = GetControlPoints(dataGridViewTop);
@@ -911,7 +938,6 @@ namespace BezierAirfoilDesigner
 
             Console.Beep();
         }
-
         private void btnSearchBottom_Click(object sender, EventArgs e)
         {
             List<PointF> controlPoints = GetControlPoints(dataGridViewBottom);
@@ -919,7 +945,6 @@ namespace BezierAirfoilDesigner
 
             Console.Beep();
         }
-
         private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
         {
             float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
