@@ -423,8 +423,14 @@ namespace BezierAirfoilDesigner
                 float? y1 = InterpolateY(x, curve1);
                 float? y2 = InterpolateY(x, curve2);
                 if (y1.HasValue && y2.HasValue)
-                    midpoints.Add(new PointF(x, (y1.Value + y2.Value) / 2));
+                {
+                    float lowerY = Math.Min(y1.Value, y2.Value);
+                    float higherY = Math.Max(y1.Value, y2.Value);
+                    float y = lowerY + 0.5f * (higherY - lowerY);
+                    midpoints.Add(new PointF(x, y));
+                }
             }
+
 
             // Now `midpoints` contains the midpoints between the curves at regular intervals,
             // stored as PointF where X is the x-value and Y is the midpoint Y value.
