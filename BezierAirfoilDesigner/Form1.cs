@@ -1,6 +1,7 @@
 using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
+using System;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Windows.Forms;
@@ -37,16 +38,17 @@ namespace BezierAirfoilDesigner
         bool showRadius;
         bool showReferenceTop;
         bool showReferenceBottom;
-        bool cancelAutoSearch;
+        bool cancelSearch;
 
         List<PointF> errorTop = new();
         List<PointF> errorBottom = new();
         float totalErrorTop;
         float totalErrorBottom;
-        
+
         public Form1()
         {
             InitializeComponent();
+            CheckForIllegalCrossThreadCalls = false;
         }
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -55,7 +57,7 @@ namespace BezierAirfoilDesigner
                 //if (Form1.ActiveForm.Width < 1588) { Form1.ActiveForm.Width = 1588; }
                 //if (Form1.ActiveForm.Height < 783) { Form1.ActiveForm.Height = 783; }
 
-                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1085), Form1.ActiveForm.Height - (783 - 713));
+                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1085), Form1.ActiveForm.Height - (783 - 684));
                 dataGridViewTop.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
                 dataGridViewBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
 
@@ -90,7 +92,7 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
         }
-        
+
         void calculations()
         {
             var axisLimits = formsPlot1.Plot.GetAxisLimits();
@@ -104,15 +106,15 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             //try to parse the number of points, if unsucessful (eg not numeric) set to 3
-            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 3)
+            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 || numPointsTop > 100000)
             {
-                txtNumOfPointsTop.Text = "3";
-                numPointsTop = 3;
+                txtNumOfPointsTop.Text = "225";
+                numPointsTop = 225;
             }
-            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 3)
+            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2 || numPointsBottom > 100000)
             {
-                txtNumOfPointBottom.Text = "3";
-                numPointsBottom = 3;
+                txtNumOfPointBottom.Text = "225";
+                numPointsBottom = 225;
             }
 
             List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
@@ -144,7 +146,14 @@ namespace BezierAirfoilDesigner
             if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
             var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
-            List<PointF> thicknesses = GetThickness(pointsTop, pointsBottom);
+            // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
+            if (float.TryParse(txtThicknessStepSize.Text, out float thicknessStepSize) == false || thicknessStepSize < 0.00001f || thicknessStepSize > 1.0f)
+            {
+                txtThicknessStepSize.Text = "0,001";
+                thicknessStepSize = 0.001f;
+            }
+
+            List<PointF> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessStepSize);
             PointF maxThickness = new();
 
             for (int i = 0; i < thicknesses.Count; i++)
@@ -169,7 +178,21 @@ namespace BezierAirfoilDesigner
             if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
             var camberLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
-            List<PointF> camber = GetCamber(pointsTop, pointsBottom);
+            //try to parse the camber position, if unsucessful (eg not numeric) set to 0.5f
+            if (float.TryParse(txtCamberPosition.Text, out float camberPosition) == false || camberPosition < 0.0f || camberPosition > 1.0f)
+            {
+                txtCamberPosition.Text = "0,5";
+                camberPosition = 0.5f;
+            }
+
+            //try to parse the camber step size, if unsuccessful (e.g. not numeric) set to 0.001f
+            if (float.TryParse(txtCamberStepSize.Text, out float camberStepSize) == false || camberStepSize < 0.00001f || camberStepSize > 1.0f)
+            {
+                txtCamberStepSize.Text = "0,001";
+                camberStepSize = 0.001f;
+            }
+
+            List<PointF> camber = GetCamber(pointsTop, pointsBottom, camberPosition, camberStepSize);
             PointF maxCamber = new();
 
             for (int i = 0; i < camber.Count; i++)
@@ -203,6 +226,7 @@ namespace BezierAirfoilDesigner
             txtAirfoilParam.AppendText("nose radius:\t\t" + radius + System.Environment.NewLine);
             txtAirfoilParam.AppendText("maximum camber:\t" + maxCamber.Y.ToString() + "\t@: " + maxCamber.X.ToString() + System.Environment.NewLine);
             txtAirfoilParam.AppendText("maximum thickness:\t" + maxThickness.Y.ToString() + "\t@: " + maxThickness.X.ToString() + System.Environment.NewLine);
+            //txtAirfoilParam.Refresh();
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // Plotting the control polygons of the top and bottom bezier curves
@@ -264,18 +288,20 @@ namespace BezierAirfoilDesigner
             // calculating the error between the bezier airfoil and the reference airfoil and writing results to the text field
 
             errorTop.Clear();
-            errorTop = GetThickness(pointsTop, referenceDatTop);
+            errorTop = GetThickness(pointsTop, referenceDatTop, thicknessStepSize);
             totalErrorTop = CalculateAreaUnderCurve(errorTop) * 1000;
 
             errorBottom.Clear();
-            errorBottom = GetThickness(pointsBottom, referenceDatBottom);
+            errorBottom = GetThickness(pointsBottom, referenceDatBottom, thicknessStepSize);
             totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
 
             if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
             if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
+
             //----------------------------------------------------------------------------------------------------------------------------------
 
+            txtAirfoilParam.Refresh();
             formsPlot1.Refresh();
         }
 
@@ -293,21 +319,8 @@ namespace BezierAirfoilDesigner
         {
             dataGridViewTop.AllowUserToResizeColumns = false;
             dataGridViewTop.AllowUserToResizeRows = false;
-            dataGridViewTop.AllowUserToOrderColumns = false;
-
-            foreach (DataGridViewColumn column in dataGridViewTop.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
-
             dataGridViewBottom.AllowUserToResizeColumns = false;
             dataGridViewBottom.AllowUserToResizeRows = false;
-            dataGridViewBottom.AllowUserToOrderColumns = false;
-
-            foreach (DataGridViewColumn column in dataGridViewBottom.Columns)
-            {
-                column.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
         }
         private void AddToolTips()
         {
@@ -329,33 +342,153 @@ namespace BezierAirfoilDesigner
         {
             dataGridViewTop.Rows.Clear();
             dataGridViewTop.Columns.Clear();
-            dataGridViewTop.Columns.Add("xVal", "X");
-            dataGridViewTop.Columns.Add("yVal", "Y");
+
+            DataGridViewTextBoxColumn columnX = new()
+            {
+                Name = "xVal",
+                HeaderText = "X",
+                SortMode = DataGridViewColumnSortMode.NotSortable
+            };
+
+            DataGridViewTextBoxColumn columnY = new()
+            {
+                Name = "yVal",
+                HeaderText = "Y",
+                SortMode = DataGridViewColumnSortMode.NotSortable
+            };
+
+            dataGridViewTop.Columns.Add(columnX);
+            dataGridViewTop.Columns.Add(columnY);
             gridViewAddPoints(dataGridViewTop, defaultControlPointsTop);
         }
         private void AddDefaultPointsBottom()
         {
             dataGridViewBottom.Rows.Clear();
             dataGridViewBottom.Columns.Clear();
-            dataGridViewBottom.Columns.Add("xVal", "X");
-            dataGridViewBottom.Columns.Add("yVal", "Y");
+
+            DataGridViewTextBoxColumn columnX = new()
+            {
+                Name = "xVal",
+                HeaderText = "X",
+                SortMode = DataGridViewColumnSortMode.NotSortable
+            };
+
+            DataGridViewTextBoxColumn columnY = new()
+            {
+                Name = "yVal",
+                HeaderText = "Y",
+                SortMode = DataGridViewColumnSortMode.NotSortable
+            };
+
+            dataGridViewBottom.Columns.Add(columnX);
+            dataGridViewBottom.Columns.Add(columnY);
             gridViewAddPoints(dataGridViewBottom, defaultControlPointsBottom);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
         // helper functions
 
-        private static void gridViewAddPoints(DataGridView dataGridView, List<PointF> pointFs)
+
+        private async Task SearchTopAsync()
         {
-            dataGridView.Rows.Clear();
-            //dataGridView.Columns.Clear();
-            //dataGridView.Columns.Add("xVal", "X");
-            //dataGridView.Columns.Add("yVal", "Y");
-            for (int i = 0; i < pointFs.Count; i++)
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
+        }
+
+        private async Task SearchBottomAsync()
+        {
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+            await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
+        }
+
+        private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
+        {
+            if (cancelSearch) return;
+
+            float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
+            List<PointF> controlPointsWithLowestError = new List<PointF>(controlPoints); // Store initial state
+            int numPoints = 3; // Start with searching two points: current point and one extra point
+
+            bool betterCombinationFound = false;
+
+            while (!betterCombinationFound)
             {
-                dataGridView.Rows.Add(pointFs[i].X, pointFs[i].Y);
+                if (cancelSearch) return;
+
+                float minimumSearchDistance = 0.001f; // Adjust this value as needed.
+                float searchDistance = Math.Max(((float)Math.Log(currentLowestError + 1) / 50), minimumSearchDistance);
+                float searchStep = searchDistance / (numPoints - 1); // Defines the step size
+
+                SearchCombinations(controlPoints, 1, searchStep, numPoints);
+
+                void SearchCombinations(List<PointF> points, int currentIndex, float step, int numSteps)
+                {
+                    if (cancelSearch) return;
+
+                    if (currentIndex >= points.Count - 1)
+                    {
+                        gridViewAddPoints(gridView, points);
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            // UI update code goes here
+                            calculations();
+                        });
+
+                        float currentError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
+                        if (currentError < currentLowestError)
+                        {
+                            currentLowestError = currentError;
+                            controlPointsWithLowestError.Clear();
+                            controlPointsWithLowestError.AddRange(points);
+                            betterCombinationFound = true;
+                        }
+                        return;
+                    }
+
+                    PointF originalPoint = points[currentIndex];
+                    float searchMin = originalPoint.Y - searchDistance / 2; // Start from below the current Y-coordinate
+
+                    // Iterates over numPoints specific points around the current Y-coordinate
+                    for (int i = 0; i < numSteps; i++)
+                    {
+                        float y = searchMin + i * step;
+                        points[currentIndex] = new PointF(originalPoint.X, y);
+                        SearchCombinations(points, currentIndex + 1, step, numSteps);
+                    }
+
+                    points[currentIndex] = originalPoint; // Restore original point before returning.
+                }
+
+                Console.Beep();
+                numPoints++; // Increase number of points for next iteration
+            }
+
+            gridViewAddPoints(gridView, controlPointsWithLowestError);
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                // UI update code goes here
+                calculations();
+            });
+        }
+
+        private void gridViewAddPoints(DataGridView dataGridView, List<PointF> pointFs)
+        {
+            if (dataGridView.InvokeRequired)
+            {
+                dataGridView.BeginInvoke((MethodInvoker)delegate { gridViewAddPoints(dataGridView, pointFs); });
+            }
+            else
+            {
+                dataGridView.Rows.Clear();
+                for (int i = 0; i < pointFs.Count; i++)
+                {
+                    dataGridView.Rows.Add(pointFs[i].X, pointFs[i].Y);
+                }
             }
         }
+
         private static float GetDistanceBetweenPoints(PointF pointA, PointF pointB)
         {
             double distanceX = pointA.X - pointB.X;
@@ -363,6 +496,7 @@ namespace BezierAirfoilDesigner
             float distance = float.Parse((Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2))).ToString());
             return distance;
         }
+
         private static List<PointF> GetControlPoints(DataGridView gridView)
         {
             List<PointF> controlPointsBottom = new();
@@ -379,7 +513,8 @@ namespace BezierAirfoilDesigner
 
             return controlPointsBottom;
         }
-        private static List<PointF> GetThickness(List<PointF> curve1, List<PointF> curve2)
+
+        private static List<PointF> GetThickness(List<PointF> curve1, List<PointF> curve2, float stepSize)
         {
             List<PointF> distances = new();
 
@@ -394,7 +529,7 @@ namespace BezierAirfoilDesigner
             float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
 
             // Calculate vertical distances at regular intervals within this range.
-            for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
+            for (float x = minX; x <= maxX; x += stepSize)  // Adjust the step size as needed.
             {
                 float? y1 = InterpolateY(x, curve1);
                 float? y2 = InterpolateY(x, curve2);
@@ -406,7 +541,8 @@ namespace BezierAirfoilDesigner
 
             return distances;
         }
-        private static List<PointF> GetCamber(List<PointF> curve1, List<PointF> curve2)
+
+        private static List<PointF> GetCamber(List<PointF> curve1, List<PointF> curve2, float camberPosition, float stepSize)
         {
             // Ensure the points are sorted by X in ascending order.
             curve1 = curve1.OrderBy(p => p.X).ToList();
@@ -416,9 +552,11 @@ namespace BezierAirfoilDesigner
             float minX = Math.Max(curve1.First().X, curve2.First().X);
             float maxX = Math.Min(curve1.Last().X, curve2.Last().X);
 
+
+
             // Calculate midpoints at regular intervals within this range.
             List<PointF> midpoints = new();
-            for (float x = minX; x <= maxX; x += 0.001f)  // Adjust the step size as needed.
+            for (float x = minX; x <= maxX; x += stepSize)  // Adjust the step size as needed.
             {
                 float? y1 = InterpolateY(x, curve1);
                 float? y2 = InterpolateY(x, curve2);
@@ -426,7 +564,7 @@ namespace BezierAirfoilDesigner
                 {
                     float lowerY = Math.Min(y1.Value, y2.Value);
                     float higherY = Math.Max(y1.Value, y2.Value);
-                    float y = lowerY + 0.5f * (higherY - lowerY);
+                    float y = lowerY + camberPosition * (higherY - lowerY);
                     midpoints.Add(new PointF(x, y));
                 }
             }
@@ -437,6 +575,7 @@ namespace BezierAirfoilDesigner
 
             return midpoints;
         }
+
         static float? InterpolateY(float x, List<PointF> curve)
         {
             for (int i = 0; i < curve.Count - 1; i++)
@@ -446,6 +585,7 @@ namespace BezierAirfoilDesigner
             }
             return null;  // X is outside the range of the curve.
         }
+
         public static void SaveTextToFile(string text, string path)
         {
             try
@@ -458,6 +598,7 @@ namespace BezierAirfoilDesigner
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
+
         public static float CalculateAreaBetweenCurves(List<PointF> curve1Points, List<PointF> curve2Points)
         {
             float areaCurve1 = CalculateAreaUnderCurve(curve1Points);
@@ -465,6 +606,7 @@ namespace BezierAirfoilDesigner
 
             return Math.Abs(areaCurve1 - areaCurve2);
         }
+
         public static float CalculateAreaUnderCurve(List<PointF> curvePoints)
         {
             float area = 0.0f;
@@ -478,11 +620,12 @@ namespace BezierAirfoilDesigner
 
             return area;
         }
-        
+
+
         //--------------------------------------------------------------------------------------------------------------------------------------
         // Form events
-        
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+
+        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
@@ -490,12 +633,16 @@ namespace BezierAirfoilDesigner
             if (!controlPointsTop.SequenceEqual(defaultControlPointsTop) ||
                 !controlPointsBottom.SequenceEqual(defaultControlPointsBottom))
             {
-                var result = MessageBox.Show("There are unsaved changes. Do you really want to close?", "Unsaved changes", MessageBoxButtons.YesNo);
+                var result = MessageBox.Show("Closing will discard the modified control points." + System.Environment.NewLine + "Are you sure you want to proceed?", "Unsaved changes", MessageBoxButtons.YesNo);
                 if (result == DialogResult.No)
                 {
                     e.Cancel = true;
+                    return;
                 }
             }
+
+            cancelSearch = true;
+            await Task.Delay(2500);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -535,6 +682,7 @@ namespace BezierAirfoilDesigner
             // Render the plot
             formsPlot1.Plot.Render();
         }
+
         private void formsPlot1_PlottableDragged(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -615,6 +763,7 @@ namespace BezierAirfoilDesigner
             }
             calculations();
         }
+
         private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             for (int i = 0; i < dataGridViewBottom.Rows.Count - 1; i++)
@@ -633,44 +782,80 @@ namespace BezierAirfoilDesigner
             showControlTop = chkShowControlTop.Checked;
             calculations();
         }
+
         private void chkShowControlBottom_CheckedChanged(object sender, EventArgs e)
         {
             showControlBottom = chkShowControlBottom.Checked;
             calculations();
         }
+
         private void chkShowTop_CheckedChanged(object sender, EventArgs e)
         {
             showTop = chkShowTop.Checked;
             calculations();
         }
+
         private void chkShowBottom_CheckedChanged(object sender, EventArgs e)
         {
             showBottom = chkShowBottom.Checked;
             calculations();
         }
+
         private void chkShowRadius_CheckedChanged(object sender, EventArgs e)
         {
             showRadius = chkShowRadius.Checked;
             calculations();
         }
+
         private void chkShowThickness_CheckedChanged(object sender, EventArgs e)
         {
             showThickness = chkShowThickness.Checked;
             calculations();
         }
+
         private void chkShowCamber_CheckedChanged(object sender, EventArgs e)
         {
             showCamber = chkShowCamber.Checked;
             calculations();
         }
+
         private void chkShowReferenceTop_CheckedChanged(object sender, EventArgs e)
         {
             showReferenceTop = chkShowReferenceTop.Checked;
             calculations();
         }
+
         private void chkShowReferenceBottom_CheckedChanged(object sender, EventArgs e)
         {
             showReferenceBottom = chkShowReferenceBottom.Checked;
+            calculations();
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // textbox events
+
+        private void txtThicknessStepSize_TextChanged(object sender, EventArgs e)
+        {
+            calculations();
+        }
+
+        private void txtCamberStepSize_TextChanged(object sender, EventArgs e)
+        {
+            calculations();
+        }
+
+        private void txtCamberPosition_TextChanged(object sender, EventArgs e)
+        {
+            calculations();
+        }
+
+        private void txtNumOfPointsTop_TextChanged(object sender, EventArgs e)
+        {
+            calculations();
+        }
+
+        private void txtNumOfPointsBottom_TextChanged(object sender, EventArgs e)
+        {
             calculations();
         }
 
@@ -683,6 +868,7 @@ namespace BezierAirfoilDesigner
             AddDefaultPointsBottom();
             calculations();
         }
+
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -690,6 +876,7 @@ namespace BezierAirfoilDesigner
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
         }
+
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
@@ -697,6 +884,7 @@ namespace BezierAirfoilDesigner
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
         }
+
         private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -704,6 +892,7 @@ namespace BezierAirfoilDesigner
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
         }
+
         private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
@@ -711,6 +900,7 @@ namespace BezierAirfoilDesigner
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
         }
+
         private void btnSaveDat_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -751,6 +941,7 @@ namespace BezierAirfoilDesigner
                 SaveTextToFile(datFile, sfd.FileName);
             }
         }
+
         private void btnSaveBezDat_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -763,7 +954,7 @@ namespace BezierAirfoilDesigner
                 datFile += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
             }
 
-            for (int i = 1; i <= controlPointsBottom.Count - 1; i++)
+            for (int i = 0; i <= controlPointsBottom.Count - 1; i++)
             {
                 datFile += ($"{controlPointsBottom[i].X:N8} {controlPointsBottom[i].Y:N8}" + System.Environment.NewLine);
             }
@@ -780,11 +971,13 @@ namespace BezierAirfoilDesigner
                 SaveTextToFile(datFile, sfd.FileName);
             }
         }
+
         private void btnAxisAuto_Click(object sender, EventArgs e)
         {
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
         }
+
         private void btnLoadDat_Click(object sender, EventArgs e)
         {
             referenceDatTop.Clear();
@@ -857,6 +1050,7 @@ namespace BezierAirfoilDesigner
 
             calculations();
         }
+
         private void btnLoadBezDat_Click(object sender, EventArgs e)
         {
             List<PointF> controlPoints = new();
@@ -916,6 +1110,7 @@ namespace BezierAirfoilDesigner
 
             calculations();
         }
+
         private void btnLoadDat_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -936,80 +1131,38 @@ namespace BezierAirfoilDesigner
 
             calculations();
         }
-        private void btnSearchTop_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPoints = GetControlPoints(dataGridViewTop);
-            SearchControlPoints(controlPoints, dataGridViewTop);
 
-            Console.Beep();
+        private async void btnSearchTop_Click(object sender, EventArgs e)
+        {
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+
+            cancelSearch = false;
+            await SearchTopAsync();
+
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
         }
-        private void btnSearchBottom_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPoints = GetControlPoints(dataGridViewBottom);
-            SearchControlPoints(controlPoints, dataGridViewBottom);
 
-            Console.Beep();
+        private async void btnSearchBottom_Click(object sender, EventArgs e)
+        {
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+
+            cancelSearch = false;
+            await SearchBottomAsync();
+
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
         }
-        private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
+
+        private async void btnAutoSearch_Click(object sender, EventArgs e)
         {
-            float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
-            List<PointF> controlPointsWithLowestError = new(controlPoints); // Store initial state
-            int numPoints = 3; // Start with searching two points: current point and one extra point
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+            cancelSearch = false;
 
-            bool betterCombinationFound = false;
-
-            while (!betterCombinationFound)
-            {
-                float searchDistance = currentLowestError / 100; // Total search distance
-                float searchStep = searchDistance / (numPoints - 1); // Defines the step size
-
-                SearchCombinations(controlPoints, 1, searchStep, numPoints);
-
-                void SearchCombinations(List<PointF> points, int currentIndex, float step, int numSteps)
-                {
-                    if (currentIndex >= points.Count - 1)
-                    {
-                        gridViewAddPoints(gridView, points);
-                        calculations();
-                        float currentError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
-                        if (currentError < currentLowestError)
-                        {
-                            currentLowestError = currentError;
-                            controlPointsWithLowestError.Clear();
-                            controlPointsWithLowestError.AddRange(points);
-                            betterCombinationFound = true;
-                        }
-                        return;
-                    }
-
-                    PointF originalPoint = points[currentIndex];
-                    float searchMin = originalPoint.Y - searchDistance / 2; // Start from below the current Y-coordinate
-
-                    // Iterates over numPoints specific points around the current Y-coordinate
-                    for (int i = 0; i < numSteps; i++)
-                    {
-                        float y = searchMin + i * step;
-                        points[currentIndex] = new PointF(originalPoint.X, y);
-                        SearchCombinations(points, currentIndex + 1, step, numSteps);
-                    }
-
-                    points[currentIndex] = originalPoint; // Restore original point before returning.
-                }
-
-                Console.Beep();
-                numPoints++; // Increase number of points for next iteration
-            }
-
-            //if (controlPointsWithLowestError.Count > 0)
-            //{
-            gridViewAddPoints(gridView, controlPointsWithLowestError);
-            calculations();
-            //}
-        }
-        private void btnAutoSearch_Click(object sender, EventArgs e)
-        {
             // Record the start time
             DateTime startTime = DateTime.Now;
+
+            // Record the end time and calculate elapsed time
+            DateTime endTime = DateTime.Now;
+            TimeSpan elapsedTime = endTime - startTime;
 
             // Define thresholds
             float errorThresholdTop = 0.075f;
@@ -1021,8 +1174,7 @@ namespace BezierAirfoilDesigner
             while (totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
             {
                 // Check if the operation should be cancelled
-                if (cancelAutoSearch)
-                    break;
+                if (cancelSearch) break;
 
                 float previousErrorTop = totalErrorTop;
                 float previousErrorBottom = totalErrorBottom;
@@ -1042,12 +1194,12 @@ namespace BezierAirfoilDesigner
                        (totalErrorBottom > errorThresholdBottom && errorImprovementBottom >= improvementThreshold))
                 {
                     // Check if the operation should be cancelled
-                    if (cancelAutoSearch)
-                        break;
+                    if (cancelSearch) break;
 
                     if (totalErrorTop > errorThresholdTop)
                     {
-                        btnSearchTop.PerformClick();
+                        await SearchTopAsync();
+                        if (cancelSearch) break;
                         currentErrorTop = totalErrorTop;
                         errorImprovementTop = (previousErrorTop - currentErrorTop) / previousErrorTop;
                         previousErrorTop = currentErrorTop;
@@ -1055,31 +1207,47 @@ namespace BezierAirfoilDesigner
 
                     if (totalErrorBottom > errorThresholdBottom)
                     {
-                        btnSearchBottom.PerformClick();
+                        await SearchBottomAsync();
+                        if (cancelSearch) break;
                         currentErrorBottom = totalErrorBottom;
                         errorImprovementBottom = (previousErrorBottom - currentErrorBottom) / previousErrorBottom;
                         previousErrorBottom = currentErrorBottom;
                     }
+
+                    endTime = DateTime.Now;
+                    elapsedTime = endTime - startTime;
+
+                    lblElapsedTime.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
+                    lblElapsedTime.Refresh();
                 }
+
+                endTime = DateTime.Now;
+                elapsedTime = endTime - startTime;
+
+                lblElapsedTime.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
+                lblElapsedTime.Refresh();
 
                 increaseOrderFlag = true;
             }
 
-            // Record the end time and calculate elapsed time
-            DateTime endTime = DateTime.Now;
-            TimeSpan elapsedTime = endTime - startTime;
-
-            // If operation wasn't cancelled, play a beep and show a message box with start time, end time and elapsed time
-            if (!cancelAutoSearch)
+            // If operation wasn't cancelled, play a beep and show a message box with start time, end time, and elapsed time
+            if (!cancelSearch)
             {
                 // Play a beep
                 Console.Beep();
                 Console.Beep();
                 Console.Beep();
 
-                // Show a message box with start time, end time and elapsed time
+                // Show a message box with start time, end time, and elapsed time
                 MessageBox.Show($"Start time: {startTime}\nEnd time: {endTime}\nElapsed time: {elapsedTime}");
             }
+
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+        }
+
+        private void btnStopSearch_Click(object sender, EventArgs e)
+        {
+            cancelSearch = true;
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------

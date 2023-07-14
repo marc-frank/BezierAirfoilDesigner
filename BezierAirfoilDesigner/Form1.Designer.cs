@@ -28,13 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             formsPlot1 = new ScottPlot.FormsPlot();
             dataGridViewTop = new DataGridView();
-            topBindingSource = new BindingSource(components);
             dataGridViewBottom = new DataGridView();
-            bottomBindingSource = new BindingSource(components);
             lblTop = new Label();
             lblBottom = new Label();
             btnSaveDat = new Button();
@@ -71,10 +68,16 @@
             chkShowBottom = new CheckBox();
             lblSearch = new Label();
             chkShowControlBottom = new CheckBox();
+            txtCamberPosition = new TextBox();
+            txtThicknessStepSize = new TextBox();
+            txtCamberStepSize = new TextBox();
+            lblThicknessStepSize = new Label();
+            label2 = new Label();
+            label3 = new Label();
+            lblElapsedTime = new Label();
+            btnStopSearch = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)topBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)bottomBindingSource).BeginInit();
             SuspendLayout();
             // 
             // formsPlot1
@@ -83,7 +86,7 @@
             formsPlot1.Location = new Point(14, 13);
             formsPlot1.Margin = new Padding(5, 4, 5, 4);
             formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(1062, 713);
+            formsPlot1.Size = new Size(1085, 684);
             formsPlot1.TabIndex = 0;
             formsPlot1.AxesChanged += formsPlot1_AxesChanged;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
@@ -135,7 +138,7 @@
             // btnSaveDat
             // 
             btnSaveDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSaveDat.Location = new Point(1084, 541);
+            btnSaveDat.Location = new Point(1084, 312);
             btnSaveDat.Name = "btnSaveDat";
             btnSaveDat.Size = new Size(84, 26);
             btnSaveDat.TabIndex = 5;
@@ -172,7 +175,8 @@
             txtNumOfPointsTop.Name = "txtNumOfPointsTop";
             txtNumOfPointsTop.Size = new Size(86, 26);
             txtNumOfPointsTop.TabIndex = 10;
-            txtNumOfPointsTop.Text = "250";
+            txtNumOfPointsTop.Text = "225";
+            txtNumOfPointsTop.TextChanged += txtNumOfPointsTop_TextChanged;
             // 
             // txtNumOfPointBottom
             // 
@@ -181,7 +185,8 @@
             txtNumOfPointBottom.Name = "txtNumOfPointBottom";
             txtNumOfPointBottom.Size = new Size(86, 26);
             txtNumOfPointBottom.TabIndex = 11;
-            txtNumOfPointBottom.Text = "250";
+            txtNumOfPointBottom.Text = "225";
+            txtNumOfPointBottom.TextChanged += txtNumOfPointsBottom_TextChanged;
             // 
             // lblNumOfPointTop
             // 
@@ -269,7 +274,7 @@
             // btnDefault
             // 
             btnDefault.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDefault.Location = new Point(1084, 311);
+            btnDefault.Location = new Point(1084, 31);
             btnDefault.Name = "btnDefault";
             btnDefault.Size = new Size(84, 26);
             btnDefault.TabIndex = 20;
@@ -280,7 +285,7 @@
             // btnSaveBezDat
             // 
             btnSaveBezDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSaveBezDat.Location = new Point(1084, 573);
+            btnSaveBezDat.Location = new Point(1084, 344);
             btnSaveBezDat.Name = "btnSaveBezDat";
             btnSaveBezDat.Size = new Size(84, 26);
             btnSaveBezDat.TabIndex = 21;
@@ -290,9 +295,9 @@
             // 
             // chkShowControlTop
             // 
-            chkShowControlTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowControlTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowControlTop.AutoSize = true;
-            chkShowControlTop.Location = new Point(1084, 31);
+            chkShowControlTop.Location = new Point(62, 704);
             chkShowControlTop.Name = "chkShowControlTop";
             chkShowControlTop.Size = new Size(72, 23);
             chkShowControlTop.TabIndex = 25;
@@ -302,9 +307,9 @@
             // 
             // chkShowThickness
             // 
-            chkShowThickness.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(1084, 147);
+            chkShowThickness.Location = new Point(353, 704);
             chkShowThickness.Name = "chkShowThickness";
             chkShowThickness.Size = new Size(84, 23);
             chkShowThickness.TabIndex = 26;
@@ -314,9 +319,9 @@
             // 
             // chkShowRadius
             // 
-            chkShowRadius.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(1084, 205);
+            chkShowRadius.Location = new Point(735, 704);
             chkShowRadius.Name = "chkShowRadius";
             chkShowRadius.Size = new Size(65, 23);
             chkShowRadius.TabIndex = 27;
@@ -326,9 +331,9 @@
             // 
             // lblShow
             // 
-            lblShow.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblShow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblShow.AutoSize = true;
-            lblShow.Location = new Point(1084, 9);
+            lblShow.Location = new Point(12, 705);
             lblShow.Name = "lblShow";
             lblShow.Size = new Size(44, 19);
             lblShow.TabIndex = 28;
@@ -336,9 +341,9 @@
             // 
             // chkShowCamber
             // 
-            chkShowCamber.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(1084, 176);
+            chkShowCamber.Location = new Point(514, 704);
             chkShowCamber.Name = "chkShowCamber";
             chkShowCamber.Size = new Size(73, 23);
             chkShowCamber.TabIndex = 29;
@@ -349,9 +354,9 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnAxisAuto.Location = new Point(1084, 693);
+            btnAxisAuto.Location = new Point(1094, 671);
             btnAxisAuto.Name = "btnAxisAuto";
-            btnAxisAuto.Size = new Size(84, 26);
+            btnAxisAuto.Size = new Size(64, 26);
             btnAxisAuto.TabIndex = 30;
             btnAxisAuto.Text = "Zoom";
             btnAxisAuto.UseVisualStyleBackColor = true;
@@ -360,7 +365,7 @@
             // btnLoadBezDat
             // 
             btnLoadBezDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnLoadBezDat.Location = new Point(1084, 375);
+            btnLoadBezDat.Location = new Point(1084, 95);
             btnLoadBezDat.Name = "btnLoadBezDat";
             btnLoadBezDat.Size = new Size(84, 26);
             btnLoadBezDat.TabIndex = 32;
@@ -371,7 +376,7 @@
             // btnLoadDat
             // 
             btnLoadDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnLoadDat.Location = new Point(1084, 343);
+            btnLoadDat.Location = new Point(1084, 63);
             btnLoadDat.Name = "btnLoadDat";
             btnLoadDat.Size = new Size(84, 26);
             btnLoadDat.TabIndex = 31;
@@ -384,7 +389,7 @@
             // 
             lblSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSave.AutoSize = true;
-            lblSave.Location = new Point(1084, 519);
+            lblSave.Location = new Point(1084, 290);
             lblSave.Name = "lblSave";
             lblSave.Size = new Size(39, 19);
             lblSave.TabIndex = 33;
@@ -394,7 +399,7 @@
             // 
             lblLoad.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblLoad.AutoSize = true;
-            lblLoad.Location = new Point(1084, 289);
+            lblLoad.Location = new Point(1084, 9);
             lblLoad.Name = "lblLoad";
             lblLoad.Size = new Size(38, 19);
             lblLoad.TabIndex = 34;
@@ -402,9 +407,9 @@
             // 
             // chkShowReferenceTop
             // 
-            chkShowReferenceTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowReferenceTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowReferenceTop.AutoSize = true;
-            chkShowReferenceTop.Location = new Point(1084, 234);
+            chkShowReferenceTop.Location = new Point(806, 704);
             chkShowReferenceTop.Name = "chkShowReferenceTop";
             chkShowReferenceTop.Size = new Size(69, 23);
             chkShowReferenceTop.TabIndex = 35;
@@ -414,9 +419,9 @@
             // 
             // chkShowReferenceBottom
             // 
-            chkShowReferenceBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowReferenceBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowReferenceBottom.AutoSize = true;
-            chkShowReferenceBottom.Location = new Point(1084, 263);
+            chkShowReferenceBottom.Location = new Point(881, 704);
             chkShowReferenceBottom.Name = "chkShowReferenceBottom";
             chkShowReferenceBottom.Size = new Size(69, 23);
             chkShowReferenceBottom.TabIndex = 36;
@@ -427,7 +432,7 @@
             // btnSearchTop
             // 
             btnSearchTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearchTop.Location = new Point(1084, 426);
+            btnSearchTop.Location = new Point(1084, 146);
             btnSearchTop.Name = "btnSearchTop";
             btnSearchTop.Size = new Size(84, 26);
             btnSearchTop.TabIndex = 37;
@@ -438,7 +443,7 @@
             // btnSearchBottom
             // 
             btnSearchBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearchBottom.Location = new Point(1084, 458);
+            btnSearchBottom.Location = new Point(1084, 178);
             btnSearchBottom.Name = "btnSearchBottom";
             btnSearchBottom.Size = new Size(84, 26);
             btnSearchBottom.TabIndex = 38;
@@ -449,7 +454,7 @@
             // btnAutoSearch
             // 
             btnAutoSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAutoSearch.Location = new Point(1084, 490);
+            btnAutoSearch.Location = new Point(1084, 210);
             btnAutoSearch.Name = "btnAutoSearch";
             btnAutoSearch.Size = new Size(84, 26);
             btnAutoSearch.TabIndex = 39;
@@ -459,9 +464,9 @@
             // 
             // chkShowTop
             // 
-            chkShowTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowTop.AutoSize = true;
-            chkShowTop.Location = new Point(1084, 89);
+            chkShowTop.Location = new Point(218, 704);
             chkShowTop.Name = "chkShowTop";
             chkShowTop.Size = new Size(49, 23);
             chkShowTop.TabIndex = 40;
@@ -471,9 +476,9 @@
             // 
             // chkShowBottom
             // 
-            chkShowBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowBottom.AutoSize = true;
-            chkShowBottom.Location = new Point(1084, 118);
+            chkShowBottom.Location = new Point(273, 704);
             chkShowBottom.Name = "chkShowBottom";
             chkShowBottom.Size = new Size(74, 23);
             chkShowBottom.TabIndex = 41;
@@ -485,7 +490,7 @@
             // 
             lblSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(1084, 404);
+            lblSearch.Location = new Point(1084, 124);
             lblSearch.Name = "lblSearch";
             lblSearch.Size = new Size(48, 19);
             lblSearch.TabIndex = 42;
@@ -493,9 +498,9 @@
             // 
             // chkShowControlBottom
             // 
-            chkShowControlBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chkShowControlBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowControlBottom.AutoSize = true;
-            chkShowControlBottom.Location = new Point(1084, 60);
+            chkShowControlBottom.Location = new Point(140, 704);
             chkShowControlBottom.Name = "chkShowControlBottom";
             chkShowControlBottom.Size = new Size(72, 23);
             chkShowControlBottom.TabIndex = 43;
@@ -503,11 +508,100 @@
             chkShowControlBottom.UseVisualStyleBackColor = true;
             chkShowControlBottom.CheckedChanged += chkShowControlBottom_CheckedChanged;
             // 
+            // txtCamberPosition
+            // 
+            txtCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtCamberPosition.Location = new Point(664, 702);
+            txtCamberPosition.Name = "txtCamberPosition";
+            txtCamberPosition.Size = new Size(65, 26);
+            txtCamberPosition.TabIndex = 44;
+            txtCamberPosition.Text = "0,5";
+            txtCamberPosition.TextChanged += txtCamberPosition_TextChanged;
+            // 
+            // txtThicknessStepSize
+            // 
+            txtThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtThicknessStepSize.Location = new Point(443, 702);
+            txtThicknessStepSize.Name = "txtThicknessStepSize";
+            txtThicknessStepSize.Size = new Size(65, 26);
+            txtThicknessStepSize.TabIndex = 45;
+            txtThicknessStepSize.Text = "0,001";
+            txtThicknessStepSize.TextChanged += txtThicknessStepSize_TextChanged;
+            // 
+            // txtCamberStepSize
+            // 
+            txtCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            txtCamberStepSize.Location = new Point(593, 702);
+            txtCamberStepSize.Name = "txtCamberStepSize";
+            txtCamberStepSize.Size = new Size(65, 26);
+            txtCamberStepSize.TabIndex = 46;
+            txtCamberStepSize.Text = "0,001";
+            txtCamberStepSize.TextChanged += txtCamberStepSize_TextChanged;
+            // 
+            // lblThicknessStepSize
+            // 
+            lblThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblThicknessStepSize.AutoSize = true;
+            lblThicknessStepSize.Location = new Point(443, 680);
+            lblThicknessStepSize.Name = "lblThicknessStepSize";
+            lblThicknessStepSize.Size = new Size(64, 19);
+            lblThicknessStepSize.TabIndex = 47;
+            lblThicknessStepSize.Text = "step size:";
+            // 
+            // label2
+            // 
+            label2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label2.AutoSize = true;
+            label2.Location = new Point(593, 680);
+            label2.Name = "label2";
+            label2.Size = new Size(64, 19);
+            label2.TabIndex = 48;
+            label2.Text = "step size:";
+            // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            label3.AutoSize = true;
+            label3.Location = new Point(664, 680);
+            label3.Name = "label3";
+            label3.Size = new Size(61, 19);
+            label3.TabIndex = 49;
+            label3.Text = "position:";
+            // 
+            // lblElapsedTime
+            // 
+            lblElapsedTime.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblElapsedTime.AutoSize = true;
+            lblElapsedTime.Location = new Point(1084, 239);
+            lblElapsedTime.Name = "lblElapsedTime";
+            lblElapsedTime.Size = new Size(63, 19);
+            lblElapsedTime.TabIndex = 50;
+            lblElapsedTime.Text = "00:00:00";
+            // 
+            // btnStopSearch
+            // 
+            btnStopSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnStopSearch.Location = new Point(1084, 261);
+            btnStopSearch.Name = "btnStopSearch";
+            btnStopSearch.Size = new Size(84, 26);
+            btnStopSearch.TabIndex = 51;
+            btnStopSearch.Text = "stop";
+            btnStopSearch.UseVisualStyleBackColor = true;
+            btnStopSearch.Click += btnStopSearch_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(btnStopSearch);
+            Controls.Add(lblElapsedTime);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(lblThicknessStepSize);
+            Controls.Add(txtCamberStepSize);
+            Controls.Add(txtThicknessStepSize);
+            Controls.Add(txtCamberPosition);
             Controls.Add(chkShowControlBottom);
             Controls.Add(lblSearch);
             Controls.Add(chkShowBottom);
@@ -554,9 +648,7 @@
             Load += Form1_Load;
             Resize += Form1_Resize;
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).EndInit();
-            ((System.ComponentModel.ISupportInitialize)topBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).EndInit();
-            ((System.ComponentModel.ISupportInitialize)bottomBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -565,9 +657,7 @@
 
         private ScottPlot.FormsPlot formsPlot1;
         private DataGridView dataGridViewTop;
-        private BindingSource topBindingSource;
         private DataGridView dataGridViewBottom;
-        private BindingSource bottomBindingSource;
         private Label lblTop;
         private Label lblBottom;
         private Button btnSaveDat;
@@ -604,5 +694,13 @@
         private CheckBox chkShowBottom;
         private Label lblSearch;
         private CheckBox chkShowControlBottom;
+        private TextBox txtCamberPosition;
+        private TextBox txtThicknessStepSize;
+        private TextBox txtCamberStepSize;
+        private Label lblThicknessStepSize;
+        private Label label2;
+        private Label label3;
+        private Label lblElapsedTime;
+        private Button btnStopSearch;
     }
 }
