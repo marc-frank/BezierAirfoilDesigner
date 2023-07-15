@@ -395,6 +395,7 @@ namespace BezierAirfoilDesigner
             progressBar1.Visible = true;
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
+            Console.Beep();
             progressBar1.Visible = false;
         }
 
@@ -403,6 +404,7 @@ namespace BezierAirfoilDesigner
             progressBar1.Visible = true;
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
+            Console.Beep();
             progressBar1.Visible = false;
         }
 
@@ -412,7 +414,7 @@ namespace BezierAirfoilDesigner
 
             float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
             List<PointF> controlPointsWithLowestError = new(controlPoints); // Store initial state
-            int numPoints = 3; // Start with searching two points: current point and one extra point
+            int numPoints = 3; // Start with searching two points: current point and one extra point above and below
 
             bool betterCombinationFound = false;
 
@@ -480,14 +482,13 @@ namespace BezierAirfoilDesigner
                     points[currentIndex] = originalPoint; // Restore original point before returning.
                 }
 
-                Console.Beep();
-                numPoints++; // Increase number of points for next iteration
-
-                this.Invoke((MethodInvoker)delegate
+                this.Invoke((MethodInvoker)delegate // purely cosmetic, ensures that the progress bar is completely filled
                 {
                     progressBar1.Maximum = 1;
-                    progressBar1.Value = 1;
                 });
+
+                Console.Beep();
+                numPoints++; // Increase number of points for next iteration
             }
 
             gridViewAddPoints(gridView, controlPointsWithLowestError);
