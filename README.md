@@ -3,7 +3,7 @@
 A tool to manipulate control points of bezier curves.  
 Main intended use is to generate .dat airfoil files which can be used to design subscale airplane wings.  
 
-![image](https://github.com/Marc-Frank/BezierAirfoilDesigner/assets/74321912/fc64ab86-248a-4397-9219-842ca3d81035)
+![image](https://github.com/Marc-Frank/BezierAirfoilDesigner/assets/74321912/290aa1ed-7230-4ddc-b359-40222af274c7)
 
 
 Exporting the airfoil as a .bez.dat makes handling them in CAD easier.  
