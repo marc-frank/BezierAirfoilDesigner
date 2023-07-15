@@ -76,6 +76,7 @@
             label3 = new Label();
             lblElapsedTime = new Label();
             btnStopSearch = new Button();
+            progressBar1 = new ProgressBar();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             SuspendLayout();
@@ -257,7 +258,7 @@
             txtAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             txtAirfoilParam.Location = new Point(1174, 419);
             txtAirfoilParam.Name = "txtAirfoilParam";
-            txtAirfoilParam.Size = new Size(390, 268);
+            txtAirfoilParam.Size = new Size(390, 237);
             txtAirfoilParam.TabIndex = 18;
             txtAirfoilParam.Text = "";
             // 
@@ -354,7 +355,7 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnAxisAuto.Location = new Point(1094, 671);
+            btnAxisAuto.Location = new Point(1094, 630);
             btnAxisAuto.Name = "btnAxisAuto";
             btnAxisAuto.Size = new Size(64, 26);
             btnAxisAuto.TabIndex = 30;
@@ -589,11 +590,20 @@
             btnStopSearch.UseVisualStyleBackColor = true;
             btnStopSearch.Click += btnStopSearch_Click;
             // 
+            // progressBar1
+            // 
+            progressBar1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            progressBar1.Location = new Point(0, 734);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new Size(1570, 5);
+            progressBar1.TabIndex = 52;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(progressBar1);
             Controls.Add(btnStopSearch);
             Controls.Add(lblElapsedTime);
             Controls.Add(label3);
@@ -702,5 +712,6 @@
         private Label label3;
         private Label lblElapsedTime;
         private Button btnStopSearch;
+        private ProgressBar progressBar1;
     }
 }

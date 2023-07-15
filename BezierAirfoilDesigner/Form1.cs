@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 using System.Net.Http.Headers;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BezierAirfoilDesigner
 {
@@ -86,6 +87,8 @@ namespace BezierAirfoilDesigner
             btnSearchTop.Enabled = false;
             btnSearchBottom.Enabled = false;
             btnAutoSearch.Enabled = false;
+
+            //progressBar1.Visible = false;
 
             calculations();
             formsPlot1.Plot.AxisAuto();
@@ -323,7 +326,7 @@ namespace BezierAirfoilDesigner
         private void AddToolTips()
         {
             // Create a new instance of ToolTip
-            ToolTip buttonToolTip = new()
+            System.Windows.Forms.ToolTip buttonToolTip = new()
             {
                 // Set up some of the ToolTip settings
                 AutoPopDelay = 5000,  // Time for which the ToolTip is shown
@@ -389,14 +392,18 @@ namespace BezierAirfoilDesigner
 
         private async Task SearchTopAsync()
         {
+            progressBar1.Visible = true;
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
+            progressBar1.Visible = false;
         }
 
         private async Task SearchBottomAsync()
         {
+            progressBar1.Visible = true;
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
+            progressBar1.Visible = false;
         }
 
         private void SearchControlPoints(List<PointF> controlPoints, DataGridView gridView)
@@ -416,6 +423,14 @@ namespace BezierAirfoilDesigner
                 float minimumSearchDistance = 0.001f; // Adjust this value as needed.
                 float searchDistance = Math.Max(((float)Math.Log(currentLowestError + 1) / 50), minimumSearchDistance);
                 float searchStep = searchDistance / (numPoints - 1); // Defines the step size
+
+                // Calculate total combinations and set progress bar maximum.
+                int totalCombinations = (int)Math.Pow(numPoints, controlPoints.Count - 2);
+                this.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Maximum = totalCombinations;
+                    progressBar1.Value = 0; // Reset progress bar value
+                });
 
                 SearchCombinations(controlPoints, 1, searchStep, numPoints);
 
@@ -441,6 +456,13 @@ namespace BezierAirfoilDesigner
                             controlPointsWithLowestError.AddRange(points);
                             betterCombinationFound = true;
                         }
+
+                        // Update progress bar
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            progressBar1.Value = Math.Min(progressBar1.Value + 1, progressBar1.Maximum);
+                        });
+
                         return;
                     }
 
@@ -460,6 +482,12 @@ namespace BezierAirfoilDesigner
 
                 Console.Beep();
                 numPoints++; // Increase number of points for next iteration
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    progressBar1.Maximum = 1;
+                    progressBar1.Value = 1;
+                });
             }
 
             gridViewAddPoints(gridView, controlPointsWithLowestError);
