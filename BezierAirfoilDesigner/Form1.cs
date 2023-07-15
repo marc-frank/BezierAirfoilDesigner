@@ -48,7 +48,6 @@ namespace BezierAirfoilDesigner
         public Form1()
         {
             InitializeComponent();
-            CheckForIllegalCrossThreadCalls = false;
         }
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -105,7 +104,7 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
-            //try to parse the number of points, if unsucessful (eg not numeric) set to 3
+            //try to parse the number of points, if unsucessful(eg not numeric) set to 3
             if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 || numPointsTop > 100000)
             {
                 txtNumOfPointsTop.Text = "225";
@@ -226,7 +225,6 @@ namespace BezierAirfoilDesigner
             txtAirfoilParam.AppendText("nose radius:\t\t" + radius + System.Environment.NewLine);
             txtAirfoilParam.AppendText("maximum camber:\t" + maxCamber.Y.ToString() + "\t@: " + maxCamber.X.ToString() + System.Environment.NewLine);
             txtAirfoilParam.AppendText("maximum thickness:\t" + maxThickness.Y.ToString() + "\t@: " + maxThickness.X.ToString() + System.Environment.NewLine);
-            //txtAirfoilParam.Refresh();
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // Plotting the control polygons of the top and bottom bezier curves
@@ -406,7 +404,7 @@ namespace BezierAirfoilDesigner
             if (cancelSearch) return;
 
             float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
-            List<PointF> controlPointsWithLowestError = new List<PointF>(controlPoints); // Store initial state
+            List<PointF> controlPointsWithLowestError = new(controlPoints); // Store initial state
             int numPoints = 3; // Start with searching two points: current point and one extra point
 
             bool betterCombinationFound = false;
@@ -689,7 +687,6 @@ namespace BezierAirfoilDesigner
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             (double mouseCoordX, double mouseCoordY) = formsPlot1.GetMouseCoordinates();
-            txtAirfoilParam.Text = $"Mouse coords ({mouseCoordX:N8}, {mouseCoordY:N8})" + System.Environment.NewLine;
             PointF mouse = new(float.Parse(mouseCoordX.ToString()), float.Parse(mouseCoordY.ToString()));
 
             float lowestDistanceTop = float.PositiveInfinity;
@@ -1187,7 +1184,6 @@ namespace BezierAirfoilDesigner
                 {
                     btnIncreaseOrderTop.PerformClick();
                     btnIncreaseOrderBottom.PerformClick();
-                    increaseOrderFlag = false;
                 }
 
                 while ((totalErrorTop > errorThresholdTop && errorImprovementTop >= improvementThreshold) ||
