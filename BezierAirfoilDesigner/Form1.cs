@@ -50,6 +50,7 @@ namespace BezierAirfoilDesigner
         {
             InitializeComponent();
         }
+
         private void Form1_Resize(object sender, EventArgs e)
         {
             if (Form1.ActiveForm != null)
@@ -69,6 +70,7 @@ namespace BezierAirfoilDesigner
                 txtNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
             }
         }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             FormsPlotSettings();
@@ -88,7 +90,7 @@ namespace BezierAirfoilDesigner
             btnSearchBottom.Enabled = false;
             btnAutoSearch.Enabled = false;
 
-            //progressBar1.Visible = false;
+            progressBar1.Visible = false;
 
             calculations();
             formsPlot1.Plot.AxisAuto();

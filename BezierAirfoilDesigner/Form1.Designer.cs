@@ -72,8 +72,8 @@
             txtThicknessStepSize = new TextBox();
             txtCamberStepSize = new TextBox();
             lblThicknessStepSize = new Label();
-            label2 = new Label();
-            label3 = new Label();
+            lblCamberStepSize = new Label();
+            lblCamberPosition = new Label();
             lblElapsedTime = new Label();
             btnStopSearch = new Button();
             progressBar1 = new ProgressBar();
@@ -549,25 +549,25 @@
             lblThicknessStepSize.TabIndex = 47;
             lblThicknessStepSize.Text = "step size:";
             // 
-            // label2
+            // lblCamberStepSize
             // 
-            label2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            label2.AutoSize = true;
-            label2.Location = new Point(593, 680);
-            label2.Name = "label2";
-            label2.Size = new Size(64, 19);
-            label2.TabIndex = 48;
-            label2.Text = "step size:";
+            lblCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblCamberStepSize.AutoSize = true;
+            lblCamberStepSize.Location = new Point(593, 680);
+            lblCamberStepSize.Name = "lblCamberStepSize";
+            lblCamberStepSize.Size = new Size(64, 19);
+            lblCamberStepSize.TabIndex = 48;
+            lblCamberStepSize.Text = "step size:";
             // 
-            // label3
+            // lblCamberPosition
             // 
-            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            label3.AutoSize = true;
-            label3.Location = new Point(664, 680);
-            label3.Name = "label3";
-            label3.Size = new Size(61, 19);
-            label3.TabIndex = 49;
-            label3.Text = "position:";
+            lblCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lblCamberPosition.AutoSize = true;
+            lblCamberPosition.Location = new Point(664, 680);
+            lblCamberPosition.Name = "lblCamberPosition";
+            lblCamberPosition.Size = new Size(61, 19);
+            lblCamberPosition.TabIndex = 49;
+            lblCamberPosition.Text = "position:";
             // 
             // lblElapsedTime
             // 
@@ -606,8 +606,8 @@
             Controls.Add(progressBar1);
             Controls.Add(btnStopSearch);
             Controls.Add(lblElapsedTime);
-            Controls.Add(label3);
-            Controls.Add(label2);
+            Controls.Add(lblCamberPosition);
+            Controls.Add(lblCamberStepSize);
             Controls.Add(lblThicknessStepSize);
             Controls.Add(txtCamberStepSize);
             Controls.Add(txtThicknessStepSize);
@@ -708,8 +708,8 @@
         private TextBox txtThicknessStepSize;
         private TextBox txtCamberStepSize;
         private Label lblThicknessStepSize;
-        private Label label2;
-        private Label label3;
+        private Label lblCamberStepSize;
+        private Label lblCamberPosition;
         private Label lblElapsedTime;
         private Button btnStopSearch;
         private ProgressBar progressBar1;
