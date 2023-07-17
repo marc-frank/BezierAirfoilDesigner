@@ -1089,7 +1089,7 @@ namespace BezierAirfoilDesigner
             string file = "" + "Airfoil Name" + System.Environment.NewLine;
 
             file += "Top Start" + System.Environment.NewLine;
-            for (int i = controlPointsTop.Count - 1; i >= 0; i--)
+            for (int i = 0; i <= controlPointsTop.Count - 1; i++)
             {
                 file += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
             }
