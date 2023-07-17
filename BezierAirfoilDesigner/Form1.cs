@@ -43,6 +43,8 @@ namespace BezierAirfoilDesigner
 
         List<PointF> errorTop = new();
         List<PointF> errorBottom = new();
+        List<PointF> errorOfEachControlPointTop = new();
+        List<PointF> errorOfEachControlPointBottom = new();
         float totalErrorTop;
         float totalErrorBottom;
 
@@ -293,16 +295,66 @@ namespace BezierAirfoilDesigner
             // calculating the error between the bezier airfoil and the reference airfoil and writing results to the text field
 
             errorTop.Clear();
-            errorTop = GetThickness(pointsTop, referenceDatTop, thicknessStepSize);
+            errorTop = GetThickness(pointsTop, referenceDatTop, 0.001f);
             totalErrorTop = CalculateAreaUnderCurve(errorTop) * 1000;
 
+            //totalErrorTop = 0;
+
+            //for (int i = 0; i < errorTop.Count; i++)
+            //{
+            //    float newY = errorTop[i].Y * ((2 * errorTop.Count - i) / errorTop.Count);
+            //    errorTop[i] = new PointF(errorTop[i].X, newY);
+            //}
+
+
+            errorOfEachControlPointTop.Clear();
+
+            for (int i = 0; i < controlPointsTop.Count; i++)
+            {
+                float targetX = controlPointsTop[i].X;  // The x-value you're interested in
+                float delta = 1 / (float)(controlPointsTop.Count - 1);  // The range around the x-value
+
+                float ySum = errorTop.Where(point => Math.Abs(point.X - targetX) <= delta).Sum(point => point.Y);
+
+                errorOfEachControlPointTop.Add(new PointF(targetX, ySum));
+            }
+
+
+
+
             errorBottom.Clear();
-            errorBottom = GetThickness(pointsBottom, referenceDatBottom, thicknessStepSize);
+            errorBottom = GetThickness(pointsBottom, referenceDatBottom, 0.001f);
             totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
+
+            //totalErrorBottom = 0;
+
+            //for (int i = 0; i < errorBottom.Count; i++)
+            //{
+            //    float newY = errorBottom[i].Y * ((2 * errorBottom.Count - i) / errorBottom.Count);
+            //    errorBottom[i] = new PointF(errorBottom[i].X, newY);
+            //}
+
+
+            errorOfEachControlPointBottom.Clear();
+
+            for (int i = 0; i < controlPointsBottom.Count; i++)
+            {
+                float targetX = controlPointsBottom[i].X;  // The x-value you're interested in
+                float delta = 1 / (float)(controlPointsBottom.Count - 1);  // The range around the x-value
+
+                float ySum = errorBottom.Where(point => Math.Abs(point.X - targetX) <= delta).Sum(point => point.Y);
+
+                errorOfEachControlPointBottom.Add(new PointF(targetX, ySum));
+            }
 
             if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
             if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
+            // Append each control point error to txtAirfoilParam
+            //for (int i = 0; i < errorOfEachControlPointTop.Count; i++)
+            //{
+            //    txtAirfoilParam.AppendText($"Error at control point {i} (x={errorOfEachControlPointTop[i].X}): {errorOfEachControlPointTop[i].Y}" + System.Environment.NewLine);
+            //}
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -416,7 +468,10 @@ namespace BezierAirfoilDesigner
         {
             if (cancelSearch) return;
 
-            float currentLowestError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
+            bool topOrBottom = gridView == dataGridViewTop;  // Set to true for top, false for bottom
+
+            float currentLowestError = topOrBottom ? totalErrorTop : totalErrorBottom;
+
             List<PointF> controlPointsWithLowestError = new(controlPoints); // Store initial state
             int numPoints = 3; // Start with searching two points: current point and one extra point above and below
 
@@ -438,9 +493,9 @@ namespace BezierAirfoilDesigner
                     progressBar1.Value = 0; // Reset progress bar value
                 });
 
-                SearchCombinations(controlPoints, 1, searchStep, numPoints);
+                SearchCombinations(controlPoints, 1, numPoints, topOrBottom);
 
-                void SearchCombinations(List<PointF> points, int currentIndex, float step, int numSteps)
+                void SearchCombinations(List<PointF> points, int currentIndex, int numSteps, bool topOrBottom)
                 {
                     if (cancelSearch) return;
 
@@ -472,15 +527,33 @@ namespace BezierAirfoilDesigner
                         return;
                     }
 
+                    //------------------------------------------------------------------------------------------------------------------------------
+                    // adaptive searchDistance
+
+                    //float searchDistance;
+
+                    //if (topOrBottom)
+                    //{
+                    //    searchDistance = Math.Max(((float)Math.Log(errorOfEachControlPointTop[currentIndex].Y + 1) / 50), minimumSearchDistance);
+                    //}
+                    //else
+                    //{
+                    //    searchDistance = Math.Max(((float)Math.Log(errorOfEachControlPointBottom[currentIndex].Y + 1) / 50), minimumSearchDistance);
+                    //}
+
+                    //float searchStep = searchDistance / (numPoints - 1); // Defines the step size
+
+                    //------------------------------------------------------------------------------------------------------------------------------
+
                     PointF originalPoint = points[currentIndex];
                     float searchMin = originalPoint.Y - searchDistance / 2; // Start from below the current Y-coordinate
 
                     // Iterates over numPoints specific points around the current Y-coordinate
                     for (int i = 0; i < numSteps; i++)
                     {
-                        float y = searchMin + i * step;
+                        float y = searchMin + i * searchStep;
                         points[currentIndex] = new PointF(originalPoint.X, y);
-                        SearchCombinations(points, currentIndex + 1, step, numSteps);
+                        SearchCombinations(points, currentIndex + 1, numSteps, topOrBottom);
                     }
 
                     points[currentIndex] = originalPoint; // Restore original point before returning.
@@ -658,6 +731,9 @@ namespace BezierAirfoilDesigner
 
         private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            cancelSearch = true;
+            await Task.Delay(2500);
+
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
@@ -671,9 +747,6 @@ namespace BezierAirfoilDesigner
                     return;
                 }
             }
-
-            cancelSearch = true;
-            await Task.Delay(2500);
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -984,7 +1057,7 @@ namespace BezierAirfoilDesigner
                 datFile += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
             }
 
-            for (int i = 0; i <= controlPointsBottom.Count - 1; i++)
+            for (int i = 1; i <= controlPointsBottom.Count - 1; i++)
             {
                 datFile += ($"{controlPointsBottom[i].X:N8} {controlPointsBottom[i].Y:N8}" + System.Environment.NewLine);
             }
