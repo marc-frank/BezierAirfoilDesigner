@@ -11,6 +11,8 @@ namespace BezierAirfoilDesigner
 {
     public partial class Form1 : Form
     {
+        string loadedAirfoilName;
+
         readonly double minZoomRange = 0.01;
         readonly double maxZoomRange = 10.0;
         readonly List<PointF> defaultControlPointsTop = new()
@@ -1115,6 +1117,143 @@ namespace BezierAirfoilDesigner
             }
         }
 
+        private void btnLoadDat_Click(object sender, EventArgs e)
+        {
+            referenceDatTop.Clear();
+            referenceDatBottom.Clear();
+
+            List<PointF> points = new();
+
+            // Create a new instance of the OpenFileDialog class
+            OpenFileDialog openFileDialog = new()
+            {
+                // Set some properties to define how the dialog works
+                //InitialDirectory = "c:\\", // Starting directory
+                Filter = "Dat files (*.dat)|*.dat" // Only show .dat files
+            };
+
+            // Show the dialog and get the result
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
+                string path = openFileDialog.FileName;
+
+                using StreamReader reader = new(path); // Use the path chosen by the user
+                                                       
+                loadedAirfoilName = reader.ReadLine(); // header line is written to the global variable, for use in saving
+
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    // split the line on whitespace
+                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length == 2)
+                    {
+                        // parse the parts as floats
+                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                        {
+                            // add the point to the list
+                            points.Add(new PointF(x, y));
+                        }
+                    }
+                }
+            }
+            else { return; } // The user did not select a file and clicked Cancel, so exit the method
+
+            int index = 0;
+            float minumum = float.PositiveInfinity;
+
+            for (int i = 1; i < points.Count; i++)
+            {
+                if (Math.Abs(points[i].X) + Math.Abs(points[i].Y) < minumum)
+                {
+                    minumum = Math.Abs(points[i].X) + Math.Abs(points[i].Y);
+                    index = i;
+                }
+            }
+
+            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum LE point has to be duplicated in split
+            referenceDatTop.Reverse();
+
+            referenceDatBottom = points.GetRange(index, points.Count - index);  // From minimum to end
+
+            chkShowReferenceTop.Enabled = true;
+            chkShowReferenceBottom.Enabled = true;
+            chkShowReferenceTop.Checked = true;
+            chkShowReferenceBottom.Checked = true;
+
+            btnSearchTop.Enabled = true;
+            btnSearchBottom.Enabled = true;
+            btnAutoSearch.Enabled = true;
+
+            this.Text = "BezierAirfoilDesigner  -  Loaded reference airfoil: " + loadedAirfoilName;
+
+            calculations();
+        }
+
+        private void btnLoadBezDat_Click(object sender, EventArgs e)
+        {
+            List<PointF> controlPoints = new();
+
+            // Create a new instance of the OpenFileDialog class
+            OpenFileDialog openFileDialog = new()
+            {
+                // Set some properties to define how the dialog works
+                //InitialDirectory = "c:\\", // Starting directory
+                Filter = "Bezier dat files (*.bez.dat)|*.bez.dat" // Only show .bez.dat files
+            };
+
+            // Show the dialog and get the result
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
+                string path = openFileDialog.FileName;
+
+                using StreamReader reader = new(path); // Use the path chosen by the user
+                                                       // skip the header line
+                string line = reader.ReadLine();
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    // split the line on whitespace
+                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length == 2)
+                    {
+                        // parse the parts as floats
+                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                        {
+                            // add the point to the list
+                            controlPoints.Add(new PointF(x, y));
+                        }
+                    }
+                }
+            }
+            else { return; } // The user did not select a file and clicked Cancel, so exit the method
+
+            int index = 0;
+
+            for (int i = 1; i < controlPoints.Count; i++)
+            {
+                if (Math.Abs(controlPoints[i].X) + Math.Abs(controlPoints[i].Y) < Math.Abs(controlPoints[i - 1].X) + Math.Abs(controlPoints[i - 1].Y)) { index = i; }
+            }
+
+            List<PointF> controlPointsTop = controlPoints.GetRange(0, index + 1);  // From start to minimum (inclusive)
+            controlPointsTop.Reverse(); //control Points are stored just like in a .dat from TE over the top to LE under the bottom to TE
+                                        //LE point has to be duplicated in split
+
+            List<PointF> controlPointsBottom = controlPoints.GetRange(index, controlPoints.Count - index);  // From minimum (exclusive) to end
+
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+
+            calculations();
+        }
+
         private void btnLoadBez_Click(object sender, EventArgs e)
         {
             // Initialize lists to store control points for top and bottom curves
@@ -1207,139 +1346,6 @@ namespace BezierAirfoilDesigner
             calculations();
         }
 
-        private void btnLoadDat_Click(object sender, EventArgs e)
-        {
-            referenceDatTop.Clear();
-            referenceDatBottom.Clear();
-
-            List<PointF> points = new();
-
-            // Create a new instance of the OpenFileDialog class
-            OpenFileDialog openFileDialog = new()
-            {
-                // Set some properties to define how the dialog works
-                //InitialDirectory = "c:\\", // Starting directory
-                Filter = "Dat files (*.dat)|*.dat" // Only show .dat files
-            };
-
-            // Show the dialog and get the result
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
-                string path = openFileDialog.FileName;
-
-                using StreamReader reader = new(path); // Use the path chosen by the user
-                                                       // skip the header line
-                string line = reader.ReadLine();
-
-                while ((line = reader.ReadLine()) != null)
-                {
-                    // split the line on whitespace
-                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (parts.Length == 2)
-                    {
-                        // parse the parts as floats
-                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
-                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
-                        {
-                            // add the point to the list
-                            points.Add(new PointF(x, y));
-                        }
-                    }
-                }
-            }
-            else { return; } // The user did not select a file and clicked Cancel, so exit the method
-
-            int index = 0;
-            float minumum = float.PositiveInfinity;
-
-            for (int i = 1; i < points.Count; i++)
-            {
-                if (Math.Abs(points[i].X) + Math.Abs(points[i].Y) < minumum)
-                {
-                    minumum = Math.Abs(points[i].X) + Math.Abs(points[i].Y);
-                    index = i;
-                }
-            }
-
-            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum LE point has to be duplicated in split
-            referenceDatTop.Reverse();
-
-            referenceDatBottom = points.GetRange(index, points.Count - index);  // From minimum to end
-
-            chkShowReferenceTop.Enabled = true;
-            chkShowReferenceBottom.Enabled = true;
-            chkShowReferenceTop.Checked = true;
-            chkShowReferenceBottom.Checked = true;
-
-            btnSearchTop.Enabled = true;
-            btnSearchBottom.Enabled = true;
-            btnAutoSearch.Enabled = true;
-
-            calculations();
-        }
-
-        private void btnLoadBezDat_Click(object sender, EventArgs e)
-        {
-            List<PointF> controlPoints = new();
-
-            // Create a new instance of the OpenFileDialog class
-            OpenFileDialog openFileDialog = new()
-            {
-                // Set some properties to define how the dialog works
-                //InitialDirectory = "c:\\", // Starting directory
-                Filter = "Bezier dat files (*.bez.dat)|*.bez.dat" // Only show .bez.dat files
-            };
-
-            // Show the dialog and get the result
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // The user selected a file and clicked OK, so the FileName property now contains the selected file path
-                string path = openFileDialog.FileName;
-
-                using StreamReader reader = new(path); // Use the path chosen by the user
-                                                       // skip the header line
-                string line = reader.ReadLine();
-
-                while ((line = reader.ReadLine()) != null)
-                {
-                    // split the line on whitespace
-                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (parts.Length == 2)
-                    {
-                        // parse the parts as floats
-                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
-                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
-                        {
-                            // add the point to the list
-                            controlPoints.Add(new PointF(x, y));
-                        }
-                    }
-                }
-            }
-            else { return; } // The user did not select a file and clicked Cancel, so exit the method
-
-            int index = 0;
-
-            for (int i = 1; i < controlPoints.Count; i++)
-            {
-                if (Math.Abs(controlPoints[i].X) + Math.Abs(controlPoints[i].Y) < Math.Abs(controlPoints[i - 1].X) + Math.Abs(controlPoints[i - 1].Y)) { index = i; }
-            }
-
-            List<PointF> controlPointsTop = controlPoints.GetRange(0, index + 1);  // From start to minimum (inclusive)
-            controlPointsTop.Reverse(); //control Points are stored just like in a .dat from TE over the top to LE under the bottom to TE
-                                        //LE point has to be duplicated in split
-
-            List<PointF> controlPointsBottom = controlPoints.GetRange(index, controlPoints.Count - index);  // From minimum (exclusive) to end
-
-            gridViewAddPoints(dataGridViewTop, controlPointsTop);
-            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
-
-            calculations();
-        }
-
         private void btnLoadDat_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -1356,6 +1362,8 @@ namespace BezierAirfoilDesigner
                 btnSearchTop.Enabled = false;
                 btnSearchBottom.Enabled = false;
                 btnAutoSearch.Enabled = false;
+
+                this.Text = "BezierAirfoilDesigner";
             }
 
             calculations();
