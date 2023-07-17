@@ -972,6 +972,12 @@ namespace BezierAirfoilDesigner
             calculations();
         }
 
+        private void btnAxisAuto_Click(object sender, EventArgs e)
+        {
+            formsPlot1.Plot.AxisAuto();
+            formsPlot1.Refresh();
+        }
+
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
         {
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
@@ -1075,10 +1081,130 @@ namespace BezierAirfoilDesigner
             }
         }
 
-        private void btnAxisAuto_Click(object sender, EventArgs e)
+        private void btnSaveBez_Click(object sender, EventArgs e)
         {
-            formsPlot1.Plot.AxisAuto();
-            formsPlot1.Refresh();
+            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+
+            string file = "" + "Airfoil Name" + System.Environment.NewLine;
+
+            file += "Top Start" + System.Environment.NewLine;
+            for (int i = controlPointsTop.Count - 1; i >= 0; i--)
+            {
+                file += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
+            }
+            file += "Top End" + System.Environment.NewLine;
+
+            file += "Bottom Start" + System.Environment.NewLine;
+            for (int i = 0; i <= controlPointsBottom.Count - 1; i++)
+            {
+                file += ($"{controlPointsBottom[i].X:N8} {controlPointsBottom[i].Y:N8}" + System.Environment.NewLine);
+            }
+            file += "Bottom End" + System.Environment.NewLine;
+
+            file = file.Replace(',', '.');
+
+            using SaveFileDialog sfd = new();
+            sfd.Filter = "Bezier files (*.bez)|*.bez|All files (*.*)|*.*";
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                SaveTextToFile(file, sfd.FileName);
+            }
+        }
+
+        private void btnLoadBez_Click(object sender, EventArgs e)
+        {
+            // Initialize lists to store control points for top and bottom curves
+            List<PointF> controlPointsTop = new();
+            List<PointF> controlPointsBottom = new();
+
+            // Create a new OpenFileDialog instance and set the file filter to only show .bez.dat files
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "Bezier files (*.bez)|*.bez"
+            };
+
+            // Show the file dialog and continue only if a file was selected (OK result)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Retrieve the full path of the selected file
+                string path = openFileDialog.FileName;
+
+                // Create a new StreamReader instance to read from the selected file
+                using StreamReader reader = new(path);
+
+                // Read the first line from the file (and ignore it, as it's a header)
+                string line = reader.ReadLine();
+
+                // Variable to keep track of which list of control points we're currently adding to
+                List<PointF> currentControlPoints = null;
+
+                // Read each line from the file until no more lines are available
+                while ((line = reader.ReadLine()) != null)
+                {
+                    // Split the line into parts, using spaces or tabs as separators
+                    string[] parts = line.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    // If the line is a "Start" line...
+                    if (parts.Length >= 2 && parts[0] == "Top" && parts[1] == "Start")
+                    {
+                        // ...we're starting to read the top curve control points
+                        currentControlPoints = controlPointsTop;
+                    }
+                    else if (parts.Length >= 2 && parts[0] == "Bottom" && parts[1] == "Start")
+                    {
+                        // ...we're starting to read the bottom curve control points
+                        currentControlPoints = controlPointsBottom;
+                    }
+                    // If the line is an "End" line...
+                    else if ((parts.Length >= 2 && parts[0] == "Top" && parts[1] == "End") ||
+                             (parts.Length >= 2 && parts[0] == "Bottom" && parts[1] == "End"))
+                    {
+                        // ...we've finished reading the current curve control points
+                        currentControlPoints = null;
+                    }
+                    // If the line is a control point line...
+                    else if (parts.Length == 2 && currentControlPoints != null)
+                    {
+                        // ...try to parse the parts as floating-point numbers
+                        if (float.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out float x)
+                        && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
+                        {
+                            // ...and if successful, add the point to the current control points list
+                            currentControlPoints.Add(new PointF(x, y));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // If no file was selected, exit the method
+                return;
+            }
+
+            //// Sort the control points for each curve by X, then by Y (descending for bottom curve)
+            //controlPointsTop = controlPointsTop.OrderBy(point => point.X).ThenBy(point => point.Y).ToList();
+            //controlPointsBottom = controlPointsBottom.OrderBy(point => point.X).ThenByDescending(point => point.Y).ToList();
+
+            // After loading, if the last point's X value is less than the first point's X value, reverse the list
+            if (controlPointsTop.Last().X < controlPointsTop.First().X)
+            {
+                controlPointsTop.Reverse();
+            }
+            if (controlPointsBottom.Last().X < controlPointsBottom.First().X)
+            {
+                controlPointsBottom.Reverse();
+            }
+
+            // Add the control points to their respective DataGridViews
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+
+            // Perform any necessary calculations after loading the control points
+            calculations();
         }
 
         private void btnLoadDat_Click(object sender, EventArgs e)
@@ -1351,6 +1477,8 @@ namespace BezierAirfoilDesigner
         {
             cancelSearch = true;
         }
+
+
 
         //--------------------------------------------------------------------------------------------------------------------------------------
     }

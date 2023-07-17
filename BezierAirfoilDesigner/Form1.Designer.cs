@@ -77,6 +77,8 @@
             lblElapsedTime = new Label();
             btnStopSearch = new Button();
             progressBar1 = new ProgressBar();
+            btnLoadBez = new Button();
+            btnSaveBez = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             SuspendLayout();
@@ -139,7 +141,7 @@
             // btnSaveDat
             // 
             btnSaveDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSaveDat.Location = new Point(1084, 312);
+            btnSaveDat.Location = new Point(1084, 344);
             btnSaveDat.Name = "btnSaveDat";
             btnSaveDat.Size = new Size(84, 26);
             btnSaveDat.TabIndex = 5;
@@ -286,7 +288,7 @@
             // btnSaveBezDat
             // 
             btnSaveBezDat.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSaveBezDat.Location = new Point(1084, 344);
+            btnSaveBezDat.Location = new Point(1084, 376);
             btnSaveBezDat.Name = "btnSaveBezDat";
             btnSaveBezDat.Size = new Size(84, 26);
             btnSaveBezDat.TabIndex = 21;
@@ -390,7 +392,7 @@
             // 
             lblSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSave.AutoSize = true;
-            lblSave.Location = new Point(1084, 290);
+            lblSave.Location = new Point(1084, 322);
             lblSave.Name = "lblSave";
             lblSave.Size = new Size(39, 19);
             lblSave.TabIndex = 33;
@@ -433,7 +435,7 @@
             // btnSearchTop
             // 
             btnSearchTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearchTop.Location = new Point(1084, 146);
+            btnSearchTop.Location = new Point(1084, 178);
             btnSearchTop.Name = "btnSearchTop";
             btnSearchTop.Size = new Size(84, 26);
             btnSearchTop.TabIndex = 37;
@@ -444,7 +446,7 @@
             // btnSearchBottom
             // 
             btnSearchBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearchBottom.Location = new Point(1084, 178);
+            btnSearchBottom.Location = new Point(1084, 210);
             btnSearchBottom.Name = "btnSearchBottom";
             btnSearchBottom.Size = new Size(84, 26);
             btnSearchBottom.TabIndex = 38;
@@ -455,7 +457,7 @@
             // btnAutoSearch
             // 
             btnAutoSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnAutoSearch.Location = new Point(1084, 210);
+            btnAutoSearch.Location = new Point(1084, 242);
             btnAutoSearch.Name = "btnAutoSearch";
             btnAutoSearch.Size = new Size(84, 26);
             btnAutoSearch.TabIndex = 39;
@@ -491,7 +493,7 @@
             // 
             lblSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(1084, 124);
+            lblSearch.Location = new Point(1084, 156);
             lblSearch.Name = "lblSearch";
             lblSearch.Size = new Size(48, 19);
             lblSearch.TabIndex = 42;
@@ -573,7 +575,7 @@
             // 
             lblElapsedTime.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(1084, 239);
+            lblElapsedTime.Location = new Point(1084, 271);
             lblElapsedTime.Name = "lblElapsedTime";
             lblElapsedTime.Size = new Size(63, 19);
             lblElapsedTime.TabIndex = 50;
@@ -582,7 +584,7 @@
             // btnStopSearch
             // 
             btnStopSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnStopSearch.Location = new Point(1084, 261);
+            btnStopSearch.Location = new Point(1084, 293);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(84, 26);
             btnStopSearch.TabIndex = 51;
@@ -598,11 +600,35 @@
             progressBar1.Size = new Size(1570, 5);
             progressBar1.TabIndex = 52;
             // 
+            // btnLoadBez
+            // 
+            btnLoadBez.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLoadBez.Location = new Point(1084, 127);
+            btnLoadBez.Name = "btnLoadBez";
+            btnLoadBez.Size = new Size(84, 26);
+            btnLoadBez.TabIndex = 53;
+            btnLoadBez.Text = ".bez";
+            btnLoadBez.UseVisualStyleBackColor = true;
+            btnLoadBez.Click += btnLoadBez_Click;
+            // 
+            // btnSaveBez
+            // 
+            btnSaveBez.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnSaveBez.Location = new Point(1084, 408);
+            btnSaveBez.Name = "btnSaveBez";
+            btnSaveBez.Size = new Size(84, 26);
+            btnSaveBez.TabIndex = 54;
+            btnSaveBez.Text = ".bez";
+            btnSaveBez.UseVisualStyleBackColor = true;
+            btnSaveBez.Click += btnSaveBez_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(btnSaveBez);
+            Controls.Add(btnLoadBez);
             Controls.Add(progressBar1);
             Controls.Add(btnStopSearch);
             Controls.Add(lblElapsedTime);
@@ -713,5 +739,7 @@
         private Label lblElapsedTime;
         private Button btnStopSearch;
         private ProgressBar progressBar1;
+        private Button btnLoadBez;
+        private Button btnSaveBez;
     }
 }
