@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnAutoSearch" xml:space="preserve">
+    <value>Automatically search for well-fitting control points for both curves.
+Three other points per control point are recursively tried.
+The search distance is Error / 50 (vertical only).
+If no better points are found, four other points per control point are tried, and so on.
+If the improvement through different control point positions is less than 10%,
+the degree of the curve is increased by 1.
+Then search again.
+This continues until the error is less than 0.075.
+The search can be interrupted with the stop button.</value>
+  </data>
+  <data name="btnAxisAuto" xml:space="preserve">
+    <value>Resets the Zoom to fit Data.</value>
+  </data>
+  <data name="btnDecreaseOrderBottom" xml:space="preserve">
+    <value>Decrease the order of the bottom bezier curve while preserving the shape.</value>
+  </data>
+  <data name="btnDecreaseOrderTop" xml:space="preserve">
+    <value>Decrease the order of the top bezier curve while preserving the shape.</value>
+  </data>
+  <data name="btnDefault" xml:space="preserve">
+    <value>Load the default control points.</value>
+  </data>
+  <data name="btnIncreaseOrderBottom" xml:space="preserve">
+    <value>Increase the order of the bottom bezier curve while preserving the shape.</value>
+  </data>
+  <data name="btnIncreaseOrderTop" xml:space="preserve">
+    <value>Increase the order of the top bezier curve while preserving the shape.</value>
+  </data>
+  <data name="btnLoadBez" xml:space="preserve">
+    <value>Load control points from a .bez file.</value>
+  </data>
+  <data name="btnLoadBezDat" xml:space="preserve">
+    <value>Load control points from a .bez.dat file.</value>
+  </data>
+  <data name="btnLoadDat" xml:space="preserve">
+    <value>Load a reference airfoil from a .dat file. Right-click to remove the reference airfoil.</value>
+  </data>
+  <data name="btnSaveBez" xml:space="preserve">
+    <value>Save the current control points as a .bez file.
+The formatting differs from normal .dat files.
+The control points at the LE and TE don't have to be identical for the top and bottom curves.
+This allows the definition of other geometry as bezier curves, for example, the wing planform.
+Currently, this is not supported by other software, but theoretically it is a better file type.
+File format example:
+
+Airfoil Name
+Top Start
+0.00000000 0.00000000
+0.00000000 0.15000000
+0.50000000 0.15000000
+1.00000000 0.00000000
+Top End
+Bottom Start
+0.00000000 0.00000000
+0.00000000 -0.10000000
+0.50000000 -0.10000000
+1.00000000 0.00000000
+Bottom End</value>
+  </data>
+  <data name="btnSaveBezDat" xml:space="preserve">
+    <value>Save the current control points as a .bez.dat file.
+The formatting is identical to normal .dat files.
+This allows the control points to be easily loaded into most other programs.
+File format example:
+
+Airfoil Name
+1.00000000 0.00000000
+0.50000000 0.15000000
+0.00000000 0.15000000
+0.00000000 0.00000000
+0.00000000 -0.10000000
+0.50000000 -0.10000000
+1.00000000 0.00000000</value>
+  </data>
+  <data name="btnSaveDat" xml:space="preserve">
+    <value>Save the current curves as a .dat file.</value>
+  </data>
+  <data name="btnSearchBottom" xml:space="preserve">
+    <value>Search for better control points for the bottom curve.</value>
+  </data>
+  <data name="btnSearchTop" xml:space="preserve">
+    <value>Search for better control points for the top curve.</value>
+  </data>
+  <data name="btnStopSearch" xml:space="preserve">
+    <value>Stop the currently running search.</value>
+  </data>
+  <data name="chkShowBottom" xml:space="preserve">
+    <value>Show or hide the bottom curve.</value>
+  </data>
+  <data name="chkShowCamber" xml:space="preserve">
+    <value>Show or hide the camber line.</value>
+  </data>
+  <data name="chkShowControlBottom" xml:space="preserve">
+    <value>Show or hide the control points for the bottom curve.</value>
+  </data>
+  <data name="chkShowControlTop" xml:space="preserve">
+    <value>Show or hide the control points for the top curve.</value>
+  </data>
+  <data name="chkShowRadius" xml:space="preserve">
+    <value>Show or hide the leading edge radius.</value>
+  </data>
+  <data name="chkShowReferenceBottom" xml:space="preserve">
+    <value>Show or hide the bottom of the reference airfoil.</value>
+  </data>
+  <data name="chkShowReferenceTop" xml:space="preserve">
+    <value>Show or hide the top of the reference airfoil.</value>
+  </data>
+  <data name="chkShowThickness" xml:space="preserve">
+    <value>Show or hide the thickness distribution.</value>
+  </data>
+  <data name="chkShowTop" xml:space="preserve">
+    <value>Show or hide the top curve.</value>
+  </data>
+  <data name="txtCamberPosition" xml:space="preserve">
+    <value>Set the position at which the camber line is calculated.</value>
+  </data>
+  <data name="txtCamberStepSize" xml:space="preserve">
+    <value>Set the step size at which the camber line is calculated.</value>
+  </data>
+  <data name="txtNumOfPointBottom" xml:space="preserve">
+    <value>Set the number of points on the bottom bezier curve.</value>
+  </data>
+  <data name="txtNumOfPointsTop" xml:space="preserve">
+    <value>Set the number of points on the top bezier curve.</value>
+  </data>
+  <data name="txtThicknessStepSize" xml:space="preserve">
+    <value>Set the step size at which the thickness line is calculated.</value>
+  </data>
+</root>

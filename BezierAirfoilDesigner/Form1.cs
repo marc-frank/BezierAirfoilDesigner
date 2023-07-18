@@ -1,3 +1,4 @@
+using BezierAirfoilDesigner.Properties;
 using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Net.Http.Headers;
+using System.Resources;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -51,6 +53,14 @@ namespace BezierAirfoilDesigner
         List<PointF> errorOfEachControlPointBottom = new();
         float totalErrorTop;
         float totalErrorBottom;
+
+        System.Windows.Forms.ToolTip toolTip = new System.Windows.Forms.ToolTip
+        {
+            AutoPopDelay = 5000,
+            InitialDelay = 500,
+            ReshowDelay = 500,
+            ShowAlways = true
+        };
 
         public Form1()
         {
@@ -99,6 +109,10 @@ namespace BezierAirfoilDesigner
             btnAutoSearch.Enabled = false;
 
             progressBar1.Visible = false;
+
+            cmbLanguage.Items.Add("en");
+            cmbLanguage.Items.Add("de");
+            cmbLanguage.SelectedIndex = 0;
 
             calculations();
             formsPlot1.Plot.AxisAuto();
@@ -376,6 +390,7 @@ namespace BezierAirfoilDesigner
 
 
         }
+
         private void GridViewSettings()
         {
             dataGridViewTop.AllowUserToResizeColumns = false;
@@ -383,96 +398,37 @@ namespace BezierAirfoilDesigner
             dataGridViewBottom.AllowUserToResizeColumns = false;
             dataGridViewBottom.AllowUserToResizeRows = false;
         }
+
+        private void cmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            AddToolTips();
+        }
+
         private void AddToolTips()
         {
-            // Create a new instance of ToolTip
-            System.Windows.Forms.ToolTip toolTip = new()
-            {
-                // Set up some of the ToolTip settings
-                AutoPopDelay = 5000,  // Time for which the ToolTip is shown
-                InitialDelay = 500,  // Time delay when hovering over the control before the ToolTip is shown
-                ReshowDelay = 500,    // Time delay when the mouse pointer is moved from one control to another
-                ShowAlways = true    // Force the ToolTip text to be displayed whether or not the form is active
+            // Define the controls
+            string[] controls = {
+                "btnDefault", "btnLoadDat", "btnLoadBezDat", "btnLoadBez", "btnSearchTop",
+                "btnSearchBottom", "btnAutoSearch", "btnStopSearch", "btnSaveDat",
+                "btnSaveBezDat", "btnSaveBez", "chkShowControlTop", "chkShowControlBottom",
+                "chkShowTop", "chkShowBottom", "chkShowThickness", "txtThicknessStepSize",
+                "chkShowCamber", "txtCamberStepSize", "txtCamberPosition", "chkShowRadius",
+                "chkShowReferenceTop", "chkShowReferenceBottom", "btnIncreaseOrderTop",
+                "btnDecreaseOrderTop", "txtNumOfPointsTop", "btnIncreaseOrderBottom",
+                "btnDecreaseOrderBottom", "txtNumOfPointBottom", "btnAxisAuto"
             };
 
-            toolTip.SetToolTip(formsPlot1, "Double click to show FPS. Right click for additional settings.");
+            // Set new tooltips
+            foreach (string control in controls)
+            {
+                string? toolTipText = cmbLanguage.SelectedIndex == 1 ?
+                    ToolTips_de.ResourceManager.GetString(control) as string :
+                    ToolTips_en.ResourceManager.GetString(control) as string;
 
-            toolTip.SetToolTip(btnDefault, "Load the default control points.");
-            toolTip.SetToolTip(btnLoadDat, "Load a reference airfoil from a .dat file. Right click to remove the reference airfoil.");
-            toolTip.SetToolTip(btnLoadBezDat, "Load control points from a .bez.dat file.");
-            toolTip.SetToolTip(btnLoadBez, "Load control points from a .bez file.");
-            toolTip.SetToolTip(btnSearchTop, "Search for the better control points for the top curve.");
-            toolTip.SetToolTip(btnSearchBottom, "Search for the better control points for the bottom curve.");
-            toolTip.SetToolTip(btnAutoSearch, "Automatically search for good fitting control points for both curves." + System.Environment.NewLine +
-                "Three other points per control point are tried recursively." + System.Environment.NewLine +
-                "The search distance is Error / 50 (vertical only)." + System.Environment.NewLine +
-                "If nothing better was found, four other points per control point are tried. And so on." + System.Environment.NewLine +
-                "If the improvement through different positions of the control points is less than 10%," + System.Environment.NewLine +
-                "the degree of the curve is increased by 1." + System.Environment.NewLine +
-                "Then search again." + System.Environment.NewLine +
-                "This continues until the error is less than 0.075." + System.Environment.NewLine +
-                "The search may be interrupted with the stop button."
-            );
-            toolTip.SetToolTip(btnStopSearch, "Stop the currently running search.");
-            toolTip.SetToolTip(btnSaveDat, "Save the current curves as a .dat file.");
-            toolTip.SetToolTip(btnSaveBezDat,
-                "Save the current control points as a .bez.dat file." + System.Environment.NewLine +
-                "Formatting is identical to normal .dat files." + System.Environment.NewLine +
-                "Allows the control points to be loaded into most other programs easily." + System.Environment.NewLine + System.Environment.NewLine +
-                "File format example:" + System.Environment.NewLine +
-                "Airfoil Name" + System.Environment.NewLine +
-                "1.00000000 0.00000000" + System.Environment.NewLine +
-                "0.50000000 0.15000000" + System.Environment.NewLine +
-                "0.00000000 0.15000000" + System.Environment.NewLine +
-                "0.00000000 0.00000000" + System.Environment.NewLine +
-                "0.00000000 -0.10000000" + System.Environment.NewLine +
-                "0.50000000 -0.10000000" + System.Environment.NewLine +
-                "1.00000000 0.00000000"
-            );
-            toolTip.SetToolTip(btnSaveBez,
-                "Save the current control points as a .bez file." + System.Environment.NewLine +
-                "Formatting differs from normal .dat files." + System.Environment.NewLine +
-                "Control points at the LE and TE don't have to be identical for top and bottom curves." + System.Environment.NewLine +
-                "This allows the definition of other geometry as bezier curves, for example the wing planform." + System.Environment.NewLine +
-                "Currently not supported by other software, but theoretically the better file type." + System.Environment.NewLine + System.Environment.NewLine +
-                "File format example:" + System.Environment.NewLine +
-                "Airfoil Name" + System.Environment.NewLine +
-                "Top Start" + System.Environment.NewLine +
-                "0.00000000 0.00000000" + System.Environment.NewLine +
-                "0.00000000 0.15000000" + System.Environment.NewLine +
-                "0.50000000 0.15000000" + System.Environment.NewLine +
-                "1.00000000 0.00000000" + System.Environment.NewLine +
-                "Top End" + System.Environment.NewLine +
-                "Bottom Start" + System.Environment.NewLine +
-                "0.00000000 0.00000000" + System.Environment.NewLine +
-                "0.00000000 -0.10000000" + System.Environment.NewLine +
-                "0.50000000 -0.10000000" + System.Environment.NewLine +
-                "1.00000000 0.00000000" + System.Environment.NewLine +
-                "Bottom End"
-            );
-
-            toolTip.SetToolTip(chkShowControlTop, "Show or hide the control points for the top curve.");
-            toolTip.SetToolTip(chkShowControlBottom, "Show or hide the control points for the bottom curve.");
-            toolTip.SetToolTip(chkShowTop, "Show or hide the top curve.");
-            toolTip.SetToolTip(chkShowBottom, "Show or hide the bottom curve.");
-            toolTip.SetToolTip(chkShowThickness, "Show or hide the thickness distribution.");
-            toolTip.SetToolTip(txtThicknessStepSize, "Set the step size the thickness line is calculated with.");
-            toolTip.SetToolTip(chkShowCamber, "Show or hide the camber line.");
-            toolTip.SetToolTip(txtCamberStepSize, "Set the step size the camber line is calculated with.");
-            toolTip.SetToolTip(txtCamberPosition, "Set the position at which the camber line is calculated at.");
-            toolTip.SetToolTip(chkShowRadius, "Show or hide the leading edge radius.");
-            toolTip.SetToolTip(chkShowReferenceTop, "Show or hide the top of the reference airfoil.");
-            toolTip.SetToolTip(chkShowReferenceBottom, "Show or hide the bottom of the reference airfoil.");
-
-            toolTip.SetToolTip(btnIncreaseOrderTop, "Increase the order of the top bezier curve while preserving the shape.");
-            toolTip.SetToolTip(btnDecreaseOrderTop, "Decrease the order of the top bezier curve while preserving the shape.");
-            toolTip.SetToolTip(txtNumOfPointsTop, "Set the number of points on the top bezier curve.");
-
-            toolTip.SetToolTip(btnIncreaseOrderBottom, "Increase the order of the bottom bezier curve while preserving the shape.");
-            toolTip.SetToolTip(btnDecreaseOrderBottom, "Decrease the order of the bottom bezier curve while preserving the shape.");
-            toolTip.SetToolTip(txtNumOfPointBottom, "Set the number of points on the bottom bezier curve.");
-
+                toolTip.SetToolTip(this.Controls[control], toolTipText);
+            }
         }
+
         private void AddDefaultPointsTop()
         {
             dataGridViewTop.Rows.Clear();
@@ -496,6 +452,7 @@ namespace BezierAirfoilDesigner
             dataGridViewTop.Columns.Add(columnY);
             gridViewAddPoints(dataGridViewTop, defaultControlPointsTop);
         }
+
         private void AddDefaultPointsBottom()
         {
             dataGridViewBottom.Rows.Clear();
@@ -1252,7 +1209,7 @@ namespace BezierAirfoilDesigner
                 string path = openFileDialog.FileName;
 
                 using StreamReader reader = new(path); // Use the path chosen by the user
-                                                       
+
                 loadedAirfoilName = reader.ReadLine(); // header line is written to the global variable, for use in saving
 
                 string line;
@@ -1599,6 +1556,8 @@ namespace BezierAirfoilDesigner
         {
             cancelSearch = true;
         }
+
+
 
         //--------------------------------------------------------------------------------------------------------------------------------------
     }
