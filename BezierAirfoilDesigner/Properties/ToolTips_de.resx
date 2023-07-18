@@ -117,4 +117,132 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="btnAutoSearch" xml:space="preserve">
+    <value>Automatisch nach gut passenden Kontrollpunkten für beide Kurven suchen.
+Es werden rekursiv 3 andere Punkte pro Kontrollpunkt ausprobiert.
+Der Suchradius ist Error / 100 (nur vertikal).
+Wenn da nichts besseres dabei war, werden 4 andere Punkte pro Kontrollpunkt probiert. Und so weiter.
+Wenn die Verbesserung durch andere Positionen der Kontrollpunkte unter 10% liegt, wird der Grad der Kurve um 1 erhöht.
+Dann wieder suchen.
+So lange, bis der Error unter 0.075 liegt.
+Die Suche kann mit der Stopp-Taste unterbrochen werden.</value>
+  </data>
+  <data name="btnAxisAuto" xml:space="preserve">
+    <value>Passt den Zoom an die dargestellten Daten an.</value>
+  </data>
+  <data name="btnDecreaseOrderBottom" xml:space="preserve">
+    <value>Den Grad der unteren Bezierkurve verringern, während die Form beibehalten wird.</value>
+  </data>
+  <data name="btnDecreaseOrderTop" xml:space="preserve">
+    <value>Den Grad der oberen Bezierkurve verringern, während die Form beibehalten wird.</value>
+  </data>
+  <data name="btnDefault" xml:space="preserve">
+    <value>Die Standard Kontrollpunkte laden.</value>
+  </data>
+  <data name="btnIncreaseOrderBottom" xml:space="preserve">
+    <value>Den Grad der unteren Bezierkurve erhöhen, während die Form beibehalten wird.</value>
+  </data>
+  <data name="btnIncreaseOrderTop" xml:space="preserve">
+    <value>Den Grad der oberen Bezierkurve erhöhen, während die Form beibehalten wird.</value>
+  </data>
+  <data name="btnLoadBez" xml:space="preserve">
+    <value>Die Kontrollpunkte aus einer .bez Datei laden.</value>
+  </data>
+  <data name="btnLoadBezDat" xml:space="preserve">
+    <value>Die Kontrollpunkte aus einer .bez.dat Datei laden.</value>
+  </data>
+  <data name="btnLoadDat" xml:space="preserve">
+    <value>Ein Referenzprofil aus einer .dat Datei laden. Rechtsklick zum entfernen.</value>
+  </data>
+  <data name="btnSaveBez" xml:space="preserve">
+    <value>Speichern der aktuellen Kontrollpunkte als .bez-Datei.
+Das Format unterscheidet sich von normalen .dat-Dateien.
+Die Kontrollpunkte am Nasen- und Endleiste müssen für die oberen und unteren Kurven nicht identisch sein.
+Dies ermöglicht die Definition anderer Formen durch Bezierkurven, zum Beispiel den Flügelgrundriss.
+Derzeit nicht von anderer Software unterstützt, aber theoretisch ein besseres Dateiformat.
+Beispiel Dateiformat:
+
+Airfoil Name
+Top Start
+0.00000000 0.00000000
+0.00000000 0.15000000
+0.50000000 0.15000000
+1.00000000 0.00000000
+Top End
+Bottom Start
+0.00000000 0.00000000
+0.00000000 -0.10000000
+0.50000000 -0.10000000
+1.00000000 0.00000000
+Bottom End</value>
+  </data>
+  <data name="btnSaveBezDat" xml:space="preserve">
+    <value>Speichern der aktuellen Kontrollpunkte als .bez.dat Datei.
+Das Format ist identisch mit normalen .dat Dateien.
+Erlaubt das einfache Importieren der Kontrollpunkte in die meisten anderen Programme.
+Beispiel Dateiformat:
+
+Airfoil Name
+1.00000000 0.00000000
+0.50000000 0.15000000
+0.00000000 0.15000000
+0.00000000 0.00000000
+0.00000000 -0.10000000
+0.50000000 -0.10000000
+1.00000000 0.00000000</value>
+  </data>
+  <data name="btnSaveDat" xml:space="preserve">
+    <value>Die aktuellen Kurven als .dat Datei speichern.</value>
+  </data>
+  <data name="btnSearchBottom" xml:space="preserve">
+    <value>Nach besseren Kontrollpunkten für die untere Kurve suchen.</value>
+  </data>
+  <data name="btnSearchTop" xml:space="preserve">
+    <value>Nach besseren Kontrollpunkten für die obere Kurve suchen.</value>
+  </data>
+  <data name="btnStopSearch" xml:space="preserve">
+    <value>Die aktuelle Suche abbrechen.</value>
+  </data>
+  <data name="chkShowBottom" xml:space="preserve">
+    <value>Die untere Kurve anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowCamber" xml:space="preserve">
+    <value>Die Wölbungslinie anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowControlBottom" xml:space="preserve">
+    <value>Die Kontrollpunkte für die untere Kurve anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowControlTop" xml:space="preserve">
+    <value>Die Kontrollpunkte für die obere Kurve anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowRadius" xml:space="preserve">
+    <value>Den Radius an der Vorderkante anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowReferenceBottom" xml:space="preserve">
+    <value>Die Unterseite des Referenzprofils anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowReferenceTop" xml:space="preserve">
+    <value>Die Oberseite des Referenzprofils anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowThickness" xml:space="preserve">
+    <value>Die Dickenverteilung anzeigen oder ausblenden.</value>
+  </data>
+  <data name="chkShowTop" xml:space="preserve">
+    <value>Die obere Kurve anzeigen oder ausblenden.</value>
+  </data>
+  <data name="txtCamberPosition" xml:space="preserve">
+    <value>Die Position festlegen, an der die Wölbungslinie berechnet wird.</value>
+  </data>
+  <data name="txtCamberStepSize" xml:space="preserve">
+    <value>Die Schrittweite festlegen, mit der die Wölbungslinie berechnet wird.</value>
+  </data>
+  <data name="txtNumOfPointBottom" xml:space="preserve">
+    <value>Die Anzahl der Punkte auf der unteren Bezierkurve festlegen.</value>
+  </data>
+  <data name="txtNumOfPointsTop" xml:space="preserve">
+    <value>Die Anzahl der Punkte auf der oberen Bezierkurve festlegen.</value>
+  </data>
+  <data name="txtThicknessStepSize" xml:space="preserve">
+    <value>Den Schrittweite festlegen, mit der die Dickenlinie berechnet wird.</value>
+  </data>
 </root>

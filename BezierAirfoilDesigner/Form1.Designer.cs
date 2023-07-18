@@ -79,6 +79,7 @@
             progressBar1 = new ProgressBar();
             btnLoadBez = new Button();
             btnSaveBez = new Button();
+            cmbLanguage = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             SuspendLayout();
@@ -622,11 +623,22 @@
             btnSaveBez.UseVisualStyleBackColor = true;
             btnSaveBez.Click += btnSaveBez_Click;
             // 
+            // cmbLanguage
+            // 
+            cmbLanguage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cmbLanguage.FormattingEnabled = true;
+            cmbLanguage.Location = new Point(1518, 702);
+            cmbLanguage.Name = "cmbLanguage";
+            cmbLanguage.Size = new Size(40, 27);
+            cmbLanguage.TabIndex = 56;
+            cmbLanguage.SelectedIndexChanged += cmbLanguage_SelectedIndexChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1570, 739);
+            Controls.Add(cmbLanguage);
             Controls.Add(btnSaveBez);
             Controls.Add(btnLoadBez);
             Controls.Add(progressBar1);
@@ -741,5 +753,6 @@
         private ProgressBar progressBar1;
         private Button btnLoadBez;
         private Button btnSaveBez;
+        private ComboBox cmbLanguage;
     }
 }
