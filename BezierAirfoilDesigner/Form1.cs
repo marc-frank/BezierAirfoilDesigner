@@ -29,6 +29,8 @@ namespace BezierAirfoilDesigner
         //--------------------------------------------------------------------------------------------------------------------------------------
         // global variables
 
+        static string currentVersion = "v0.9";
+
         private static DateTime currentTime;
         private static DateTime startTime;
         private static TimeSpan elapsedTime;
@@ -883,7 +885,6 @@ namespace BezierAirfoilDesigner
 
         public static async Task CheckForUpdates()
         {
-            string currentVersion = "v0.8";
             string userAgent = $"Mozilla/5.0 (compatible; BezierAirfoilDesigner/{currentVersion})";
 
             try

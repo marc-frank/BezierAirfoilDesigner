@@ -328,7 +328,7 @@
             // 
             chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(309, 636);
+            chkShowThickness.Location = new Point(316, 636);
             chkShowThickness.Margin = new Padding(3, 2, 3, 2);
             chkShowThickness.Name = "chkShowThickness";
             chkShowThickness.Size = new Size(75, 19);
@@ -341,7 +341,7 @@
             // 
             chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(643, 636);
+            chkShowRadius.Location = new Point(658, 636);
             chkShowRadius.Margin = new Padding(3, 2, 3, 2);
             chkShowRadius.Name = "chkShowRadius";
             chkShowRadius.Size = new Size(58, 19);
@@ -354,7 +354,7 @@
             // 
             lblShow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblShow.AutoSize = true;
-            lblShow.Location = new Point(10, 638);
+            lblShow.Location = new Point(10, 637);
             lblShow.Name = "lblShow";
             lblShow.Size = new Size(38, 15);
             lblShow.TabIndex = 28;
@@ -364,7 +364,7 @@
             // 
             chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(450, 636);
+            chkShowCamber.Location = new Point(460, 636);
             chkShowCamber.Margin = new Padding(3, 2, 3, 2);
             chkShowCamber.Name = "chkShowCamber";
             chkShowCamber.Size = new Size(66, 19);
@@ -432,7 +432,7 @@
             // 
             chkShowReferenceTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowReferenceTop.AutoSize = true;
-            chkShowReferenceTop.Location = new Point(705, 636);
+            chkShowReferenceTop.Location = new Point(722, 636);
             chkShowReferenceTop.Margin = new Padding(3, 2, 3, 2);
             chkShowReferenceTop.Name = "chkShowReferenceTop";
             chkShowReferenceTop.Size = new Size(61, 19);
@@ -444,10 +444,10 @@
             // chkShowReferenceBottom
             // 
             chkShowReferenceBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            chkShowReferenceBottom.Location = new Point(771, 637);
+            chkShowReferenceBottom.Location = new Point(789, 636);
             chkShowReferenceBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowReferenceBottom.Name = "chkShowReferenceBottom";
-            chkShowReferenceBottom.Size = new Size(60, 18);
+            chkShowReferenceBottom.Size = new Size(61, 19);
             chkShowReferenceBottom.TabIndex = 36;
             chkShowReferenceBottom.Text = "ref bot";
             chkShowReferenceBottom.UseVisualStyleBackColor = true;
@@ -493,7 +493,7 @@
             // 
             chkShowTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowTop.AutoSize = true;
-            chkShowTop.Location = new Point(191, 636);
+            chkShowTop.Location = new Point(194, 636);
             chkShowTop.Margin = new Padding(3, 2, 3, 2);
             chkShowTop.Name = "chkShowTop";
             chkShowTop.Size = new Size(44, 19);
@@ -506,7 +506,7 @@
             // 
             chkShowBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowBottom.AutoSize = true;
-            chkShowBottom.Location = new Point(239, 636);
+            chkShowBottom.Location = new Point(244, 636);
             chkShowBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowBottom.Name = "chkShowBottom";
             chkShowBottom.Size = new Size(66, 19);
@@ -528,7 +528,7 @@
             // 
             chkShowControlBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowControlBottom.AutoSize = true;
-            chkShowControlBottom.Location = new Point(122, 636);
+            chkShowControlBottom.Location = new Point(124, 636);
             chkShowControlBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowControlBottom.Name = "chkShowControlBottom";
             chkShowControlBottom.Size = new Size(64, 19);
@@ -540,7 +540,7 @@
             // txtCamberPosition
             // 
             txtCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberPosition.Location = new Point(581, 635);
+            txtCamberPosition.Location = new Point(595, 634);
             txtCamberPosition.Margin = new Padding(3, 2, 3, 2);
             txtCamberPosition.Name = "txtCamberPosition";
             txtCamberPosition.Size = new Size(57, 23);
@@ -551,7 +551,7 @@
             // txtThicknessStepSize
             // 
             txtThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtThicknessStepSize.Location = new Point(388, 635);
+            txtThicknessStepSize.Location = new Point(397, 634);
             txtThicknessStepSize.Margin = new Padding(3, 2, 3, 2);
             txtThicknessStepSize.Name = "txtThicknessStepSize";
             txtThicknessStepSize.Size = new Size(57, 23);
@@ -562,7 +562,7 @@
             // txtCamberStepSize
             // 
             txtCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberStepSize.Location = new Point(519, 635);
+            txtCamberStepSize.Location = new Point(532, 634);
             txtCamberStepSize.Margin = new Padding(3, 2, 3, 2);
             txtCamberStepSize.Name = "txtCamberStepSize";
             txtCamberStepSize.Size = new Size(57, 23);
@@ -574,7 +574,7 @@
             // 
             lblThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblThicknessStepSize.AutoSize = true;
-            lblThicknessStepSize.Location = new Point(388, 618);
+            lblThicknessStepSize.Location = new Point(397, 617);
             lblThicknessStepSize.Name = "lblThicknessStepSize";
             lblThicknessStepSize.Size = new Size(54, 15);
             lblThicknessStepSize.TabIndex = 47;
@@ -584,7 +584,7 @@
             // 
             lblCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblCamberStepSize.AutoSize = true;
-            lblCamberStepSize.Location = new Point(519, 618);
+            lblCamberStepSize.Location = new Point(532, 617);
             lblCamberStepSize.Name = "lblCamberStepSize";
             lblCamberStepSize.Size = new Size(54, 15);
             lblCamberStepSize.TabIndex = 48;
@@ -594,7 +594,7 @@
             // 
             lblCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblCamberPosition.AutoSize = true;
-            lblCamberPosition.Location = new Point(581, 618);
+            lblCamberPosition.Location = new Point(595, 617);
             lblCamberPosition.Name = "lblCamberPosition";
             lblCamberPosition.Size = new Size(53, 15);
             lblCamberPosition.TabIndex = 49;
@@ -658,7 +658,7 @@
             // 
             cmbLanguage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmbLanguage.FormattingEnabled = true;
-            cmbLanguage.Location = new Point(1201, 635);
+            cmbLanguage.Location = new Point(1201, 632);
             cmbLanguage.Margin = new Padding(3, 2, 3, 2);
             cmbLanguage.Name = "cmbLanguage";
             cmbLanguage.Size = new Size(36, 23);
@@ -668,7 +668,7 @@
             // btnCheckForUpdates
             // 
             btnCheckForUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCheckForUpdates.Location = new Point(1108, 635);
+            btnCheckForUpdates.Location = new Point(1108, 633);
             btnCheckForUpdates.Margin = new Padding(3, 2, 3, 2);
             btnCheckForUpdates.Name = "btnCheckForUpdates";
             btnCheckForUpdates.Size = new Size(87, 23);
