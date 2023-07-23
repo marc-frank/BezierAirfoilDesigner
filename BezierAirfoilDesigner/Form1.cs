@@ -433,8 +433,8 @@ namespace BezierAirfoilDesigner
                 errorOfEachControlPointBottom.Add(new PointF(targetX, ySum));
             }
 
-            if (/*totalErrorTop > 0*/true) { txtAirfoilParam.AppendText(System.Environment.NewLine + "error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
-            if (/*totalErrorBottom > 0*/true) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
+            if (totalErrorTop > 0) { txtAirfoilParam.AppendText(System.Environment.NewLine + "error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
+            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
             // Append each control point error to txtAirfoilParam
             //for (int i = 0; i < errorOfEachControlPointTop.Count; i++)
