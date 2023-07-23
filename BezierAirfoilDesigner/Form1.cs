@@ -1,4 +1,6 @@
 using BezierAirfoilDesigner.Properties;
+using MathNet.Numerics;
+using Newtonsoft.Json;
 using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
 using ScottPlot.Plottable;
@@ -6,19 +8,33 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Numerics;
+using System.Reflection;
 using System.Resources;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BezierAirfoilDesigner
 {
     public partial class Form1 : Form
     {
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // global variables
+
+        private static DateTime currentTime;
+        private static DateTime startTime;
+        private static TimeSpan elapsedTime;
+
         string loadedAirfoilName = "";
 
-        readonly double minZoomRange = 0.01;
-        readonly double maxZoomRange = 10.0;
         readonly List<PointF> defaultControlPointsTop = new()
         {
             new PointF(0, 0),
@@ -33,26 +49,34 @@ namespace BezierAirfoilDesigner
             new PointF(0.5f, -0.1f),
             new PointF(1.0f, 0)
         };
+
         List<PointF> referenceDatTop = new();
         List<PointF> referenceDatBottom = new();
 
-        bool showControlTop;
-        bool showControlBottom;
-        bool showTop;
-        bool showBottom;
-        bool showThickness;
-        bool showCamber;
-        bool showRadius;
-        bool showReferenceTop;
-        bool showReferenceBottom;
-        bool cancelSearch;
-
         List<PointF> errorTop = new();
         List<PointF> errorBottom = new();
+
         List<PointF> errorOfEachControlPointTop = new();
         List<PointF> errorOfEachControlPointBottom = new();
+
         float totalErrorTop;
         float totalErrorBottom;
+
+        readonly double minZoomRange = 0.01;
+        readonly double maxZoomRange = 10.0;
+
+        private static bool showControlTop;
+        private static bool showControlBottom;
+        private static bool showTop;
+        private static bool showBottom;
+        private static bool showThickness;
+        private static bool showCamber;
+        private static bool showRadius;
+        private static bool showReferenceTop;
+        private static bool showReferenceBottom;
+
+        private static bool cancelSearch;
+        private static bool updateCheckTriggeredByButtonClick = false;
 
         System.Windows.Forms.ToolTip toolTip = new System.Windows.Forms.ToolTip
         {
@@ -62,6 +86,9 @@ namespace BezierAirfoilDesigner
             ShowAlways = true
         };
 
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // initilisation
+
         public Form1()
         {
             InitializeComponent();
@@ -69,28 +96,53 @@ namespace BezierAirfoilDesigner
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (Form1.ActiveForm != null)
+            int margin = 3;
+            var activeForm = Form1.ActiveForm;
+            if (activeForm != null)
             {
-                //if (Form1.ActiveForm.Width < 1588) { Form1.ActiveForm.Width = 1588; }
-                //if (Form1.ActiveForm.Height < 783) { Form1.ActiveForm.Height = 783; }
+                //activeForm.SuspendLayout();
 
-                formsPlot1.SetBounds(14, 13, Form1.ActiveForm.Width - (1588 - 1085), Form1.ActiveForm.Height - (783 - 684));
-                dataGridViewTop.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
-                dataGridViewBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1174), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 298, (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3);
+                //panel1.Left = activeForm.Width - margin - panel1.Width;
+                //panel2.Left = activeForm.Width - margin - panel2.Width;
 
-                lblBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1171), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 - 22, 55, 19);
-                lblOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31, 45, 19);
-                btnIncreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
-                btnDecreaseOrderBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1513), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 22, 26, 26);
-                lblNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 51, 75, 19);
-                txtNumOfPointBottom.SetBounds(Form1.ActiveForm.Width - (1588 - 1478), (Form1.ActiveForm.Height - (783 - (783 - 31 - 25 - 394))) / 2 + 3 + 25 + 31 + 73, 86, 26);
+                dataGridViewTop.Left = panel1.Left - margin - dataGridViewTop.Width;
+                dataGridViewTop.Height = (activeForm.Height - lblTop.Top - lblTop.Height - margin - margin - lblBottom.Height - margin - (activeForm.Height - lblAirfoilParam.Top)) / 2;
+                dataGridViewTop.Width = dataGridViewTop.Columns[0].Width + dataGridViewTop.Columns[1].Width + dataGridViewBottom.RowHeadersWidth + SystemInformation.VerticalScrollBarWidth + 2;
+                dataGridViewBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + 2 * margin + lblBottom.Height;
+                dataGridViewBottom.Left = dataGridViewTop.Left;
+                dataGridViewBottom.Height = dataGridViewTop.Height;
+                dataGridViewBottom.Width = dataGridViewTop.Width;
 
-                progressBar1.Width = Form1.ActiveForm.Width - (1588 - 1570);
+                txtAirfoilParam.Left = dataGridViewTop.Left;
+
+                panel1.Top = dataGridViewTop.Top;
+                panel1.Height = dataGridViewTop.Height;
+                panel2.Top = dataGridViewBottom.Top;
+                panel2.Height = dataGridViewBottom.Height;
+
+                panel3.Left = dataGridViewTop.Left - panel3.Width - margin - 2;
+                panel3.Height = activeForm.Height - dataGridViewTop.Top - (activeForm.Height - (txtAirfoilParam.Top + txtAirfoilParam.Height));
+
+                lblTop.Left = dataGridViewTop.Left;
+                lblBottom.Left = dataGridViewTop.Left;
+                lblBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + margin;
+                lblAirfoilParam.Left = dataGridViewTop.Left;
+
+
+                formsPlot1.Width = panel3.Left;
+                formsPlot1.Height = txtThicknessStepSize.Top;
+
+                progressBar1.Width = activeForm.Width - 16;
+
+
+                //activeForm.ResumeLayout();
             }
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            await CheckForUpdates();
+
             FormsPlotSettings();
             GridViewSettings();
             AddToolTips();
@@ -109,6 +161,7 @@ namespace BezierAirfoilDesigner
             btnAutoSearch.Enabled = false;
 
             progressBar1.Visible = false;
+            button1.Visible = false;
 
             cmbLanguage.Items.Add("en");
             cmbLanguage.Items.Add("de");
@@ -119,6 +172,9 @@ namespace BezierAirfoilDesigner
             formsPlot1.Refresh();
         }
 
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // main calculations
+
         void calculations()
         {
             var axisLimits = formsPlot1.Plot.GetAxisLimits();
@@ -126,43 +182,53 @@ namespace BezierAirfoilDesigner
             formsPlot1.Plot.SetAxisLimits(axisLimits);
 
             //----------------------------------------------------------------------------------------------------------------------------------
-            // calculating and plotting points on both bezier curves
+            // calculating and plotting points on the top bezier curve
 
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
-            //try to parse the number of points, if unsucessful(eg not numeric) set to 3
+            // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
             if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 || numPointsTop > 100000)
             {
                 txtNumOfPointsTop.Text = "225";
                 numPointsTop = 225;
             }
+
+            List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
+
+            Color colorTop;
+            if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
+            var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
+
+            for (int i = 0; i < pointsTop.Count; i++)
+            {
+                top.Add(pointsTop[i].X, pointsTop[i].Y);
+            }
+
+            lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
+
+            //----------------------------------------------------------------------------------------------------------------------------------
+            // calculating and plotting points on the bottom bezier curve
+
+            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+
+            // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
             if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2 || numPointsBottom > 100000)
             {
                 txtNumOfPointBottom.Text = "225";
                 numPointsBottom = 225;
             }
 
-            List<PointF> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointF> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
-            Color colorTop;
-            if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
-            var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
             Color colorBottom;
             if (showBottom) { colorBottom = Color.Red; } else { colorBottom = Color.Transparent; }
             var bottom = formsPlot1.Plot.AddScatterList(color: colorBottom, lineStyle: ScottPlot.LineStyle.Solid);
 
-            for (int i = 0; i < pointsTop.Count; i++)
-            {
-                top.Add(pointsTop[i].X, pointsTop[i].Y);
-            }
             for (int i = 0; i < pointsBottom.Count; i++)
             {
                 bottom.Add(pointsBottom[i].X, pointsBottom[i].Y);
             }
 
-            lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
 
             //----------------------------------------------------------------------------------------------------------------------------------
@@ -365,8 +431,8 @@ namespace BezierAirfoilDesigner
                 errorOfEachControlPointBottom.Add(new PointF(targetX, ySum));
             }
 
-            if (totalErrorTop > 0) { txtAirfoilParam.AppendText("error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
-            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
+            if (/*totalErrorTop > 0*/true) { txtAirfoilParam.AppendText(System.Environment.NewLine + "error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
+            if (/*totalErrorBottom > 0*/true) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
             // Append each control point error to txtAirfoilParam
             //for (int i = 0; i < errorOfEachControlPointTop.Count; i++)
@@ -387,8 +453,6 @@ namespace BezierAirfoilDesigner
         {
             formsPlot1.Plot.AxisScaleLock(enable: true, scaleMode: ScottPlot.EqualScaleMode.PreserveX);
             formsPlot1.Configuration.RightClickDragZoom = false;
-
-
         }
 
         private void GridViewSettings()
@@ -421,12 +485,29 @@ namespace BezierAirfoilDesigner
             // Set new tooltips
             foreach (string control in controls)
             {
-                string? toolTipText = cmbLanguage.SelectedIndex == 1 ?
+                var toolTipText = cmbLanguage.SelectedIndex == 1 ?
                     ToolTips_de.ResourceManager.GetString(control) as string :
                     ToolTips_en.ResourceManager.GetString(control) as string;
 
-                toolTip.SetToolTip(this.Controls[control], toolTipText);
+                System.Windows.Forms.Control foundControl = FindControlRecursive(this, control);
+                if (foundControl != null)
+                {
+                    toolTip.SetToolTip(foundControl, toolTipText);
+                }
             }
+        }
+
+        static public System.Windows.Forms.Control FindControlRecursive(System.Windows.Forms.Control container, string name)
+        {
+            if (container.Name == name) return container;
+
+            foreach (System.Windows.Forms.Control ctrl in container.Controls)
+            {
+                System.Windows.Forms.Control foundCtrl = FindControlRecursive(ctrl, name);
+                if (foundCtrl != null) return foundCtrl;
+            }
+
+            return null;
         }
 
         private void AddDefaultPointsTop()
@@ -480,22 +561,55 @@ namespace BezierAirfoilDesigner
         //--------------------------------------------------------------------------------------------------------------------------------------
         // helper functions
 
-
         private async Task SearchTopAsync()
         {
             progressBar1.Visible = true;
-            List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
-            await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
-            Console.Beep();
+
+            float improvementThreshold = 0.01f;
+
+            float previousError = totalErrorTop;
+            float currentError;
+            float errorImprovement = float.PositiveInfinity;
+
+            while (errorImprovement >= improvementThreshold)
+            {
+                // Check if the operation should be cancelled
+                if (cancelSearch) break;
+
+                List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
+                await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
+                Console.Beep();
+                currentError = totalErrorTop;
+                errorImprovement = (previousError - currentError) / previousError;
+                previousError = currentError;
+            }
+
             progressBar1.Visible = false;
         }
 
         private async Task SearchBottomAsync()
         {
             progressBar1.Visible = true;
-            List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-            await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
-            Console.Beep();
+
+            float improvementThreshold = 0.01f;
+
+            float previousError = totalErrorBottom;
+            float currentError;
+            float errorImprovement = float.PositiveInfinity;
+
+            while (errorImprovement >= improvementThreshold)
+            {
+                // Check if the operation should be cancelled
+                if (cancelSearch) break;
+
+                List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+                await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
+                Console.Beep();
+                currentError = totalErrorBottom;
+                errorImprovement = (previousError - currentError) / previousError;
+                previousError = currentError;
+            }
+
             progressBar1.Visible = false;
         }
 
@@ -542,6 +656,16 @@ namespace BezierAirfoilDesigner
                         {
                             // UI update code goes here
                             calculations();
+                            txtAirfoilParam.AppendText(System.Environment.NewLine + "current lowest error:\t" + currentLowestError + System.Environment.NewLine);
+                            txtAirfoilParam.Refresh();
+
+                            progressBar1.Value = Math.Min(progressBar1.Value + 1, progressBar1.Maximum);
+
+                            currentTime = DateTime.Now;
+                            elapsedTime = currentTime - startTime;
+                            System.Windows.Forms.Control control = panel3.Controls.Find("lblElapsedTime", true)[0];
+                            control.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
+                            control.Refresh();
                         });
 
                         float currentError = (gridView == dataGridViewTop) ? totalErrorTop : totalErrorBottom;
@@ -552,12 +676,6 @@ namespace BezierAirfoilDesigner
                             controlPointsWithLowestError.AddRange(points);
                             betterCombinationFound = true;
                         }
-
-                        // Update progress bar
-                        this.Invoke((MethodInvoker)delegate
-                        {
-                            progressBar1.Value = Math.Min(progressBar1.Value + 1, progressBar1.Maximum);
-                        });
 
                         return;
                     }
@@ -760,15 +878,84 @@ namespace BezierAirfoilDesigner
             return area;
         }
 
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // update check
+
+        public static async Task CheckForUpdates()
+        {
+            string currentVersion = "v0.8";
+            string userAgent = $"Mozilla/5.0 (compatible; BezierAirfoilDesigner/{currentVersion})";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+                    var (latestVersion, latestReleaseUrl) = await GetLatestVersion(client);
+                    int result = CompareVersions(currentVersion, latestVersion);
+                    if (result < 0)
+                    {
+                        string message = $"An update is available! Current version: {currentVersion}, latest version: {latestVersion}\n\n" +
+                                         $"Click OK to go to the latest release.";
+                        DialogResult dialogResult = MessageBox.Show(message, "Update Available", MessageBoxButtons.OKCancel);
+                        if (dialogResult == DialogResult.OK)
+                        {
+                            OpenUrl(latestReleaseUrl);
+                        }
+                    }
+                    else if (result == 0 && updateCheckTriggeredByButtonClick)
+                    {
+                        MessageBox.Show($"You are running the latest version: {currentVersion}", "Up to Date");
+                    }
+                    else if (result > 0)
+                    {
+                        MessageBox.Show($"Your version {currentVersion} is newer than the latest release {latestVersion}", "Up to Date");
+                    }
+                }
+            }
+            catch (HttpRequestException)
+            {
+                MessageBox.Show("Unable to connect to the internet. Please check your internet connection and try again.", "Error");
+            }
+            catch (WebException)
+            {
+                MessageBox.Show("Unable to connect to the internet. Please check your internet connection and try again.", "Error");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occurred. Please try again later.", "Error");
+            }
+        }
+
+        private static async Task<(string version, string url)> GetLatestVersion(HttpClient client)
+        {
+            var response = await client.GetAsync("https://api.github.com/repos/Marc-Frank/BezierAirfoilDesigner/releases/latest");
+            response.EnsureSuccessStatusCode();
+            dynamic latestRelease = Newtonsoft.Json.JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+            return (latestRelease.tag_name.ToString(), latestRelease.html_url.ToString());
+        }
+
+        private static int CompareVersions(string currentVersion, string latestVersion)
+        {
+            Version current = new Version(currentVersion.TrimStart('v'));
+            Version latest = new Version(latestVersion.TrimStart('v'));
+            return current.CompareTo(latest);
+        }
+
+        public static void OpenUrl(string url)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
-        // Form events
+        // form events
 
-        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            cancelSearch = true;
-            await Task.Delay(2500);
-
             List<PointF> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointF> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
@@ -871,14 +1058,14 @@ namespace BezierAirfoilDesigner
                 topOrBottom = false;
             }
 
-            if (indexLowestDistance > 0) //protect against dragging the LE point
+            if (indexLowestDistance >= 0) //protect against dragging the LE point
             {
-                if (topOrBottom && indexLowestDistance < controlPointsTop.Count - 1) //chose top or bottom and protect against dragging the TE point
+                if (topOrBottom /*&& indexLowestDistance < controlPointsTop.Count - 1*/) //chose top or bottom and protect against dragging the TE point
                 {
                     controlPointsTop[indexLowestDistance] = mouse;
                     gridViewAddPoints(dataGridViewTop, controlPointsTop);
                 }
-                else if (!topOrBottom && indexLowestDistance < controlPointsBottom.Count - 1) //chose top or bottom and protect against dragging the TE point
+                else if (!topOrBottom /*&& indexLowestDistance < controlPointsBottom.Count - 1*/) //chose top or bottom and protect against dragging the TE point
                 {
                     controlPointsBottom[indexLowestDistance] = mouse;
                     gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
@@ -1087,7 +1274,7 @@ namespace BezierAirfoilDesigner
             sfd.Filter = "dat files (*.dat)|*.dat|All files (*.*)|*.*";
             sfd.FilterIndex = 1;
             sfd.RestoreDirectory = true;
-            sfd.FileName = airfoilName;  // Set the initial filename in the dialog
+            sfd.FileName = "Bezier " + airfoilName;  // Set the initial filename in the dialog
 
             // Show the dialog and continue only if a file was selected (OK result)
             if (sfd.ShowDialog() == DialogResult.OK)
@@ -1192,7 +1379,7 @@ namespace BezierAirfoilDesigner
             referenceDatTop.Clear();
             referenceDatBottom.Clear();
 
-            List<PointF> points = new();
+            List<PointF> pointsReferenceAirfoil = new();
 
             // Create a new instance of the OpenFileDialog class
             OpenFileDialog openFileDialog = new()
@@ -1210,9 +1397,18 @@ namespace BezierAirfoilDesigner
 
                 using StreamReader reader = new(path); // Use the path chosen by the user
 
-                loadedAirfoilName = reader.ReadLine(); // header line is written to the global variable, for use in saving
-
-                string line;
+                // header line is written to the global variable, for use in saving
+                var line = reader.ReadLine();
+                if (line != null)
+                {
+                    loadedAirfoilName = line;
+                }
+                else
+                {
+                    // Handle the situation when the file is empty or we've reached the end of the file
+                    // For example, you might throw an exception or assign a default value to loadedAirfoilName
+                    loadedAirfoilName = "airfoil name";
+                }
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1226,7 +1422,7 @@ namespace BezierAirfoilDesigner
                         && float.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out float y))
                         {
                             // add the point to the list
-                            points.Add(new PointF(x, y));
+                            pointsReferenceAirfoil.Add(new PointF(x, y));
                         }
                     }
                 }
@@ -1236,19 +1432,19 @@ namespace BezierAirfoilDesigner
             int index = 0;
             float minumum = float.PositiveInfinity;
 
-            for (int i = 1; i < points.Count; i++)
+            for (int i = 1; i < pointsReferenceAirfoil.Count; i++)
             {
-                if (Math.Abs(points[i].X) + Math.Abs(points[i].Y) < minumum)
+                if (Math.Abs(pointsReferenceAirfoil[i].X) + Math.Abs(pointsReferenceAirfoil[i].Y) < minumum)
                 {
-                    minumum = Math.Abs(points[i].X) + Math.Abs(points[i].Y);
+                    minumum = Math.Abs(pointsReferenceAirfoil[i].X) + Math.Abs(pointsReferenceAirfoil[i].Y);
                     index = i;
                 }
             }
 
-            referenceDatTop = points.GetRange(0, index + 1);  // From start to minimum LE point has to be duplicated in split
+            referenceDatTop = pointsReferenceAirfoil.GetRange(0, index + 1);  // From start to minimum LE point has to be duplicated in split
             referenceDatTop.Reverse();
 
-            referenceDatBottom = points.GetRange(index, points.Count - index);  // From minimum to end
+            referenceDatBottom = pointsReferenceAirfoil.GetRange(index, pointsReferenceAirfoil.Count - index);  // From minimum to end
 
             chkShowReferenceTop.Enabled = true;
             chkShowReferenceBottom.Enabled = true;
@@ -1262,6 +1458,13 @@ namespace BezierAirfoilDesigner
             this.Text = "BezierAirfoilDesigner  -  Loaded reference airfoil: " + loadedAirfoilName;
 
             calculations();
+
+            //if totalErrorTop or totalErrorBottom is 0 or NaN or not numeric, show an error message
+            if (float.IsNaN(totalErrorTop) || float.IsNaN(totalErrorBottom) || float.IsInfinity(totalErrorTop) || float.IsInfinity(totalErrorBottom) || totalErrorTop == 0 || totalErrorBottom == 0)
+            {
+                MessageBox.Show("The reference airfoil has been loaded successfully, but there was an error processing it. Please check the airfoil and try again.", "Error processing Airfoil", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
         }
 
         private void btnLoadBezDat_Click(object sender, EventArgs e)
@@ -1284,7 +1487,7 @@ namespace BezierAirfoilDesigner
 
                 using StreamReader reader = new(path); // Use the path chosen by the user
                                                        // skip the header line
-                string line = reader.ReadLine();
+                string? line = reader.ReadLine();
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1445,6 +1648,9 @@ namespace BezierAirfoilDesigner
             btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
 
             cancelSearch = false;
+
+            startTime = DateTime.Now;
+
             await SearchTopAsync();
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
@@ -1455,6 +1661,9 @@ namespace BezierAirfoilDesigner
             btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
 
             cancelSearch = false;
+
+            startTime = DateTime.Now;
+
             await SearchBottomAsync();
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
@@ -1466,75 +1675,31 @@ namespace BezierAirfoilDesigner
             cancelSearch = false;
 
             // Record the start time
-            DateTime startTime = DateTime.Now;
-
-            // Record the end time and calculate elapsed time
-            DateTime endTime = DateTime.Now;
-            TimeSpan elapsedTime = endTime - startTime;
+            startTime = DateTime.Now;
 
             // Define thresholds
             float errorThresholdTop = 0.075f;
             float errorThresholdBottom = 0.075f;
-            float improvementThreshold = 0.05f;
+            //float improvementThreshold = 0.05f;
 
-            bool increaseOrderFlag = false;
+            float previousError = totalErrorTop + totalErrorBottom;
+            float currentError;
+            float errorImprovement = 1.0f;
 
-            while (totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
+            while (/*errorImprovement >= improvementThreshold*/ totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
             {
                 // Check if the operation should be cancelled
                 if (cancelSearch) break;
 
-                float previousErrorTop = totalErrorTop;
-                float previousErrorBottom = totalErrorBottom;
-                float currentErrorTop;
-                float currentErrorBottom;
-                float errorImprovementTop = 1.0f;
-                float errorImprovementBottom = 1.0f;
+                await SearchTopAsync();
+                await SearchBottomAsync();
 
-                if (increaseOrderFlag)
-                {
-                    btnIncreaseOrderTop.PerformClick();
-                    btnIncreaseOrderBottom.PerformClick();
-                }
+                btnIncreaseOrderTop.PerformClick();
+                btnIncreaseOrderBottom.PerformClick();
 
-                while ((totalErrorTop > errorThresholdTop && errorImprovementTop >= improvementThreshold) ||
-                       (totalErrorBottom > errorThresholdBottom && errorImprovementBottom >= improvementThreshold))
-                {
-                    // Check if the operation should be cancelled
-                    if (cancelSearch) break;
-
-                    if (totalErrorTop > errorThresholdTop)
-                    {
-                        await SearchTopAsync();
-                        if (cancelSearch) break;
-                        currentErrorTop = totalErrorTop;
-                        errorImprovementTop = (previousErrorTop - currentErrorTop) / previousErrorTop;
-                        previousErrorTop = currentErrorTop;
-                    }
-
-                    if (totalErrorBottom > errorThresholdBottom)
-                    {
-                        await SearchBottomAsync();
-                        if (cancelSearch) break;
-                        currentErrorBottom = totalErrorBottom;
-                        errorImprovementBottom = (previousErrorBottom - currentErrorBottom) / previousErrorBottom;
-                        previousErrorBottom = currentErrorBottom;
-                    }
-
-                    endTime = DateTime.Now;
-                    elapsedTime = endTime - startTime;
-
-                    lblElapsedTime.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
-                    lblElapsedTime.Refresh();
-                }
-
-                endTime = DateTime.Now;
-                elapsedTime = endTime - startTime;
-
-                lblElapsedTime.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
-                lblElapsedTime.Refresh();
-
-                increaseOrderFlag = true;
+                currentError = totalErrorTop + totalErrorBottom;
+                errorImprovement = (previousError - currentError) / previousError;
+                //previousError = currentError;
             }
 
             // If operation wasn't cancelled, play a beep and show a message box with start time, end time, and elapsed time
@@ -1546,7 +1711,7 @@ namespace BezierAirfoilDesigner
                 Console.Beep();
 
                 // Show a message box with start time, end time, and elapsed time
-                MessageBox.Show($"Start time: {startTime}\nEnd time: {endTime}\nElapsed time: {elapsedTime}");
+                MessageBox.Show($"Start time: {startTime}\nEnd time: {currentTime}\nElapsed time: {elapsedTime}");
             }
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
@@ -1557,8 +1722,139 @@ namespace BezierAirfoilDesigner
             cancelSearch = true;
         }
 
+        private async void btnCheckForUpdates_Click(object sender, EventArgs e)
+        {
+            updateCheckTriggeredByButtonClick = true;
+            await CheckForUpdates();
+            updateCheckTriggeredByButtonClick = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // List of points that form the airfoil
+            List<PointF> points = new();
+            points.AddRange(referenceDatTop);
+            //points.AddRange(referenceDatBottom);
+
+            // Initialize list to store tangent vectors at each point
+            List<PointF> tangents = new List<PointF>();
+
+            // Step 2: Compute tangents at each point
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (i == 0) // For the first point, the tangent is towards the next point
+                {
+                    // Compute direction from current point to next point
+                    float dx = points[i + 1].X - points[i].X;
+                    float dy = points[i + 1].Y - points[i].Y;
+
+                    // Compute length of direction vector
+                    float length = (float)Math.Sqrt(dx * dx + dy * dy);
+
+                    // Normalize direction vector
+                    PointF direction = new PointF(dx / length, dy / length);
+
+                    tangents.Add(direction);
+                }
+                else if (i == points.Count - 1) // For the last point, the tangent is from the previous point
+                {
+                    // Compute direction from previous point to current point
+                    float dx = points[i].X - points[i - 1].X;
+                    float dy = points[i].Y - points[i - 1].Y;
+
+                    // Compute length of direction vector
+                    float length = (float)Math.Sqrt(dx * dx + dy * dy);
+
+                    // Normalize direction vector
+                    PointF direction = new PointF(dx / length, dy / length);
+
+                    tangents.Add(direction);
+                }
+                else // For any other point, the tangent is the average of the direction from the previous point and towards the next point
+                {
+                    // Compute direction from previous point to current point
+                    float dx1 = points[i].X - points[i - 1].X;
+                    float dy1 = points[i].Y - points[i - 1].Y;
+
+                    // Compute length of direction vector
+                    float length1 = (float)Math.Sqrt(dx1 * dx1 + dy1 * dy1);
+
+                    // Normalize direction vector
+                    PointF direction1 = new PointF(dx1 / length1, dy1 / length1);
+
+                    // Compute direction from current point to next point
+                    float dx2 = points[i + 1].X - points[i].X;
+                    float dy2 = points[i + 1].Y - points[i].Y;
+
+                    // Compute length of direction vector
+                    float length2 = (float)Math.Sqrt(dx2 * dx2 + dy2 * dy2);
+
+                    // Normalize direction vector
+                    PointF direction2 = new PointF(dx2 / length2, dy2 / length2);
+
+                    // Compute average of both directions to get tangent vector
+                    PointF tangent = new PointF((direction1.X + direction2.X) / 2, (direction1.Y + direction2.Y) / 2);
+
+                    tangents.Add(tangent);
+                }
+            }
+
+            // Store each set of control points for a curve segment between two points on the airfoil
+            List<List<PointF>> controlPointsSegments = new List<List<PointF>>();
+
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                PointF P0 = points[i];
+                PointF P3 = points[i + 1];
+                PointF T0 = tangents[i];
+                PointF T3 = tangents[i + 1];
+
+                float distance = (float)Math.Sqrt(Math.Pow(P3.X - P0.X, 2) + Math.Pow(P3.Y - P0.Y, 2));
+
+                PointF P1;
+
+                if (i == 0) // For the first point, make the tangent vertical
+                {
+                    // Set the x-coordinate of the first control point to be the same as the x-coordinate of the first point of the airfoil
+                    float x1 = P0.X;
+
+                    // Set the y-coordinate of the first control point such that the tangent is vertical (x-component of the tangent is zero)
+                    float y1 = P0.Y + distance / 3;
+
+                    P1 = new PointF(x1, y1);
+                }
+                else // For other points, calculate the control point as before
+                {
+                    P1 = new PointF(P0.X + T0.X * distance / 3, P0.Y + T0.Y * distance / 3);
+                }
+
+                PointF P2 = new PointF(P3.X - T3.X * distance / 3, P3.Y - T3.Y * distance / 3);
+
+                // Store the control points for the current curve segment in a list
+                List<PointF> controlPoints = new List<PointF>();
+                controlPoints.Add(P0);
+                controlPoints.Add(P1);
+                controlPoints.Add(P2);
+                controlPoints.Add(P3);
+
+                // Add the list of control points for the current curve segment to the list of segments
+                controlPointsSegments.Add(controlPoints);
+            }
+
+            for (int i = 0; i < controlPointsSegments.Count; i++)
+            {
+                List<PointF> controls = controlPointsSegments[i];
+                List<PointF> pointsTop = DeCasteljau.BezierCurve(controls, 10);
+
+                var top = formsPlot1.Plot.AddScatterList(color: Color.Green, lineStyle: ScottPlot.LineStyle.Solid);
+
+                for (int j = 0; j < pointsTop.Count; j++)
+                {
+                    top.Add(pointsTop[j].X, pointsTop[j].Y);
+                }
+            }
 
 
-        //--------------------------------------------------------------------------------------------------------------------------------------
+        }
     }
 }
