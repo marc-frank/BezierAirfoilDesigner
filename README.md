@@ -21,4 +21,5 @@ This also leads to very nice velocity distributions.
 
 Polars are similar, maybe a tiny bit better.
 But that could also be due to the different number of coordinates (haven't checked that, yet).
+
 ![image](https://github.com/Marc-Frank/BezierAirfoilDesigner/assets/74321912/4177d8d2-e731-43c1-905f-20a19192a752)
