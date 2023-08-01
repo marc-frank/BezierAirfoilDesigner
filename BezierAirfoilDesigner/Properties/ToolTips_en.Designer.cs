@@ -336,6 +336,15 @@ namespace BezierAirfoilDesigner.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sets the chord used during export. ähnelt.
+        /// </summary>
+        internal static string txtChord {
+            get {
+                return ResourceManager.GetString("txtChord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Set the number of points on the bottom bezier curve. ähnelt.
         /// </summary>
         internal static string txtNumOfPointBottom {

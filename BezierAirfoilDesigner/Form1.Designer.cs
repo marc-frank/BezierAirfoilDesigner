@@ -85,6 +85,8 @@
             panel2 = new Panel();
             panel3 = new Panel();
             button1 = new Button();
+            txtChord = new TextBox();
+            lblChord = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             panel1.SuspendLayout();
@@ -708,6 +710,8 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(lblChord);
+            panel3.Controls.Add(txtChord);
             panel3.Controls.Add(button1);
             panel3.Controls.Add(lblLoad);
             panel3.Controls.Add(btnDefault);
@@ -733,7 +737,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(0, 366);
+            button1.Location = new Point(0, 412);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
             button1.Size = new Size(75, 21);
@@ -741,6 +745,23 @@
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
+            // 
+            // txtChord
+            // 
+            txtChord.Location = new Point(0, 384);
+            txtChord.Name = "txtChord";
+            txtChord.Size = new Size(75, 23);
+            txtChord.TabIndex = 61;
+            txtChord.Text = "1";
+            // 
+            // lblChord
+            // 
+            lblChord.AutoSize = true;
+            lblChord.Location = new Point(0, 366);
+            lblChord.Name = "lblChord";
+            lblChord.Size = new Size(41, 15);
+            lblChord.TabIndex = 62;
+            lblChord.Text = "chord:";
             // 
             // Form1
             // 
@@ -853,5 +874,7 @@
         private Panel panel2;
         private Panel panel3;
         private Button button1;
+        private Label lblChord;
+        private TextBox txtChord;
     }
 }

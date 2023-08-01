@@ -334,6 +334,15 @@ namespace BezierAirfoilDesigner.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Legt die Profiltiefe fest, mit der die Koordinaten exportiert werden. ähnelt.
+        /// </summary>
+        internal static string txtChord {
+            get {
+                return ResourceManager.GetString("txtChord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Die Anzahl der Punkte auf der unteren Bezierkurve festlegen. ähnelt.
         /// </summary>
         internal static string txtNumOfPointBottom {

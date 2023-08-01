@@ -237,6 +237,9 @@ Airfoil Name
   <data name="txtCamberStepSize" xml:space="preserve">
     <value>Set the step size at which the camber line is calculated.</value>
   </data>
+  <data name="txtChord" xml:space="preserve">
+    <value>Sets the chord used during export.</value>
+  </data>
   <data name="txtNumOfPointBottom" xml:space="preserve">
     <value>Set the number of points on the bottom bezier curve.</value>
   </data>

@@ -1,5 +1,6 @@
 using BezierAirfoilDesigner.Properties;
 using MathNet.Numerics;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using ScottPlot;
 using ScottPlot.Drawing.Colormaps;
@@ -67,7 +68,7 @@ namespace BezierAirfoilDesigner
         double errorThresholdBottom;
 
         readonly double minZoomRange = 0.01;
-        readonly double maxZoomRange = 10.0;
+        readonly double maxZoomRange = 100.0;
 
         private static bool showControlTop;
         private static bool showControlBottom;
@@ -483,7 +484,7 @@ namespace BezierAirfoilDesigner
                 "chkShowCamber", "txtCamberStepSize", "txtCamberPosition", "chkShowRadius",
                 "chkShowReferenceTop", "chkShowReferenceBottom", "btnIncreaseOrderTop",
                 "btnDecreaseOrderTop", "txtNumOfPointsTop", "btnIncreaseOrderBottom",
-                "btnDecreaseOrderBottom", "txtNumOfPointBottom", "btnAxisAuto"
+                "btnDecreaseOrderBottom", "txtNumOfPointBottom", "btnAxisAuto", "txtChord"
             };
 
             // Set new tooltips
@@ -654,7 +655,7 @@ namespace BezierAirfoilDesigner
                         return;
                     };
 
-                    if(topOrBottom)
+                    if (topOrBottom)
                     {
                         if (currentLowestError < errorThresholdTop) return;
                     }
@@ -1231,6 +1232,12 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveDat_Click(object sender, EventArgs e)
         {
+            if (double.TryParse(txtChord.Text, out double chord) == false)
+            {
+                MessageBox.Show("Invalid Chord");
+                return;
+            }
+
             // Get the control points from the data grid views
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
@@ -1247,6 +1254,17 @@ namespace BezierAirfoilDesigner
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
+            for(int i = 0; i < pointsTop.Count; i++)
+            {
+                pointsTop[i].X *= chord;
+                pointsTop[i].Y *= chord;
+            }
+            for (int i = 0; i < pointsBottom.Count; i++)
+            {
+                pointsBottom[i].X *= chord;
+                pointsBottom[i].Y *= chord;
+            }
+
             // Remove "Bezier " prefix from the loaded airfoil name if it exists
             string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
 
@@ -1255,12 +1273,12 @@ namespace BezierAirfoilDesigner
 
             for (int i = pointsTop.Count - 1; i >= 0; i--)
             {
-                fileContents += ($"{pointsTop[i].X:N8} {pointsTop[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
             }
 
             for (int i = 1; i <= pointsBottom.Count - 1; i++)
             {
-                fileContents += ($"{pointsBottom[i].X:N8} {pointsBottom[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{pointsBottom[i].X:F16} {pointsBottom[i].Y:F16}" + System.Environment.NewLine);
             }
 
             // Replace comma with dot in the decimal point (to conform to the .dat file format)
@@ -1283,9 +1301,26 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveBezDat_Click(object sender, EventArgs e)
         {
+            if (double.TryParse(txtChord.Text, out double chord) == false)
+            {
+                MessageBox.Show("Invalid Chord");
+                return;
+            }
+
             // Get the control points from the data grid views
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+
+            for (int i = 0; i < controlPointsTop.Count; i++)
+            {
+                controlPointsTop[i].X *= chord;
+                controlPointsTop[i].Y *= chord;
+            }
+            for (int i = 0; i < controlPointsBottom.Count; i++)
+            {
+                controlPointsBottom[i].X *= chord;
+                controlPointsBottom[i].Y *= chord;
+            }
 
             // Remove "Bezier " prefix from the loaded airfoil name if it exists
             string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
@@ -1296,13 +1331,13 @@ namespace BezierAirfoilDesigner
             // Append the control points for the top curve
             for (int i = controlPointsTop.Count - 1; i >= 0; i--)
             {
-                fileContents += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{controlPointsTop[i].X:F16} {controlPointsTop[i].Y:F16}" + System.Environment.NewLine);
             }
 
             // Append the control points for the bottom curve
             for (int i = 1; i <= controlPointsBottom.Count - 1; i++)
             {
-                fileContents += ($"{controlPointsBottom[i].X:N8} {controlPointsBottom[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{controlPointsBottom[i].X:F16} {controlPointsBottom[i].Y:F16}" + System.Environment.NewLine);
             }
 
             // Replace comma with dot in the decimal point (to conform to the .dat file format)
@@ -1327,9 +1362,26 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveBez_Click(object sender, EventArgs e)
         {
+            if (double.TryParse(txtChord.Text, out double chord) == false)
+            {
+                MessageBox.Show("Invalid Chord");
+                return;
+            }
+
             // Get the control points from the data grid views
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+
+            for (int i = 0; i < controlPointsTop.Count; i++)
+            {
+                controlPointsTop[i].X *= chord;
+                controlPointsTop[i].Y *= chord;
+            }
+            for (int i = 0; i < controlPointsBottom.Count; i++)
+            {
+                controlPointsBottom[i].X *= chord;
+                controlPointsBottom[i].Y *= chord;
+            }
 
             // Remove "Bezier " prefix from the loaded airfoil name if it exists
             string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
@@ -1341,7 +1393,7 @@ namespace BezierAirfoilDesigner
             fileContents += "Top Start" + System.Environment.NewLine;
             for (int i = 0; i <= controlPointsTop.Count - 1; i++)
             {
-                fileContents += ($"{controlPointsTop[i].X:N8} {controlPointsTop[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{controlPointsTop[i].X:F16} {controlPointsTop[i].Y:F16}" + System.Environment.NewLine);
             }
             fileContents += "Top End" + System.Environment.NewLine;
 
@@ -1349,7 +1401,7 @@ namespace BezierAirfoilDesigner
             fileContents += "Bottom Start" + System.Environment.NewLine;
             for (int i = 0; i <= controlPointsBottom.Count - 1; i++)
             {
-                fileContents += ($"{controlPointsBottom[i].X:N8} {controlPointsBottom[i].Y:N8}" + System.Environment.NewLine);
+                fileContents += ($"{controlPointsBottom[i].X:F16} {controlPointsBottom[i].Y:F16}" + System.Environment.NewLine);
             }
             fileContents += "Bottom End" + System.Environment.NewLine;
 
@@ -1856,7 +1908,7 @@ namespace BezierAirfoilDesigner
     }
 }
 
-//implement a PointD class to replace PointD to use double instead of double
+//implement a PointD class to replace PointF to use double instead of double
 public class PointD
 {
     public double X { get; set; }
