@@ -84,9 +84,9 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
-            button1 = new Button();
-            txtChord = new TextBox();
             lblChord = new Label();
+            txtChord = new TextBox();
+            button1 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             panel1.SuspendLayout();
@@ -194,7 +194,7 @@
             txtNumOfPointsTop.Name = "txtNumOfPointsTop";
             txtNumOfPointsTop.Size = new Size(76, 23);
             txtNumOfPointsTop.TabIndex = 10;
-            txtNumOfPointsTop.Text = "225";
+            txtNumOfPointsTop.Text = "150";
             txtNumOfPointsTop.TextChanged += txtNumOfPointsTop_TextChanged;
             // 
             // txtNumOfPointBottom
@@ -204,7 +204,7 @@
             txtNumOfPointBottom.Name = "txtNumOfPointBottom";
             txtNumOfPointBottom.Size = new Size(76, 23);
             txtNumOfPointBottom.TabIndex = 11;
-            txtNumOfPointBottom.Text = "225";
+            txtNumOfPointBottom.Text = "150";
             txtNumOfPointBottom.TextChanged += txtNumOfPointsBottom_TextChanged;
             // 
             // lblNumOfPointTop
@@ -735,6 +735,23 @@
             panel3.Size = new Size(75, 591);
             panel3.TabIndex = 60;
             // 
+            // lblChord
+            // 
+            lblChord.AutoSize = true;
+            lblChord.Location = new Point(0, 366);
+            lblChord.Name = "lblChord";
+            lblChord.Size = new Size(41, 15);
+            lblChord.TabIndex = 62;
+            lblChord.Text = "chord:";
+            // 
+            // txtChord
+            // 
+            txtChord.Location = new Point(0, 384);
+            txtChord.Name = "txtChord";
+            txtChord.Size = new Size(75, 23);
+            txtChord.TabIndex = 61;
+            txtChord.Text = "1";
+            // 
             // button1
             // 
             button1.Location = new Point(0, 412);
@@ -745,23 +762,6 @@
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
-            // 
-            // txtChord
-            // 
-            txtChord.Location = new Point(0, 384);
-            txtChord.Name = "txtChord";
-            txtChord.Size = new Size(75, 23);
-            txtChord.TabIndex = 61;
-            txtChord.Text = "1";
-            // 
-            // lblChord
-            // 
-            lblChord.AutoSize = true;
-            lblChord.Location = new Point(0, 366);
-            lblChord.Name = "lblChord";
-            lblChord.Size = new Size(41, 15);
-            lblChord.TabIndex = 62;
-            lblChord.Text = "chord:";
             // 
             // Form1
             // 

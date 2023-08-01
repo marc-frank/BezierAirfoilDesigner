@@ -1254,7 +1254,7 @@ namespace BezierAirfoilDesigner
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
-            for(int i = 0; i < pointsTop.Count; i++)
+            for (int i = 0; i < pointsTop.Count; i++)
             {
                 pointsTop[i].X *= chord;
                 pointsTop[i].Y *= chord;
