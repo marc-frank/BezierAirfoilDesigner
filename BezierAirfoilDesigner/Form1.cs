@@ -1914,11 +1914,13 @@ public class PointD : IEquatable<PointD>
     public double X { get; set; }
     public double Y { get; set; }
 
-    public PointD(double x, double y)
-    {
-        X = x;
-        Y = y;
-    }
+//    public override bool Equals(object obj)
+//    {
+//        if (obj == null || GetType() != obj.GetType())
+//            return false;
+
+//        return Equals((PointD)obj);
+//    }
 
     public PointD()
     {
