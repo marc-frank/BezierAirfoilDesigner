@@ -43,14 +43,14 @@ namespace BezierAirfoilDesigner
             new PointD(0, 0),
             new PointD(0, 0.1),
             new PointD(0.5, 0.1),
-            new PointD(1.0, 0)
+            new PointD(1, 0)
         };
         readonly List<PointD> defaultControlPointsBottom = new()
         {
             new PointD(0, 0),
             new PointD(0, -0.1),
             new PointD(0.5, -0.1),
-            new PointD(1.0, 0)
+            new PointD(1, 0)
         };
 
         List<PointD> referenceDatTop = new();
@@ -1908,8 +1908,8 @@ namespace BezierAirfoilDesigner
     }
 }
 
-//implement a PointD class to replace PointF to use double instead of double
-public class PointD
+//implement a PointD class to replace PointF to use double instead of float
+public class PointD : IEquatable<PointD>
 {
     public double X { get; set; }
     public double Y { get; set; }
@@ -1922,5 +1922,26 @@ public class PointD
 
     public PointD()
     {
+    }
+
+    public bool Equals(PointD other)
+    {
+        if (other == null)
+            return false;
+
+        return X == other.X && Y == other.Y;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        return Equals((PointD)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y);
     }
 }
