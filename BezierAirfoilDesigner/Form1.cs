@@ -191,13 +191,11 @@ namespace BezierAirfoilDesigner
 
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
 
-            // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
-            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 /* || numPointsTop > 100000*/)
+            // Try to parse the number of points, if unsuccessful show a message box and return
+            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2)
             {
                 MessageBox.Show("Invalid number of points for the top curve.");
                 return;
-                //txtNumOfPointsTop.Text = "150";
-                //numPointsTop = 150;
             }
 
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
@@ -218,13 +216,11 @@ namespace BezierAirfoilDesigner
 
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
-            // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
-            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2 /* || numPointsBottom > 100000*/)
+            // Try to parse the number of points, if unsuccessful show a message box and return
+            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2)
             {
                 MessageBox.Show("Invalid number of points for the bottom curve.");
                 return;
-                //txtNumOfPointBottom.Text = "150";
-                //numPointsBottom = 150;
             }
 
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
@@ -248,10 +244,10 @@ namespace BezierAirfoilDesigner
             var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (double.TryParse(txtThicknessStepSize.Text, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f || thicknessStepSize > 1.0f)
+            if (double.TryParse(txtThicknessStepSize.Text, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f)
             {
-                txtThicknessStepSize.Text = "0,001";
-                thicknessStepSize = 0.001f;
+                MessageBox.Show("Invalid thickness step size.");
+                return;
             }
 
             List<PointD> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessStepSize);
@@ -282,15 +278,15 @@ namespace BezierAirfoilDesigner
             //try to parse the camber position, if unsucessful (eg not numeric) set to 0.5f
             if (double.TryParse(txtCamberPosition.Text, out double camberPosition) == false || camberPosition < 0.0f || camberPosition > 1.0f)
             {
-                txtCamberPosition.Text = "0,5";
-                camberPosition = 0.5f;
+                MessageBox.Show("Invalid camber position.");
+                return;
             }
 
             //try to parse the camber step size, if unsuccessful (e.g. not numeric) set to 0.001f
             if (double.TryParse(txtCamberStepSize.Text, out double camberStepSize) == false || camberStepSize < 0.00001f || camberStepSize > 1.0f)
             {
-                txtCamberStepSize.Text = "0,001";
-                camberStepSize = 0.001f;
+                MessageBox.Show("Invalid camber step size.");
+                return;
             }
 
             List<PointD> camber = GetCamber(pointsTop, pointsBottom, camberPosition, camberStepSize);
