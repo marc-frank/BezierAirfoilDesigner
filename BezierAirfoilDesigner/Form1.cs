@@ -192,10 +192,12 @@ namespace BezierAirfoilDesigner
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
 
             // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
-            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 || numPointsTop > 100000)
+            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2 /* || numPointsTop > 100000*/)
             {
-                txtNumOfPointsTop.Text = "225";
-                numPointsTop = 225;
+                MessageBox.Show("Invalid number of points for the top curve.");
+                return;
+                //txtNumOfPointsTop.Text = "150";
+                //numPointsTop = 150;
             }
 
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
@@ -217,10 +219,12 @@ namespace BezierAirfoilDesigner
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             // Try to parse the number of points, if unsuccessful (e.g., not numeric), set to 3
-            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2 || numPointsBottom > 100000)
+            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2 /* || numPointsBottom > 100000*/)
             {
-                txtNumOfPointBottom.Text = "225";
-                numPointsBottom = 225;
+                MessageBox.Show("Invalid number of points for the bottom curve.");
+                return;
+                //txtNumOfPointBottom.Text = "150";
+                //numPointsBottom = 150;
             }
 
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
