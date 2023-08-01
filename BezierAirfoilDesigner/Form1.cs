@@ -41,16 +41,16 @@ namespace BezierAirfoilDesigner
         readonly List<PointD> defaultControlPointsTop = new()
         {
             new PointD(0, 0),
-            new PointD(0, 0.15f),
-            new PointD(0.5f, 0.15f),
-            new PointD(1.0f, 0)
+            new PointD(0, 0.1),
+            new PointD(0.5, 0.1),
+            new PointD(1.0, 0)
         };
         readonly List<PointD> defaultControlPointsBottom = new()
         {
             new PointD(0, 0),
-            new PointD(0, -0.1f),
-            new PointD(0.5f, -0.1f),
-            new PointD(1.0f, 0)
+            new PointD(0, -0.1),
+            new PointD(0.5, -0.1),
+            new PointD(1.0, 0)
         };
 
         List<PointD> referenceDatTop = new();
