@@ -84,9 +84,11 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            cmbCoordinateStyle = new ComboBox();
             lblChord = new Label();
             txtChord = new TextBox();
             button1 = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             panel1.SuspendLayout();
@@ -710,6 +712,8 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(label1);
+            panel3.Controls.Add(cmbCoordinateStyle);
             panel3.Controls.Add(lblChord);
             panel3.Controls.Add(txtChord);
             panel3.Controls.Add(button1);
@@ -735,14 +739,22 @@
             panel3.Size = new Size(75, 591);
             panel3.TabIndex = 60;
             // 
+            // cmbCoordinateStyle
+            // 
+            cmbCoordinateStyle.FormattingEnabled = true;
+            cmbCoordinateStyle.Location = new Point(0, 428);
+            cmbCoordinateStyle.Name = "cmbCoordinateStyle";
+            cmbCoordinateStyle.Size = new Size(75, 23);
+            cmbCoordinateStyle.TabIndex = 63;
+            // 
             // lblChord
             // 
             lblChord.AutoSize = true;
             lblChord.Location = new Point(0, 366);
             lblChord.Name = "lblChord";
-            lblChord.Size = new Size(41, 15);
+            lblChord.Size = new Size(38, 15);
             lblChord.TabIndex = 62;
-            lblChord.Text = "chord:";
+            lblChord.Text = "chord";
             // 
             // txtChord
             // 
@@ -754,7 +766,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(0, 412);
+            button1.Location = new Point(0, 456);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
             button1.Size = new Size(75, 21);
@@ -762,6 +774,15 @@
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(0, 410);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 15);
+            label1.TabIndex = 64;
+            label1.Text = "export style";
             // 
             // Form1
             // 
@@ -876,5 +897,7 @@
         private Button button1;
         private Label lblChord;
         private TextBox txtChord;
+        private ComboBox cmbCoordinateStyle;
+        private Label label1;
     }
 }

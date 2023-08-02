@@ -172,6 +172,12 @@ namespace BezierAirfoilDesigner
             cmbLanguage.Items.Add("de");
             cmbLanguage.SelectedIndex = 0;
 
+            cmbCoordinateStyle.Items.Add("x,y");
+            cmbCoordinateStyle.Items.Add("0,y,z");
+            cmbCoordinateStyle.Items.Add("x,0,z");
+            cmbCoordinateStyle.Items.Add("x,y,0");
+            cmbCoordinateStyle.SelectedIndex = 0;
+
             calculations();
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
@@ -1255,6 +1261,7 @@ namespace BezierAirfoilDesigner
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
+            //multiply all points by chord
             for (int i = 0; i < pointsTop.Count; i++)
             {
                 pointsTop[i].X *= chord;
@@ -1274,7 +1281,22 @@ namespace BezierAirfoilDesigner
 
             for (int i = pointsTop.Count - 1; i >= 0; i--)
             {
-                fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
+                if (cmbCoordinateStyle.Text.Equals("x,y"))
+                {
+                    fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
+                }
+                if(cmbCoordinateStyle.Text.Equals("0,y,z"))
+                                   {
+                    fileContents += ($"{0} {pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
+                }
+                if (cmbCoordinateStyle.Text.Equals("x,0,z"))
+                {
+                    fileContents += ($"{pointsTop[i].X:F16} {0} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
+                }
+                if (cmbCoordinateStyle.Text.Equals("x,y,0"))
+                {
+                    fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16} {0}" + System.Environment.NewLine);
+                }
             }
 
             for (int i = 1; i <= pointsBottom.Count - 1; i++)
