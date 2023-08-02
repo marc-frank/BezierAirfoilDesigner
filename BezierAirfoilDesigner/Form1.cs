@@ -30,7 +30,7 @@ namespace BezierAirfoilDesigner
         //--------------------------------------------------------------------------------------------------------------------------------------
         // global variables
 
-        static string currentVersion = "v0.9.2";
+        static string currentVersion = "v0.9.3";
 
         private static DateTime currentTime;
         private static DateTime startTime;
