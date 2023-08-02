@@ -80,6 +80,7 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            chkUpdateUI = new CheckBox();
             lblErrorThresholdBottom = new Label();
             lblErrorThresholdTop = new Label();
             btnSave = new Button();
@@ -353,7 +354,7 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnAxisAuto.Location = new Point(0, 571);
+            btnAxisAuto.Location = new Point(0, 588);
             btnAxisAuto.Margin = new Padding(3, 2, 3, 2);
             btnAxisAuto.Name = "btnAxisAuto";
             btnAxisAuto.Size = new Size(75, 21);
@@ -424,7 +425,7 @@
             // btnSearchTop
             // 
             btnSearchTop.AutoSize = true;
-            btnSearchTop.Location = new Point(0, 143);
+            btnSearchTop.Location = new Point(0, 168);
             btnSearchTop.Margin = new Padding(3, 2, 3, 2);
             btnSearchTop.Name = "btnSearchTop";
             btnSearchTop.Size = new Size(75, 25);
@@ -436,7 +437,7 @@
             // btnSearchBottom
             // 
             btnSearchBottom.AutoSize = true;
-            btnSearchBottom.Location = new Point(0, 171);
+            btnSearchBottom.Location = new Point(0, 196);
             btnSearchBottom.Margin = new Padding(3, 2, 3, 2);
             btnSearchBottom.Name = "btnSearchBottom";
             btnSearchBottom.Size = new Size(75, 25);
@@ -448,7 +449,7 @@
             // btnAutoSearch
             // 
             btnAutoSearch.AutoSize = true;
-            btnAutoSearch.Location = new Point(0, 198);
+            btnAutoSearch.Location = new Point(0, 223);
             btnAutoSearch.Margin = new Padding(3, 2, 3, 2);
             btnAutoSearch.Name = "btnAutoSearch";
             btnAutoSearch.Size = new Size(75, 25);
@@ -571,7 +572,7 @@
             // lblElapsedTime
             // 
             lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(13, 342);
+            lblElapsedTime.Location = new Point(13, 367);
             lblElapsedTime.Name = "lblElapsedTime";
             lblElapsedTime.Size = new Size(49, 15);
             lblElapsedTime.TabIndex = 50;
@@ -580,7 +581,7 @@
             // btnStopSearch
             // 
             btnStopSearch.AutoSize = true;
-            btnStopSearch.Location = new Point(0, 315);
+            btnStopSearch.Location = new Point(0, 340);
             btnStopSearch.Margin = new Padding(3, 2, 3, 2);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 25);
@@ -664,6 +665,7 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(chkUpdateUI);
             panel3.Controls.Add(lblErrorThresholdBottom);
             panel3.Controls.Add(lblErrorThresholdTop);
             panel3.Controls.Add(btnSave);
@@ -682,16 +684,27 @@
             panel3.Controls.Add(lblElapsedTime);
             panel3.Controls.Add(btnStopSearch);
             panel3.Controls.Add(btnAxisAuto);
-            panel3.Location = new Point(809, 25);
+            panel3.Location = new Point(809, 8);
             panel3.Margin = new Padding(3, 2, 3, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(75, 591);
+            panel3.Size = new Size(75, 608);
             panel3.TabIndex = 60;
+            // 
+            // chkUpdateUI
+            // 
+            chkUpdateUI.AutoSize = true;
+            chkUpdateUI.Location = new Point(0, 144);
+            chkUpdateUI.Name = "chkUpdateUI";
+            chkUpdateUI.Size = new Size(77, 19);
+            chkUpdateUI.TabIndex = 61;
+            chkUpdateUI.Text = "update UI";
+            chkUpdateUI.UseVisualStyleBackColor = true;
+            chkUpdateUI.CheckedChanged += chkUpdateUI_CheckedChanged;
             // 
             // lblErrorThresholdBottom
             // 
             lblErrorThresholdBottom.AutoSize = true;
-            lblErrorThresholdBottom.Location = new Point(0, 269);
+            lblErrorThresholdBottom.Location = new Point(0, 294);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
             lblErrorThresholdBottom.Size = new Size(78, 15);
             lblErrorThresholdBottom.TabIndex = 69;
@@ -700,7 +713,7 @@
             // lblErrorThresholdTop
             // 
             lblErrorThresholdTop.AutoSize = true;
-            lblErrorThresholdTop.Location = new Point(0, 225);
+            lblErrorThresholdTop.Location = new Point(0, 250);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
             lblErrorThresholdTop.Size = new Size(75, 15);
             lblErrorThresholdTop.TabIndex = 68;
@@ -709,7 +722,7 @@
             // btnSave
             // 
             btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnSave.Location = new Point(0, 543);
+            btnSave.Location = new Point(0, 560);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 23);
             btnSave.TabIndex = 67;
@@ -719,7 +732,7 @@
             // 
             // txtErrorThresholdBottom
             // 
-            txtErrorThresholdBottom.Location = new Point(0, 287);
+            txtErrorThresholdBottom.Location = new Point(0, 312);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(75, 23);
             txtErrorThresholdBottom.TabIndex = 66;
@@ -728,7 +741,7 @@
             // 
             // txtErrorThresholdTop
             // 
-            txtErrorThresholdTop.Location = new Point(0, 243);
+            txtErrorThresholdTop.Location = new Point(0, 268);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(75, 23);
             txtErrorThresholdTop.TabIndex = 65;
@@ -859,5 +872,6 @@
         private Button btnSave;
         private Label lblErrorThresholdBottom;
         private Label lblErrorThresholdTop;
+        private CheckBox chkUpdateUI;
     }
 }

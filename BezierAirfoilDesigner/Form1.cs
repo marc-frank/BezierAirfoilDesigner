@@ -79,6 +79,7 @@ namespace BezierAirfoilDesigner
         private static bool showRadius;
         private static bool showReferenceTop;
         private static bool showReferenceBottom;
+        private static bool updateUI;
 
         private static bool cancelSearch;
         private static bool updateCheckTriggeredByButtonClick = false;
@@ -99,51 +100,6 @@ namespace BezierAirfoilDesigner
             InitializeComponent();
         }
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            int margin = 3;
-            var activeForm = Form1.ActiveForm;
-            if (activeForm != null)
-            {
-                //activeForm.SuspendLayout();
-
-                //panel1.Left = activeForm.Width - margin - panel1.Width;
-                //panel2.Left = activeForm.Width - margin - panel2.Width;
-
-                dataGridViewTop.Left = panel1.Left - margin - dataGridViewTop.Width;
-                dataGridViewTop.Height = (activeForm.Height - lblTop.Top - lblTop.Height - margin - margin - lblBottom.Height - margin - (activeForm.Height - lblAirfoilParam.Top)) / 2;
-                dataGridViewTop.Width = dataGridViewTop.Columns[0].Width + dataGridViewTop.Columns[1].Width + dataGridViewBottom.RowHeadersWidth + SystemInformation.VerticalScrollBarWidth + 2;
-                dataGridViewBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + 2 * margin + lblBottom.Height;
-                dataGridViewBottom.Left = dataGridViewTop.Left;
-                dataGridViewBottom.Height = dataGridViewTop.Height;
-                dataGridViewBottom.Width = dataGridViewTop.Width;
-
-                txtAirfoilParam.Left = dataGridViewTop.Left;
-
-                panel1.Top = dataGridViewTop.Top;
-                panel1.Height = dataGridViewTop.Height;
-                panel2.Top = dataGridViewBottom.Top;
-                panel2.Height = dataGridViewBottom.Height;
-
-                panel3.Left = dataGridViewTop.Left - panel3.Width - margin - 2;
-                panel3.Height = activeForm.Height - dataGridViewTop.Top - (activeForm.Height - (txtAirfoilParam.Top + txtAirfoilParam.Height));
-
-                lblTop.Left = dataGridViewTop.Left;
-                lblBottom.Left = dataGridViewTop.Left;
-                lblBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + margin;
-                lblAirfoilParam.Left = dataGridViewTop.Left;
-
-
-                formsPlot1.Width = panel3.Left;
-                formsPlot1.Height = txtThicknessStepSize.Top;
-
-                progressBar1.Width = activeForm.Width - 16;
-
-
-                //activeForm.ResumeLayout();
-            }
-        }
-
         private async void Form1_Load(object sender, EventArgs e)
         {
             await CheckForUpdates();
@@ -158,6 +114,7 @@ namespace BezierAirfoilDesigner
             chkShowControlBottom.Checked = true;
             chkShowTop.Checked = true;
             chkShowBottom.Checked = true;
+            chkUpdateUI.Checked = true;
 
             chkShowReferenceTop.Enabled = false;
             chkShowReferenceBottom.Enabled = false;
@@ -182,9 +139,12 @@ namespace BezierAirfoilDesigner
 
         void calculations()
         {
-            var axisLimits = formsPlot1.Plot.GetAxisLimits();
-            formsPlot1.Plot.Clear();
-            formsPlot1.Plot.SetAxisLimits(axisLimits);
+            if (updateUI)
+            { 
+                var axisLimits = formsPlot1.Plot.GetAxisLimits();
+                formsPlot1.Plot.Clear();
+                formsPlot1.Plot.SetAxisLimits(axisLimits);
+            }
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting points on the top bezier curve
@@ -200,13 +160,16 @@ namespace BezierAirfoilDesigner
 
             List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
 
-            Color colorTop;
-            if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
-            var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
-
-            for (int i = 0; i < pointsTop.Count; i++)
+            if (updateUI)
             {
-                top.Add(pointsTop[i].X, pointsTop[i].Y);
+                Color colorTop;
+                if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
+                var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
+
+                for (int i = 0; i < pointsTop.Count; i++)
+                {
+                    top.Add(pointsTop[i].X, pointsTop[i].Y);
+                }
             }
 
             lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
@@ -225,23 +188,22 @@ namespace BezierAirfoilDesigner
 
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
-            Color colorBottom;
-            if (showBottom) { colorBottom = Color.Red; } else { colorBottom = Color.Transparent; }
-            var bottom = formsPlot1.Plot.AddScatterList(color: colorBottom, lineStyle: ScottPlot.LineStyle.Solid);
-
-            for (int i = 0; i < pointsBottom.Count; i++)
+            if (updateUI)
             {
-                bottom.Add(pointsBottom[i].X, pointsBottom[i].Y);
+                Color colorBottom;
+                if (showBottom) { colorBottom = Color.Red; } else { colorBottom = Color.Transparent; }
+                var bottom = formsPlot1.Plot.AddScatterList(color: colorBottom, lineStyle: ScottPlot.LineStyle.Solid);
+
+                for (int i = 0; i < pointsBottom.Count; i++)
+                {
+                    bottom.Add(pointsBottom[i].X, pointsBottom[i].Y);
+                }
             }
 
             lblOrderBottom.Text = "order: " + (controlPointsBottom.Count - 1).ToString();
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting the thickness line
-
-            Color thicknessLineColor = new();
-            if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
-            var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
             if (double.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f)
@@ -255,25 +217,33 @@ namespace BezierAirfoilDesigner
 
             for (int i = 0; i < thicknesses.Count; i++)
             {
-                thicknessLine.Add(thicknesses[i].X, thicknesses[i].Y);
                 if (thicknesses[i].Y > maxThickness.Y)
                 {
                     maxThickness = thicknesses[i];
                 }
             }
 
-            Color maxThicknessMarkColor = new();
-            if (showThickness) { maxThicknessMarkColor = Color.Gray; } else { maxThicknessMarkColor = Color.Transparent; }
-            var maxThicknessMark = formsPlot1.Plot.AddScatterList(color: maxThicknessMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
-            maxThicknessMark.Add(maxThickness.X, maxThickness.Y);
-            maxThicknessMark.Add(maxThickness.X, 0.0f);
+            if (updateUI)
+            {
+                Color thicknessLineColor = new();
+                if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
+                var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+
+                for (int i = 0; i < thicknesses.Count; i++)
+                {
+                    thicknessLine.Add(thicknesses[i].X, thicknesses[i].Y);
+                }
+
+                Color maxThicknessMarkColor = new();
+                if (showThickness) { maxThicknessMarkColor = Color.Gray; } else { maxThicknessMarkColor = Color.Transparent; }
+                var maxThicknessMark = formsPlot1.Plot.AddScatterList(color: maxThicknessMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+                maxThicknessMark.Add(maxThickness.X, maxThickness.Y);
+                maxThicknessMark.Add(maxThickness.X, 0.0f);
+            }
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting the camber line
 
-            Color midLineColor = new();
-            if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
-            var camberLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             //try to parse the camber position, if unsucessful (eg not numeric) set to 0.5f
             if (double.TryParse(txtCamberPosition.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double camberPosition) == false || camberPosition < 0.0f || camberPosition > 1.0f)
@@ -294,27 +264,42 @@ namespace BezierAirfoilDesigner
 
             for (int i = 0; i < camber.Count; i++)
             {
-                camberLine.Add(camber[i].X, camber[i].Y);
                 if (Math.Abs(camber[i].Y) > Math.Abs(maxCamber.Y))
                 {
                     maxCamber = camber[i];
                 }
             }
 
-            Color maxCamberMarkColor = new();
-            if (showCamber) { maxCamberMarkColor = Color.Gray; } else { maxCamberMarkColor = Color.Transparent; }
-            var maxCamberMark = formsPlot1.Plot.AddScatterList(color: maxCamberMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
-            maxCamberMark.Add(maxCamber.X, maxCamber.Y);
-            maxCamberMark.Add(maxCamber.X, 0.0f);
+            if (updateUI)
+            {
+                Color midLineColor = new();
+                if (showCamber) { midLineColor = Color.Gray; } else { midLineColor = Color.Transparent; }
+                var camberLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+
+                for (int i = 0; i < camber.Count; i++)
+                {
+                    camberLine.Add(camber[i].X, camber[i].Y);
+                }
+
+                Color maxCamberMarkColor = new();
+                if (showCamber) { maxCamberMarkColor = Color.Gray; } else { maxCamberMarkColor = Color.Transparent; }
+                var maxCamberMark = formsPlot1.Plot.AddScatterList(color: maxCamberMarkColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+                maxCamberMark.Add(maxCamber.X, maxCamber.Y);
+                maxCamberMark.Add(maxCamber.X, 0.0f);
+            }
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and drawing the LE radius
 
             PointD midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], pointsTop[0], pointsTop[1]);
             double radius = CircleProperties.CalculateRadius(pointsBottom[1], pointsTop[0], pointsTop[1]);
-            Color circleColor;
-            if (showRadius) { circleColor = Color.Gray; } else { circleColor = Color.Transparent; }
-            formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: circleColor, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
+
+            if (updateUI)
+            {
+                Color circleColor;
+                if (showRadius) { circleColor = Color.Gray; } else { circleColor = Color.Transparent; }
+                formsPlot1.Plot.AddCircle(x: midpoint.X, y: midpoint.Y, radius: radius, color: circleColor, lineWidth: 1, lineStyle: ScottPlot.LineStyle.Dash);
+            }
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // printing airfoil parameters to the text box
@@ -327,57 +312,62 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // Plotting the control polygons of the top and bottom bezier curves
 
-            double[] xT = new double[controlPointsTop.Count];
-            double[] yT = new double[controlPointsTop.Count];
-
-            for (int i = 0; i < controlPointsTop.Count; i++)
+            if (updateUI)
             {
-                xT[i] = controlPointsTop[i].X;
-                yT[i] = controlPointsTop[i].Y;
+                double[] xT = new double[controlPointsTop.Count];
+                double[] yT = new double[controlPointsTop.Count];
+
+                for (int i = 0; i < controlPointsTop.Count; i++)
+                {
+                    xT[i] = controlPointsTop[i].X;
+                    yT[i] = controlPointsTop[i].Y;
+                }
+
+                var controlTop = new ScottPlot.Plottable.ScatterPlotListDraggable();
+                controlTop.AddRange(xT, yT);
+                controlTop.LineStyle = LineStyle.Dash;
+                if (showControlTop) { controlTop.Color = Color.Gray; } else { controlTop.Color = Color.Transparent; }
+                controlTop.MarkerSize = 5;
+                formsPlot1.Plot.Add(controlTop);
+
+                double[] xB = new double[controlPointsBottom.Count];
+                double[] yB = new double[controlPointsBottom.Count];
+
+                for (int i = 0; i < controlPointsBottom.Count; i++)
+                {
+                    xB[i] = controlPointsBottom[i].X;
+                    yB[i] = controlPointsBottom[i].Y;
+                }
+
+                var controlBottom = new ScottPlot.Plottable.ScatterPlotListDraggable();
+                controlBottom.AddRange(xB, yB);
+                controlBottom.LineStyle = LineStyle.Dash;
+                if (showControlBottom) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
+                controlBottom.MarkerSize = 5;
+                formsPlot1.Plot.Add(controlBottom);
             }
-
-            var controlTop = new ScottPlot.Plottable.ScatterPlotListDraggable();
-            controlTop.AddRange(xT, yT);
-            controlTop.LineStyle = LineStyle.Dash;
-            if (showControlTop) { controlTop.Color = Color.Gray; } else { controlTop.Color = Color.Transparent; }
-            controlTop.MarkerSize = 5;
-            formsPlot1.Plot.Add(controlTop);
-
-            double[] xB = new double[controlPointsBottom.Count];
-            double[] yB = new double[controlPointsBottom.Count];
-
-            for (int i = 0; i < controlPointsBottom.Count; i++)
-            {
-                xB[i] = controlPointsBottom[i].X;
-                yB[i] = controlPointsBottom[i].Y;
-            }
-
-            var controlBottom = new ScottPlot.Plottable.ScatterPlotListDraggable();
-            controlBottom.AddRange(xB, yB);
-            controlBottom.LineStyle = LineStyle.Dash;
-            if (showControlBottom) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
-            controlBottom.MarkerSize = 5;
-            formsPlot1.Plot.Add(controlBottom);
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // Add the reference .dat airfoil to the plot
 
-
-            Color referenceTopColor = new();
-            if (showReferenceTop) { referenceTopColor = Color.Blue; } else { referenceTopColor = Color.Transparent; }
-            var referenceDatPlotTop = formsPlot1.Plot.AddScatterList(color: referenceTopColor, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
-
-            Color referenceBottomColor = new();
-            if (showReferenceBottom) { referenceBottomColor = Color.Blue; } else { referenceBottomColor = Color.Transparent; }
-            var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: referenceBottomColor, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
-
-            for (int i = 0; i < referenceDatTop.Count; i++)
+            if (updateUI)
             {
-                referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
-            }
-            for (int i = 0; i < referenceDatBottom.Count; i++)
-            {
-                referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
+                Color referenceTopColor = new();
+                if (showReferenceTop) { referenceTopColor = Color.Blue; } else { referenceTopColor = Color.Transparent; }
+                var referenceDatPlotTop = formsPlot1.Plot.AddScatterList(color: referenceTopColor, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
+
+                Color referenceBottomColor = new();
+                if (showReferenceBottom) { referenceBottomColor = Color.Blue; } else { referenceBottomColor = Color.Transparent; }
+                var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: referenceBottomColor, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
+
+                for (int i = 0; i < referenceDatTop.Count; i++)
+                {
+                    referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
+                }
+                for (int i = 0; i < referenceDatBottom.Count; i++)
+                {
+                    referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
+                }
             }
 
             //----------------------------------------------------------------------------------------------------------------------------------
@@ -952,6 +942,51 @@ namespace BezierAirfoilDesigner
             }
         }
 
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            int margin = 3;
+            var activeForm = Form1.ActiveForm;
+            if (activeForm != null)
+            {
+                //activeForm.SuspendLayout();
+
+                //panel1.Left = activeForm.Width - margin - panel1.Width;
+                //panel2.Left = activeForm.Width - margin - panel2.Width;
+
+                dataGridViewTop.Left = panel1.Left - margin - dataGridViewTop.Width;
+                dataGridViewTop.Height = (activeForm.Height - lblTop.Top - lblTop.Height - margin - margin - lblBottom.Height - margin - (activeForm.Height - lblAirfoilParam.Top)) / 2;
+                dataGridViewTop.Width = dataGridViewTop.Columns[0].Width + dataGridViewTop.Columns[1].Width + dataGridViewBottom.RowHeadersWidth + SystemInformation.VerticalScrollBarWidth + 2;
+                dataGridViewBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + 2 * margin + lblBottom.Height;
+                dataGridViewBottom.Left = dataGridViewTop.Left;
+                dataGridViewBottom.Height = dataGridViewTop.Height;
+                dataGridViewBottom.Width = dataGridViewTop.Width;
+
+                txtAirfoilParam.Left = dataGridViewTop.Left;
+
+                panel1.Top = dataGridViewTop.Top;
+                panel1.Height = dataGridViewTop.Height;
+                panel2.Top = dataGridViewBottom.Top;
+                panel2.Height = dataGridViewBottom.Height;
+
+                panel3.Left = dataGridViewTop.Left - panel3.Width - margin - 2;
+                panel3.Height = activeForm.Height - lblTop.Top - (activeForm.Height - (txtAirfoilParam.Top + txtAirfoilParam.Height));
+
+                lblTop.Left = dataGridViewTop.Left;
+                lblBottom.Left = dataGridViewTop.Left;
+                lblBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + margin;
+                lblAirfoilParam.Left = dataGridViewTop.Left;
+
+
+                formsPlot1.Width = panel3.Left;
+                formsPlot1.Height = txtThicknessStepSize.Top;
+
+                progressBar1.Width = activeForm.Width - 16;
+
+
+                //activeForm.ResumeLayout();
+            }
+        }
+
         //--------------------------------------------------------------------------------------------------------------------------------------
         // formsPlot events
 
@@ -1135,6 +1170,11 @@ namespace BezierAirfoilDesigner
         {
             showReferenceBottom = chkShowReferenceBottom.Checked;
             calculations();
+        }
+
+        private void chkUpdateUI_CheckedChanged(object sender, EventArgs e)
+        {
+            updateUI = chkUpdateUI.Checked;
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
