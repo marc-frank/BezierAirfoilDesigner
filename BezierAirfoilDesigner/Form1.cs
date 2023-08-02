@@ -64,8 +64,8 @@ namespace BezierAirfoilDesigner
 
         double totalErrorTop;
         double totalErrorBottom;
-        double errorThresholdTop;
-        double errorThresholdBottom;
+        double errorThresholdTop = 0.075;
+        double errorThresholdBottom = 0.075;
 
         readonly double minZoomRange = 0.01;
         readonly double maxZoomRange = 100.0;
@@ -171,12 +171,6 @@ namespace BezierAirfoilDesigner
             cmbLanguage.Items.Add("en");
             cmbLanguage.Items.Add("de");
             cmbLanguage.SelectedIndex = 0;
-
-            cmbCoordinateStyle.Items.Add("x,y");
-            cmbCoordinateStyle.Items.Add("0,y,z");
-            cmbCoordinateStyle.Items.Add("x,0,z");
-            cmbCoordinateStyle.Items.Add("x,y,0");
-            cmbCoordinateStyle.SelectedIndex = 0;
 
             calculations();
             formsPlot1.Plot.AxisAuto();
@@ -660,16 +654,10 @@ namespace BezierAirfoilDesigner
                         betterCombinationFound = true;
                         return;
                     };
-
-                    if (topOrBottom)
+                    if (currentLowestError < (topOrBottom ? errorThresholdTop : errorThresholdBottom))
                     {
                         betterCombinationFound = true;
-                        if (currentLowestError < errorThresholdTop) return;
-                    }
-                    else
-                    {
-                        betterCombinationFound = true;
-                        if (currentLowestError < errorThresholdBottom) return;
+                        return;
                     }
 
                     if (currentIndex >= points.Count - 1)
@@ -848,19 +836,6 @@ namespace BezierAirfoilDesigner
                     return curve[i].Y + (x - curve[i].X) / (curve[i + 1].X - curve[i].X) * (curve[i + 1].Y - curve[i].Y);
             }
             return null;  // X is outside the range of the curve.
-        }
-
-        public static void SaveTextToFile(string text, string path)
-        {
-            try
-            {
-                File.WriteAllText(path, text);
-                MessageBox.Show("File Saved Successfully!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred: {ex.Message}");
-            }
         }
 
         public static double CalculateAreaBetweenCurves(List<PointD> curve1Points, List<PointD> curve2Points)
@@ -1238,216 +1213,6 @@ namespace BezierAirfoilDesigner
             calculations();
         }
 
-        private void btnSaveDat_Click(object sender, EventArgs e)
-        {
-            //tryparse with invariant culture
-            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
-            {
-                MessageBox.Show("Invalid Chord");
-                return;
-            }
-
-            // Get the control points from the data grid views
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-
-            // Ensure that the number of points for top and bottom is at least 3
-            if (int.Parse(txtNumOfPointsTop.Text) < 3) { txtNumOfPointsTop.Text = "3"; }
-            if (int.Parse(txtNumOfPointBottom.Text) < 3) { txtNumOfPointBottom.Text = "3"; }
-
-            // Parse the number of points for top and bottom from the text boxes
-            int numPointsTop = int.Parse(txtNumOfPointsTop.Text);
-            int numPointsBottom = int.Parse(txtNumOfPointBottom.Text);
-
-            // Calculate the bezier curves for top and bottom using the De Casteljau's algorithm
-            List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
-            List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
-
-            //multiply all points by chord
-            for (int i = 0; i < pointsTop.Count; i++)
-            {
-                pointsTop[i].X *= chord;
-                pointsTop[i].Y *= chord;
-            }
-            for (int i = 0; i < pointsBottom.Count; i++)
-            {
-                pointsBottom[i].X *= chord;
-                pointsBottom[i].Y *= chord;
-            }
-
-            // Remove "Bezier " prefix from the loaded airfoil name if it exists
-            string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
-
-            // Construct the .dat file content, using the airfoil name as the first line
-            string fileContents = "Bezier " + airfoilName + System.Environment.NewLine;
-
-            for (int i = pointsTop.Count - 1; i >= 0; i--)
-            {
-                if (cmbCoordinateStyle.Text.Equals("x,y"))
-                {
-                    fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
-                }
-                if(cmbCoordinateStyle.Text.Equals("0,y,z"))
-                                   {
-                    fileContents += ($"{0} {pointsTop[i].X:F16} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
-                }
-                if (cmbCoordinateStyle.Text.Equals("x,0,z"))
-                {
-                    fileContents += ($"{pointsTop[i].X:F16} {0} {pointsTop[i].Y:F16}" + System.Environment.NewLine);
-                }
-                if (cmbCoordinateStyle.Text.Equals("x,y,0"))
-                {
-                    fileContents += ($"{pointsTop[i].X:F16} {pointsTop[i].Y:F16} {0}" + System.Environment.NewLine);
-                }
-            }
-
-            for (int i = 1; i <= pointsBottom.Count - 1; i++)
-            {
-                fileContents += ($"{pointsBottom[i].X:F16} {pointsBottom[i].Y:F16}" + System.Environment.NewLine);
-            }
-
-            // Replace comma with dot in the decimal point (to conform to the .dat file format)
-            fileContents = fileContents.Replace(',', '.');
-
-            // Create a new SaveFileDialog instance and set its properties
-            using SaveFileDialog sfd = new();
-            sfd.Filter = "dat files (*.dat)|*.dat|All files (*.*)|*.*";
-            sfd.FilterIndex = 1;
-            sfd.RestoreDirectory = true;
-            sfd.FileName = "Bezier " + airfoilName;  // Set the initial filename in the dialog
-
-            // Show the dialog and continue only if a file was selected (OK result)
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                // Save the .dat file content to the selected file
-                SaveTextToFile(fileContents, sfd.FileName);
-            }
-        }
-
-        private void btnSaveBezDat_Click(object sender, EventArgs e)
-        {
-            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
-            {
-                MessageBox.Show("Invalid Chord");
-                return;
-            }
-
-            // Get the control points from the data grid views
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-
-            for (int i = 0; i < controlPointsTop.Count; i++)
-            {
-                controlPointsTop[i].X *= chord;
-                controlPointsTop[i].Y *= chord;
-            }
-            for (int i = 0; i < controlPointsBottom.Count; i++)
-            {
-                controlPointsBottom[i].X *= chord;
-                controlPointsBottom[i].Y *= chord;
-            }
-
-            // Remove "Bezier " prefix from the loaded airfoil name if it exists
-            string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
-
-            // Start constructing the .bez.dat file content, using the airfoil name as the first line
-            string fileContents = airfoilName + System.Environment.NewLine;
-
-            // Append the control points for the top curve
-            for (int i = controlPointsTop.Count - 1; i >= 0; i--)
-            {
-                fileContents += ($"{controlPointsTop[i].X:F16} {controlPointsTop[i].Y:F16}" + System.Environment.NewLine);
-            }
-
-            // Append the control points for the bottom curve
-            for (int i = 1; i <= controlPointsBottom.Count - 1; i++)
-            {
-                fileContents += ($"{controlPointsBottom[i].X:F16} {controlPointsBottom[i].Y:F16}" + System.Environment.NewLine);
-            }
-
-            // Replace comma with dot in the decimal point (to conform to the .dat file format)
-            fileContents = fileContents.Replace(',', '.');
-
-            // Create a new SaveFileDialog instance and set its properties
-            using SaveFileDialog sfd = new();
-            sfd.Filter = "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*";
-            sfd.FilterIndex = 1;
-            sfd.RestoreDirectory = true;
-
-            // Set the initial filename in the dialog
-            sfd.FileName = airfoilName;
-
-            // Show the dialog and continue only if a file was selected (OK result)
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                // Save the .bez.dat file content to the selected file
-                SaveTextToFile(fileContents, sfd.FileName);
-            }
-        }
-
-        private void btnSaveBez_Click(object sender, EventArgs e)
-        {
-            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
-            {
-                MessageBox.Show("Invalid Chord");
-                return;
-            }
-
-            // Get the control points from the data grid views
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-
-            for (int i = 0; i < controlPointsTop.Count; i++)
-            {
-                controlPointsTop[i].X *= chord;
-                controlPointsTop[i].Y *= chord;
-            }
-            for (int i = 0; i < controlPointsBottom.Count; i++)
-            {
-                controlPointsBottom[i].X *= chord;
-                controlPointsBottom[i].Y *= chord;
-            }
-
-            // Remove "Bezier " prefix from the loaded airfoil name if it exists
-            string airfoilName = loadedAirfoilName.StartsWith("Bezier ") ? loadedAirfoilName.Substring(7) : loadedAirfoilName;
-
-            // Start constructing the .bez file content, using the airfoil name as the first line
-            string fileContents = airfoilName + System.Environment.NewLine;
-
-            // Append the control points for the top curve
-            fileContents += "Top Start" + System.Environment.NewLine;
-            for (int i = 0; i <= controlPointsTop.Count - 1; i++)
-            {
-                fileContents += ($"{controlPointsTop[i].X:F16} {controlPointsTop[i].Y:F16}" + System.Environment.NewLine);
-            }
-            fileContents += "Top End" + System.Environment.NewLine;
-
-            // Append the control points for the bottom curve
-            fileContents += "Bottom Start" + System.Environment.NewLine;
-            for (int i = 0; i <= controlPointsBottom.Count - 1; i++)
-            {
-                fileContents += ($"{controlPointsBottom[i].X:F16} {controlPointsBottom[i].Y:F16}" + System.Environment.NewLine);
-            }
-            fileContents += "Bottom End" + System.Environment.NewLine;
-
-            // Replace comma with dot in the decimal point (to conform to the .bez file format)
-            fileContents = fileContents.Replace(',', '.');
-
-            // Create a new SaveFileDialog instance and set its properties
-            using SaveFileDialog sfd = new();
-            sfd.Filter = "Bezier files (*.bez)|*.bez|All files (*.*)|*.*";
-            sfd.FilterIndex = 1;
-            sfd.RestoreDirectory = true;
-            sfd.FileName = airfoilName;  // Set the initial filename in the dialog
-
-            // Show the dialog and continue only if a file was selected (OK result)
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                // Save the .bez file content to the selected file
-                SaveTextToFile(fileContents, sfd.FileName);
-            }
-        }
-
         private void btnLoadDat_Click(object sender, EventArgs e)
         {
             referenceDatTop.Clear();
@@ -1751,11 +1516,6 @@ namespace BezierAirfoilDesigner
             // Record the start time
             startTime = DateTime.Now;
 
-            // Define thresholds
-            errorThresholdTop = 0.075f;
-            errorThresholdBottom = 0.075f;
-            //double improvementThreshold = 0.05f;
-
             double previousError = totalErrorTop + totalErrorBottom;
             double currentError;
             double errorImprovement = 1.0f;
@@ -1930,6 +1690,35 @@ namespace BezierAirfoilDesigner
 
 
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            frmSave saveForm = new frmSave();
+
+            // Set properties
+            saveForm.controlPointsTop = GetControlPoints(dataGridViewTop); ;     // Your data for controlPointsTop
+            saveForm.controlPointsBottom = GetControlPoints(dataGridViewBottom); ;  // Your data for controlPointsBottom
+
+            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
+            {
+                MessageBox.Show("Invalid number of points for the top curve.");
+                return;
+            }
+
+            if (int.TryParse(txtNumOfPointBottom.Text, CultureInfo.InvariantCulture, out int numPointsBottom) == false || numPointsTop < 2)
+            {
+                MessageBox.Show("Invalid number of points for the top curve.");
+                return;
+            }
+
+            saveForm.pointsTop = DeCasteljau.BezierCurve(GetControlPoints(dataGridViewTop), numPointsTop);            // Your data for pointsTop
+            saveForm.pointsBottom = DeCasteljau.BezierCurve(GetControlPoints(dataGridViewBottom), numPointsBottom);        // Your data for pointsBottom
+
+            saveForm.loadedAirfoilName = loadedAirfoilName;    // Your data for loadedAirfoilName
+
+            saveForm.ShowDialog();
+        }
+
     }
 }
 

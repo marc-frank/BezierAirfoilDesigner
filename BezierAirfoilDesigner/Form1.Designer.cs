@@ -34,7 +34,6 @@
             dataGridViewBottom = new DataGridView();
             lblTop = new Label();
             lblBottom = new Label();
-            btnSaveDat = new Button();
             btnIncreaseOrderTop = new Button();
             btnIncreaseOrderBottom = new Button();
             txtNumOfPointsTop = new TextBox();
@@ -48,7 +47,6 @@
             txtAirfoilParam = new RichTextBox();
             lblAirfoilParam = new Label();
             btnDefault = new Button();
-            btnSaveBezDat = new Button();
             chkShowControlTop = new CheckBox();
             chkShowThickness = new CheckBox();
             chkShowRadius = new CheckBox();
@@ -57,7 +55,6 @@
             btnAxisAuto = new Button();
             btnLoadBezDat = new Button();
             btnLoadDat = new Button();
-            lblSave = new Label();
             lblLoad = new Label();
             chkShowReferenceTop = new CheckBox();
             chkShowReferenceBottom = new CheckBox();
@@ -78,17 +75,17 @@
             btnStopSearch = new Button();
             progressBar1 = new ProgressBar();
             btnLoadBez = new Button();
-            btnSaveBez = new Button();
             cmbLanguage = new ComboBox();
             btnCheckForUpdates = new Button();
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
-            cmbCoordinateStyle = new ComboBox();
-            lblChord = new Label();
-            txtChord = new TextBox();
+            lblErrorThresholdBottom = new Label();
+            lblErrorThresholdTop = new Label();
+            btnSave = new Button();
+            txtErrorThresholdBottom = new TextBox();
+            txtErrorThresholdTop = new TextBox();
             button1 = new Button();
-            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             panel1.SuspendLayout();
@@ -152,18 +149,6 @@
             lblBottom.Size = new Size(47, 15);
             lblBottom.TabIndex = 4;
             lblBottom.Text = "Bottom";
-            // 
-            // btnSaveDat
-            // 
-            btnSaveDat.AutoSize = true;
-            btnSaveDat.Location = new Point(0, 283);
-            btnSaveDat.Margin = new Padding(3, 2, 3, 2);
-            btnSaveDat.Name = "btnSaveDat";
-            btnSaveDat.Size = new Size(75, 25);
-            btnSaveDat.TabIndex = 5;
-            btnSaveDat.Text = ".dat";
-            btnSaveDat.UseVisualStyleBackColor = true;
-            btnSaveDat.Click += btnSaveDat_Click;
             // 
             // btnIncreaseOrderTop
             // 
@@ -303,18 +288,6 @@
             btnDefault.UseVisualStyleBackColor = true;
             btnDefault.Click += btnDefault_Click;
             // 
-            // btnSaveBezDat
-            // 
-            btnSaveBezDat.AutoSize = true;
-            btnSaveBezDat.Location = new Point(0, 311);
-            btnSaveBezDat.Margin = new Padding(3, 2, 3, 2);
-            btnSaveBezDat.Name = "btnSaveBezDat";
-            btnSaveBezDat.Size = new Size(75, 25);
-            btnSaveBezDat.TabIndex = 21;
-            btnSaveBezDat.Text = ".bez.dat";
-            btnSaveBezDat.UseVisualStyleBackColor = true;
-            btnSaveBezDat.Click += btnSaveBezDat_Click;
-            // 
             // chkShowControlTop
             // 
             chkShowControlTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -332,7 +305,7 @@
             // 
             chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(316, 636);
+            chkShowThickness.Location = new Point(320, 636);
             chkShowThickness.Margin = new Padding(3, 2, 3, 2);
             chkShowThickness.Name = "chkShowThickness";
             chkShowThickness.Size = new Size(75, 19);
@@ -345,7 +318,7 @@
             // 
             chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(658, 636);
+            chkShowRadius.Location = new Point(662, 636);
             chkShowRadius.Margin = new Padding(3, 2, 3, 2);
             chkShowRadius.Name = "chkShowRadius";
             chkShowRadius.Size = new Size(58, 19);
@@ -368,7 +341,7 @@
             // 
             chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(460, 636);
+            chkShowCamber.Location = new Point(464, 636);
             chkShowCamber.Margin = new Padding(3, 2, 3, 2);
             chkShowCamber.Name = "chkShowCamber";
             chkShowCamber.Size = new Size(66, 19);
@@ -380,10 +353,10 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            btnAxisAuto.Location = new Point(9, 571);
+            btnAxisAuto.Location = new Point(0, 571);
             btnAxisAuto.Margin = new Padding(3, 2, 3, 2);
             btnAxisAuto.Name = "btnAxisAuto";
-            btnAxisAuto.Size = new Size(56, 21);
+            btnAxisAuto.Size = new Size(75, 21);
             btnAxisAuto.TabIndex = 30;
             btnAxisAuto.Text = "Zoom";
             btnAxisAuto.UseVisualStyleBackColor = true;
@@ -414,15 +387,6 @@
             btnLoadDat.Click += btnLoadDat_Click;
             btnLoadDat.MouseDown += btnLoadDat_MouseDown;
             // 
-            // lblSave
-            // 
-            lblSave.AutoSize = true;
-            lblSave.Location = new Point(-1, 266);
-            lblSave.Name = "lblSave";
-            lblSave.Size = new Size(33, 15);
-            lblSave.TabIndex = 33;
-            lblSave.Text = "save:";
-            // 
             // lblLoad
             // 
             lblLoad.AutoSize = true;
@@ -436,7 +400,7 @@
             // 
             chkShowReferenceTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowReferenceTop.AutoSize = true;
-            chkShowReferenceTop.Location = new Point(722, 636);
+            chkShowReferenceTop.Location = new Point(726, 636);
             chkShowReferenceTop.Margin = new Padding(3, 2, 3, 2);
             chkShowReferenceTop.Name = "chkShowReferenceTop";
             chkShowReferenceTop.Size = new Size(61, 19);
@@ -448,12 +412,12 @@
             // chkShowReferenceBottom
             // 
             chkShowReferenceBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            chkShowReferenceBottom.Location = new Point(789, 636);
+            chkShowReferenceBottom.Location = new Point(793, 636);
             chkShowReferenceBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowReferenceBottom.Name = "chkShowReferenceBottom";
-            chkShowReferenceBottom.Size = new Size(61, 19);
+            chkShowReferenceBottom.Size = new Size(69, 19);
             chkShowReferenceBottom.TabIndex = 36;
-            chkShowReferenceBottom.Text = "ref bot";
+            chkShowReferenceBottom.Text = "ref btm";
             chkShowReferenceBottom.UseVisualStyleBackColor = true;
             chkShowReferenceBottom.CheckedChanged += chkShowReferenceBottom_CheckedChanged;
             // 
@@ -497,7 +461,7 @@
             // 
             chkShowTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowTop.AutoSize = true;
-            chkShowTop.Location = new Point(194, 636);
+            chkShowTop.Location = new Point(198, 636);
             chkShowTop.Margin = new Padding(3, 2, 3, 2);
             chkShowTop.Name = "chkShowTop";
             chkShowTop.Size = new Size(44, 19);
@@ -510,7 +474,7 @@
             // 
             chkShowBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowBottom.AutoSize = true;
-            chkShowBottom.Location = new Point(244, 636);
+            chkShowBottom.Location = new Point(248, 636);
             chkShowBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowBottom.Name = "chkShowBottom";
             chkShowBottom.Size = new Size(66, 19);
@@ -535,16 +499,16 @@
             chkShowControlBottom.Location = new Point(124, 636);
             chkShowControlBottom.Margin = new Padding(3, 2, 3, 2);
             chkShowControlBottom.Name = "chkShowControlBottom";
-            chkShowControlBottom.Size = new Size(64, 19);
+            chkShowControlBottom.Size = new Size(68, 19);
             chkShowControlBottom.TabIndex = 43;
-            chkShowControlBottom.Text = "ctrl bot";
+            chkShowControlBottom.Text = "ctrl btm";
             chkShowControlBottom.UseVisualStyleBackColor = true;
             chkShowControlBottom.CheckedChanged += chkShowControlBottom_CheckedChanged;
             // 
             // txtCamberPosition
             // 
             txtCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberPosition.Location = new Point(595, 634);
+            txtCamberPosition.Location = new Point(599, 634);
             txtCamberPosition.Margin = new Padding(3, 2, 3, 2);
             txtCamberPosition.Name = "txtCamberPosition";
             txtCamberPosition.Size = new Size(57, 23);
@@ -555,7 +519,7 @@
             // txtThicknessStepSize
             // 
             txtThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtThicknessStepSize.Location = new Point(397, 634);
+            txtThicknessStepSize.Location = new Point(401, 634);
             txtThicknessStepSize.Margin = new Padding(3, 2, 3, 2);
             txtThicknessStepSize.Name = "txtThicknessStepSize";
             txtThicknessStepSize.Size = new Size(57, 23);
@@ -566,7 +530,7 @@
             // txtCamberStepSize
             // 
             txtCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberStepSize.Location = new Point(532, 634);
+            txtCamberStepSize.Location = new Point(536, 634);
             txtCamberStepSize.Margin = new Padding(3, 2, 3, 2);
             txtCamberStepSize.Name = "txtCamberStepSize";
             txtCamberStepSize.Size = new Size(57, 23);
@@ -616,7 +580,7 @@
             // btnStopSearch
             // 
             btnStopSearch.AutoSize = true;
-            btnStopSearch.Location = new Point(0, 241);
+            btnStopSearch.Location = new Point(0, 328);
             btnStopSearch.Margin = new Padding(3, 2, 3, 2);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 25);
@@ -645,18 +609,6 @@
             btnLoadBez.Text = ".bez";
             btnLoadBez.UseVisualStyleBackColor = true;
             btnLoadBez.Click += btnLoadBez_Click;
-            // 
-            // btnSaveBez
-            // 
-            btnSaveBez.AutoSize = true;
-            btnSaveBez.Location = new Point(0, 339);
-            btnSaveBez.Margin = new Padding(3, 2, 3, 2);
-            btnSaveBez.Name = "btnSaveBez";
-            btnSaveBez.Size = new Size(75, 25);
-            btnSaveBez.TabIndex = 54;
-            btnSaveBez.Text = ".bez";
-            btnSaveBez.UseVisualStyleBackColor = true;
-            btnSaveBez.Click += btnSaveBez_Click;
             // 
             // cmbLanguage
             // 
@@ -712,10 +664,11 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            panel3.Controls.Add(label1);
-            panel3.Controls.Add(cmbCoordinateStyle);
-            panel3.Controls.Add(lblChord);
-            panel3.Controls.Add(txtChord);
+            panel3.Controls.Add(lblErrorThresholdBottom);
+            panel3.Controls.Add(lblErrorThresholdTop);
+            panel3.Controls.Add(btnSave);
+            panel3.Controls.Add(txtErrorThresholdBottom);
+            panel3.Controls.Add(txtErrorThresholdTop);
             panel3.Controls.Add(button1);
             panel3.Controls.Add(lblLoad);
             panel3.Controls.Add(btnDefault);
@@ -728,10 +681,6 @@
             panel3.Controls.Add(btnAutoSearch);
             panel3.Controls.Add(lblElapsedTime);
             panel3.Controls.Add(btnStopSearch);
-            panel3.Controls.Add(lblSave);
-            panel3.Controls.Add(btnSaveDat);
-            panel3.Controls.Add(btnSaveBezDat);
-            panel3.Controls.Add(btnSaveBez);
             panel3.Controls.Add(btnAxisAuto);
             panel3.Location = new Point(809, 25);
             panel3.Margin = new Padding(3, 2, 3, 2);
@@ -739,34 +688,54 @@
             panel3.Size = new Size(75, 591);
             panel3.TabIndex = 60;
             // 
-            // cmbCoordinateStyle
+            // lblErrorThresholdBottom
             // 
-            cmbCoordinateStyle.FormattingEnabled = true;
-            cmbCoordinateStyle.Location = new Point(0, 428);
-            cmbCoordinateStyle.Name = "cmbCoordinateStyle";
-            cmbCoordinateStyle.Size = new Size(75, 23);
-            cmbCoordinateStyle.TabIndex = 63;
+            lblErrorThresholdBottom.AutoSize = true;
+            lblErrorThresholdBottom.Location = new Point(0, 282);
+            lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
+            lblErrorThresholdBottom.Size = new Size(78, 15);
+            lblErrorThresholdBottom.TabIndex = 69;
+            lblErrorThresholdBottom.Text = "ErrThreshBtm";
             // 
-            // lblChord
+            // lblErrorThresholdTop
             // 
-            lblChord.AutoSize = true;
-            lblChord.Location = new Point(0, 366);
-            lblChord.Name = "lblChord";
-            lblChord.Size = new Size(38, 15);
-            lblChord.TabIndex = 62;
-            lblChord.Text = "chord";
+            lblErrorThresholdTop.AutoSize = true;
+            lblErrorThresholdTop.Location = new Point(0, 238);
+            lblErrorThresholdTop.Name = "lblErrorThresholdTop";
+            lblErrorThresholdTop.Size = new Size(75, 15);
+            lblErrorThresholdTop.TabIndex = 68;
+            lblErrorThresholdTop.Text = "ErrThreshTop";
             // 
-            // txtChord
+            // btnSave
             // 
-            txtChord.Location = new Point(0, 384);
-            txtChord.Name = "txtChord";
-            txtChord.Size = new Size(75, 23);
-            txtChord.TabIndex = 61;
-            txtChord.Text = "1";
+            btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnSave.Location = new Point(0, 543);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(75, 23);
+            btnSave.TabIndex = 67;
+            btnSave.Text = "Save";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
+            // 
+            // txtErrorThresholdBottom
+            // 
+            txtErrorThresholdBottom.Location = new Point(0, 300);
+            txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
+            txtErrorThresholdBottom.Size = new Size(75, 23);
+            txtErrorThresholdBottom.TabIndex = 66;
+            txtErrorThresholdBottom.Text = "0,075";
+            // 
+            // txtErrorThresholdTop
+            // 
+            txtErrorThresholdTop.Location = new Point(0, 256);
+            txtErrorThresholdTop.Name = "txtErrorThresholdTop";
+            txtErrorThresholdTop.Size = new Size(75, 23);
+            txtErrorThresholdTop.TabIndex = 65;
+            txtErrorThresholdTop.Text = "0,075";
             // 
             // button1
             // 
-            button1.Location = new Point(0, 456);
+            button1.Location = new Point(0, 436);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
             button1.Size = new Size(75, 21);
@@ -774,15 +743,6 @@
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(0, 410);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 15);
-            label1.TabIndex = 64;
-            label1.Text = "export style";
             // 
             // Form1
             // 
@@ -821,6 +781,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "BezierAirfoilDesigner";
             FormClosing += Form1_FormClosing;
             Load += Form1_Load;
@@ -844,7 +805,6 @@
         private DataGridView dataGridViewBottom;
         private Label lblTop;
         private Label lblBottom;
-        private Button btnSaveDat;
         private Button btnIncreaseOrderTop;
         private Button btnIncreaseOrderBottom;
         private TextBox txtNumOfPointsTop;
@@ -858,7 +818,6 @@
         private RichTextBox txtAirfoilParam;
         private Label lblAirfoilParam;
         private Button btnDefault;
-        private Button btnSaveBezDat;
         private CheckBox chkShowControlTop;
         private CheckBox chkShowThickness;
         private CheckBox chkShowRadius;
@@ -867,7 +826,6 @@
         private Button btnAxisAuto;
         private Button btnLoadBezDat;
         private Button btnLoadDat;
-        private Label lblSave;
         private Label lblLoad;
         private CheckBox chkShowReferenceTop;
         private CheckBox chkShowReferenceBottom;
@@ -888,16 +846,16 @@
         private Button btnStopSearch;
         private ProgressBar progressBar1;
         private Button btnLoadBez;
-        private Button btnSaveBez;
         private ComboBox cmbLanguage;
         private Button btnCheckForUpdates;
         private Panel panel1;
         private Panel panel2;
         private Panel panel3;
+        private TextBox txtErrorThresholdBottom;
+        private TextBox txtErrorThresholdTop;
         private Button button1;
-        private Label lblChord;
-        private TextBox txtChord;
-        private ComboBox cmbCoordinateStyle;
-        private Label label1;
+        private Button btnSave;
+        private Label lblErrorThresholdBottom;
+        private Label lblErrorThresholdTop;
     }
 }
