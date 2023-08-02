@@ -1165,6 +1165,24 @@ namespace BezierAirfoilDesigner
             calculations();
         }
 
+        private void txtErrorThresholdTop_TextChanged(object sender, EventArgs e)
+        {
+            if (double.TryParse(txtErrorThresholdTop.Text.Replace(",", "."), CultureInfo.InvariantCulture, out errorThresholdTop) == false)
+            {
+                MessageBox.Show("Invalid Error Threshold Top.");
+                return;
+            }
+        }
+
+        private void txtErrorThresholdBottom_TextChanged(object sender, EventArgs e)
+        {
+            if (double.TryParse(txtErrorThresholdBottom.Text.Replace(",", "."), CultureInfo.InvariantCulture, out errorThresholdBottom) == false)
+            {
+                MessageBox.Show("Invalid Error Threshold Bottom.");
+                return;
+            }
+        }
+
         //--------------------------------------------------------------------------------------------------------------------------------------
         // button events
 
@@ -1718,7 +1736,6 @@ namespace BezierAirfoilDesigner
 
             saveForm.ShowDialog();
         }
-
     }
 }
 

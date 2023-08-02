@@ -571,7 +571,7 @@
             // lblElapsedTime
             // 
             lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(0, 223);
+            lblElapsedTime.Location = new Point(13, 342);
             lblElapsedTime.Name = "lblElapsedTime";
             lblElapsedTime.Size = new Size(49, 15);
             lblElapsedTime.TabIndex = 50;
@@ -580,7 +580,7 @@
             // btnStopSearch
             // 
             btnStopSearch.AutoSize = true;
-            btnStopSearch.Location = new Point(0, 328);
+            btnStopSearch.Location = new Point(0, 315);
             btnStopSearch.Margin = new Padding(3, 2, 3, 2);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 25);
@@ -691,7 +691,7 @@
             // lblErrorThresholdBottom
             // 
             lblErrorThresholdBottom.AutoSize = true;
-            lblErrorThresholdBottom.Location = new Point(0, 282);
+            lblErrorThresholdBottom.Location = new Point(0, 269);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
             lblErrorThresholdBottom.Size = new Size(78, 15);
             lblErrorThresholdBottom.TabIndex = 69;
@@ -700,7 +700,7 @@
             // lblErrorThresholdTop
             // 
             lblErrorThresholdTop.AutoSize = true;
-            lblErrorThresholdTop.Location = new Point(0, 238);
+            lblErrorThresholdTop.Location = new Point(0, 225);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
             lblErrorThresholdTop.Size = new Size(75, 15);
             lblErrorThresholdTop.TabIndex = 68;
@@ -719,19 +719,21 @@
             // 
             // txtErrorThresholdBottom
             // 
-            txtErrorThresholdBottom.Location = new Point(0, 300);
+            txtErrorThresholdBottom.Location = new Point(0, 287);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(75, 23);
             txtErrorThresholdBottom.TabIndex = 66;
             txtErrorThresholdBottom.Text = "0,075";
+            txtErrorThresholdBottom.TextChanged += txtErrorThresholdBottom_TextChanged;
             // 
             // txtErrorThresholdTop
             // 
-            txtErrorThresholdTop.Location = new Point(0, 256);
+            txtErrorThresholdTop.Location = new Point(0, 243);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(75, 23);
             txtErrorThresholdTop.TabIndex = 65;
             txtErrorThresholdTop.Text = "0,075";
+            txtErrorThresholdTop.TextChanged += txtErrorThresholdTop_TextChanged;
             // 
             // button1
             // 
