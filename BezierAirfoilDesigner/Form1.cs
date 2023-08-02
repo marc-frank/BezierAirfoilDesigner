@@ -663,10 +663,12 @@ namespace BezierAirfoilDesigner
 
                     if (topOrBottom)
                     {
+                        betterCombinationFound = true;
                         if (currentLowestError < errorThresholdTop) return;
                     }
                     else
                     {
+                        betterCombinationFound = true;
                         if (currentLowestError < errorThresholdBottom) return;
                     }
 
