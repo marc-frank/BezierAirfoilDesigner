@@ -192,7 +192,7 @@ namespace BezierAirfoilDesigner
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
 
             // Try to parse the number of points, if unsuccessful show a message box and return
-            if (int.TryParse(txtNumOfPointsTop.Text, out int numPointsTop) == false || numPointsTop < 2)
+            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
             {
                 MessageBox.Show("Invalid number of points for the top curve.");
                 return;
@@ -217,7 +217,7 @@ namespace BezierAirfoilDesigner
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             // Try to parse the number of points, if unsuccessful show a message box and return
-            if (int.TryParse(txtNumOfPointBottom.Text, out int numPointsBottom) == false || numPointsBottom < 2)
+            if (int.TryParse(txtNumOfPointBottom.Text, CultureInfo.InvariantCulture, out int numPointsBottom) == false || numPointsBottom < 2)
             {
                 MessageBox.Show("Invalid number of points for the bottom curve.");
                 return;
@@ -244,7 +244,7 @@ namespace BezierAirfoilDesigner
             var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (double.TryParse(txtThicknessStepSize.Text, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f)
+            if (double.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f)
             {
                 MessageBox.Show("Invalid thickness step size.");
                 return;
@@ -276,14 +276,14 @@ namespace BezierAirfoilDesigner
             var camberLine = formsPlot1.Plot.AddScatterList(color: midLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
             //try to parse the camber position, if unsucessful (eg not numeric) set to 0.5f
-            if (double.TryParse(txtCamberPosition.Text, out double camberPosition) == false || camberPosition < 0.0f || camberPosition > 1.0f)
+            if (double.TryParse(txtCamberPosition.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double camberPosition) == false || camberPosition < 0.0f || camberPosition > 1.0f)
             {
                 MessageBox.Show("Invalid camber position.");
                 return;
             }
 
             //try to parse the camber step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (double.TryParse(txtCamberStepSize.Text, out double camberStepSize) == false || camberStepSize < 0.00001f || camberStepSize > 1.0f)
+            if (double.TryParse(txtCamberStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double camberStepSize) == false || camberStepSize < 0.00001f || camberStepSize > 1.0f)
             {
                 MessageBox.Show("Invalid camber step size.");
                 return;
@@ -760,8 +760,8 @@ namespace BezierAirfoilDesigner
             for (int i = 0; i < gridView.Rows.Count - 1; i++)
             {
                 // Retrieve the values from the DataGridView
-                _ = double.TryParse(s: gridView.Rows[i].Cells[0].Value.ToString(), out double x);
-                _ = double.TryParse(s: gridView.Rows[i].Cells[1].Value.ToString(), out double y);
+                _ = double.TryParse(s: gridView.Rows[i].Cells[0].Value.ToString().Replace(",", "."), CultureInfo.InvariantCulture, out double x);
+                _ = double.TryParse(s: gridView.Rows[i].Cells[1].Value.ToString().Replace(",", "."), CultureInfo.InvariantCulture, out double y);
                 // Create a PointD object
                 PointD point = new(x, y);
                 controlPointsBottom.Add(point);
@@ -1232,7 +1232,8 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveDat_Click(object sender, EventArgs e)
         {
-            if (double.TryParse(txtChord.Text, out double chord) == false)
+            //tryparse with invariant culture
+            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
             {
                 MessageBox.Show("Invalid Chord");
                 return;
@@ -1301,7 +1302,7 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveBezDat_Click(object sender, EventArgs e)
         {
-            if (double.TryParse(txtChord.Text, out double chord) == false)
+            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
             {
                 MessageBox.Show("Invalid Chord");
                 return;
@@ -1362,7 +1363,7 @@ namespace BezierAirfoilDesigner
 
         private void btnSaveBez_Click(object sender, EventArgs e)
         {
-            if (double.TryParse(txtChord.Text, out double chord) == false)
+            if (double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord) == false)
             {
                 MessageBox.Show("Invalid Chord");
                 return;
@@ -1467,8 +1468,8 @@ namespace BezierAirfoilDesigner
                     if (parts.Length == 2)
                     {
                         // parse the parts as doubles
-                        if (double.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
-                        && double.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
+                        if (double.TryParse(parts[0].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
+                        && double.TryParse(parts[1].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
                         {
                             // add the point to the list
                             pointsReferenceAirfoil.Add(new PointD(x, y));
@@ -1546,8 +1547,8 @@ namespace BezierAirfoilDesigner
                     if (parts.Length == 2)
                     {
                         // parse the parts as doubles
-                        if (double.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
-                        && double.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
+                        if (double.TryParse(parts[0].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
+                        && double.TryParse(parts[1].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
                         {
                             // add the point to the list
                             controlPoints.Add(new PointD(x, y));
@@ -1631,8 +1632,8 @@ namespace BezierAirfoilDesigner
                     else if (parts.Length == 2 && currentControlPoints != null)
                     {
                         // ...try to parse the parts as doubleing-point numbers
-                        if (double.TryParse(parts[0], NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
-                        && double.TryParse(parts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
+                        if (double.TryParse(parts[0].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double x)
+                        && double.TryParse(parts[1].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out double y))
                         {
                             // ...and if successful, add the point to the current control points list
                             currentControlPoints.Add(new PointD(x, y));
@@ -1914,13 +1915,11 @@ public class PointD : IEquatable<PointD>
     public double X { get; set; }
     public double Y { get; set; }
 
-//    public override bool Equals(object obj)
-//    {
-//        if (obj == null || GetType() != obj.GetType())
-//            return false;
-
-//        return Equals((PointD)obj);
-//    }
+    public PointD(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
 
     public PointD()
     {
@@ -1947,3 +1946,5 @@ public class PointD : IEquatable<PointD>
         return HashCode.Combine(X, Y);
     }
 }
+
+
