@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BezierAirfoilDesigner
 {
@@ -84,17 +85,45 @@ namespace BezierAirfoilDesigner
             return null;
         }
 
-        private string AppendPointsToFileContent(string fileContents, List<PointD> points, bool top)
+        // This method appends points to file content string. It can append points in regular or reverse order.
+        private string AppendPointsToFileContent(string fileContents, List<PointD> points, bool reverseOrder)
         {
-            int start = top ? points.Count - 1 : 1;
-            int end = top ? -1 : points.Count;
-            int step = top ? -1 : 1;
+            // Determine the start, end, and step for the loop depending on whether we need to append points in reverse order
+            int start = reverseOrder ? points.Count - 1 : 0;
+            int end = reverseOrder ? -1 : points.Count;
+            int step = reverseOrder ? -1 : 1;
 
+            // Loop through the points
             for (int i = start; i != end; i += step)
             {
-                fileContents += ($"{points[i].X:F16} {points[i].Y:F16}" + System.Environment.NewLine);
+                // Format X and Y coordinates. If a coordinate is not negative, add a space in front of it.
+                string xCoord = points[i].X >= 0 ? $" {points[i].X:F16}" : $"{points[i].X:F16}";
+                string yCoord = points[i].Y >= 0 ? $" {points[i].Y:F16}" : $"{points[i].Y:F16}";
+
+                // Check the coordinate style and append the point to fileContents accordingly
+                if (cmbCoordinateStyle.Text.Equals("x,y"))
+                {
+                    // Append point in "x,y" style
+                    fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                }
+                else if (cmbCoordinateStyle.Text.Equals("0,y,z"))
+                {
+                    // Append point in "0,y,z" style
+                    fileContents += $"{0} {xCoord} {yCoord}" + System.Environment.NewLine;
+                }
+                else if (cmbCoordinateStyle.Text.Equals("x,0,z"))
+                {
+                    // Append point in "x,0,z" style
+                    fileContents += $"{xCoord} {0} {yCoord}" + System.Environment.NewLine;
+                }
+                else if (cmbCoordinateStyle.Text.Equals("x,y,0"))
+                {
+                    // Append point in "x,y,0" style
+                    fileContents += $"{xCoord} {yCoord} {0}" + System.Environment.NewLine;
+                }
             }
 
+            // Return the modified fileContents
             return fileContents;
         }
 
@@ -111,17 +140,17 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            string airfoilName = PrepareAirfoilName(loadedAirfoilName);
-            string fileContents = "Bezier " + airfoilName + System.Environment.NewLine;
-
-            fileContents = AppendPointsToFileContent(fileContents, pointsTop, true);
-            fileContents = AppendPointsToFileContent(fileContents, pointsBottom, false);
-
-            fileContents = fileContents.Replace(',', '.');
-
-            string path = ShowSaveDialog("Bezier " + airfoilName, "dat files (*.dat)|*.dat|All files (*.*)|*.*");
+            string path = ShowSaveDialog("Bezier " + PrepareAirfoilName(loadedAirfoilName), "dat files (*.dat)|*.dat|All files (*.*)|*.*");
             if (path != null)
             {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents = AppendPointsToFileContent(fileContents, pointsTop, true);
+                fileContents = AppendPointsToFileContent(fileContents, pointsBottom, false);
+
+                fileContents = fileContents.Replace(',', '.');
+
                 SaveTextToFile(fileContents, path);
             }
         }
@@ -133,17 +162,17 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            string airfoilName = PrepareAirfoilName(loadedAirfoilName);
-            string fileContents = airfoilName + System.Environment.NewLine;
-
-            fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, true);
-            fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
-
-            fileContents = fileContents.Replace(',', '.');
-
-            string path = ShowSaveDialog(airfoilName, "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*");
+            string path = ShowSaveDialog(PrepareAirfoilName(loadedAirfoilName), "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*");
             if (path != null)
             {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, true);
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
+
+                fileContents = fileContents.Replace(',', '.');
+
                 SaveTextToFile(fileContents, path);
             }
         }
@@ -155,25 +184,24 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            string airfoilName = PrepareAirfoilName(loadedAirfoilName);
-            string fileContents = airfoilName + System.Environment.NewLine;
-
-            fileContents += "Top Start" + System.Environment.NewLine;
-            fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, true);
-            fileContents += "Top End" + System.Environment.NewLine;
-
-            fileContents += "Bottom Start" + System.Environment.NewLine;
-            fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
-            fileContents += "Bottom End" + System.Environment.NewLine;
-
-            fileContents = fileContents.Replace(',', '.');
-
-            string path = ShowSaveDialog(airfoilName, "Bezier files (*.bez)|*.bez|All files (*.*)|*.*");
+            string path = ShowSaveDialog(PrepareAirfoilName(loadedAirfoilName), "Bezier files (*.bez)|*.bez|All files (*.*)|*.*");
             if (path != null)
             {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents += "Top Start" + System.Environment.NewLine;
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, false);
+                fileContents += "Top End" + System.Environment.NewLine;
+
+                fileContents += "Bottom Start" + System.Environment.NewLine;
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
+                fileContents += "Bottom End" + System.Environment.NewLine;
+
+                fileContents = fileContents.Replace(',', '.');
+
                 SaveTextToFile(fileContents, path);
             }
         }
-
     }
 }

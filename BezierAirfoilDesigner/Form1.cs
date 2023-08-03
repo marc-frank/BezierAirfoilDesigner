@@ -1578,16 +1578,26 @@ namespace BezierAirfoilDesigner
             double currentError;
             double errorImprovement = 1.0f;
 
-            while (/*errorImprovement >= improvementThreshold*/ totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
+            await SearchTopAsync();
+            await SearchBottomAsync();
+
+            while (totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
             {
                 // Check if the operation should be cancelled
                 if (cancelSearch) break;
 
+                if (totalErrorTop >= errorThresholdTop)
+                {
+                    btnIncreaseOrderTop.PerformClick();
+                }
+                
+                if (totalErrorBottom >= errorThresholdBottom)
+                {
+                    btnIncreaseOrderBottom.PerformClick();
+                }
+
                 await SearchTopAsync();
                 await SearchBottomAsync();
-
-                btnIncreaseOrderTop.PerformClick();
-                btnIncreaseOrderBottom.PerformClick();
 
                 currentError = totalErrorTop + totalErrorBottom;
                 errorImprovement = (previousError - currentError) / previousError;
