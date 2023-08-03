@@ -96,9 +96,9 @@ namespace BezierAirfoilDesigner
             // Loop through the points
             for (int i = start; i != end; i += step)
             {
-                // Format X and Y coordinates. If a coordinate is not negative, add a space in front of it.
-                string xCoord = points[i].X >= 0 ? $" {points[i].X:F16}" : $"{points[i].X:F16}";
-                string yCoord = points[i].Y >= 0 ? $" {points[i].Y:F16}" : $"{points[i].Y:F16}";
+                // Format X and Y coordinates. /*If a coordinate is not negative, add a space in front of it.*/
+                string xCoord = points[i].X >= 0 ? $"{points[i].X:F16}" : $"{points[i].X:F16}";
+                string yCoord = points[i].Y >= 0 ? $"{points[i].Y:F16}" : $"{points[i].Y:F16}";
 
                 // Check the coordinate style and append the point to fileContents accordingly
                 if (cmbCoordinateStyle.Text.Equals("x,y"))
