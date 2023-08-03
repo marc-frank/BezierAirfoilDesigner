@@ -1300,12 +1300,6 @@ namespace BezierAirfoilDesigner
                 {
                     loadedAirfoilName = line;
                 }
-                else
-                {
-                    // Handle the situation when the file is empty or we've reached the end of the file
-                    // For example, you might throw an exception or assign a default value to loadedAirfoilName
-                    loadedAirfoilName = "airfoil name";
-                }
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1383,8 +1377,13 @@ namespace BezierAirfoilDesigner
                 string path = openFileDialog.FileName;
 
                 using StreamReader reader = new(path); // Use the path chosen by the user
-                                                       // skip the header line
-                string? line = reader.ReadLine();
+
+                // header line is written to the global variable, for use in saving
+                var line = reader.ReadLine();
+                if (line != null)
+                {
+                    loadedAirfoilName = line;
+                }
 
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -1445,8 +1444,12 @@ namespace BezierAirfoilDesigner
                 // Create a new StreamReader instance to read from the selected file
                 using StreamReader reader = new(path);
 
-                // Read the first line from the file (and ignore it, as it's a header)
-                string line = reader.ReadLine();
+                // header line is written to the global variable, for use in saving
+                var line = reader.ReadLine();
+                if (line != null)
+                {
+                    loadedAirfoilName = line;
+                }
 
                 // Variable to keep track of which list of control points we're currently adding to
                 List<PointD> currentControlPoints = null;
