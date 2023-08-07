@@ -1,26 +1,7 @@
 using BezierAirfoilDesigner.Properties;
-using MathNet.Numerics;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json;
 using ScottPlot;
-using ScottPlot.Drawing.Colormaps;
-using ScottPlot.Plottable;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Numerics;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.ConstrainedExecution;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BezierAirfoilDesigner
 {
@@ -68,7 +49,7 @@ namespace BezierAirfoilDesigner
         double errorThresholdBottom = 0.075;
 
         readonly double minZoomRange = 0.01;
-        readonly double maxZoomRange = 100.0;
+        readonly double maxZoomRange = 500.0;
 
         private static bool showControlTop;
         private static bool showControlBottom;
@@ -129,6 +110,11 @@ namespace BezierAirfoilDesigner
             cmbLanguage.Items.Add("de");
             cmbLanguage.SelectedIndex = 0;
 
+            cmbErrorCalculationDistribution.Items.Add("uniform");
+            cmbErrorCalculationDistribution.Items.Add("sine");
+            cmbErrorCalculationDistribution.Items.Add("cosine");
+            cmbErrorCalculationDistribution.SelectedIndex = 2;
+
             calculations();
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
@@ -140,7 +126,7 @@ namespace BezierAirfoilDesigner
         void calculations()
         {
             if (updateUI)
-            { 
+            {
                 var axisLimits = formsPlot1.Plot.GetAxisLimits();
                 formsPlot1.Plot.Clear();
                 formsPlot1.Plot.SetAxisLimits(axisLimits);
@@ -206,13 +192,13 @@ namespace BezierAirfoilDesigner
             // calculating and plotting the thickness line
 
             // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (double.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double thicknessStepSize) == false || thicknessStepSize < 0.00001f)
+            if (int.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out int thicknessNumSteps) == false || thicknessNumSteps < 0.00001f)
             {
                 MessageBox.Show("Invalid thickness step size.");
                 return;
             }
 
-            List<PointD> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessStepSize);
+            List<PointD> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessNumSteps, GetCosineStations);
             PointD maxThickness = new PointD();
 
             for (int i = 0; i < thicknesses.Count; i++)
@@ -228,10 +214,14 @@ namespace BezierAirfoilDesigner
                 Color thicknessLineColor = new();
                 if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
                 var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+                var thicknessStations = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
                 for (int i = 0; i < thicknesses.Count; i++)
                 {
                     thicknessLine.Add(thicknesses[i].X, thicknesses[i].Y);
+                    thicknessStations.Add(thicknesses[i].X, 0);
+                    thicknessStations.Add(thicknesses[i].X, thicknesses[i].Y);
+                    thicknessStations.Add(thicknesses[i].X, 0);
                 }
 
                 Color maxThicknessMarkColor = new();
@@ -304,10 +294,11 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // printing airfoil parameters to the text box
 
-            txtAirfoilParam.Text = "";
-            txtAirfoilParam.AppendText("nose radius:\t\t" + radius + System.Environment.NewLine);
-            txtAirfoilParam.AppendText("maximum camber:\t" + maxCamber.Y.ToString() + System.Environment.NewLine + "\tat:\t\t" + maxCamber.X.ToString() + System.Environment.NewLine);
-            txtAirfoilParam.AppendText("maximum thickness:\t" + maxThickness.Y.ToString() + System.Environment.NewLine + "\tat:\t\t" + maxThickness.X.ToString() + System.Environment.NewLine);
+            //txtAirfoilParam.Text = "";
+            string airfoilParamText = "";
+            airfoilParamText += ("nose radius:\t\t" + radius + System.Environment.NewLine);
+            airfoilParamText += ("maximum camber:\t" + maxCamber.Y.ToString() + System.Environment.NewLine + "\tat:\t\t" + maxCamber.X.ToString() + System.Environment.NewLine);
+            airfoilParamText += ("maximum thickness:\t" + maxThickness.Y.ToString() + System.Environment.NewLine + "\tat:\t\t" + maxThickness.X.ToString() + System.Environment.NewLine);
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // Plotting the control polygons of the top and bottom bezier curves
@@ -374,16 +365,34 @@ namespace BezierAirfoilDesigner
             // calculating the error between the bezier airfoil and the reference airfoil and writing results to the text field
 
             errorTop.Clear();
-            errorTop = GetThickness(pointsTop, referenceDatTop, 0.001f);
-            totalErrorTop = CalculateAreaUnderCurve(errorTop) * 1000;
 
-            //totalErrorTop = 0;
+            int errorCalculationDistribution = cmbErrorCalculationDistribution.SelectedIndex;
 
-            //for (int i = 0; i < errorTop.Count; i++)
-            //{
-            //    double newY = errorTop[i].Y * ((2 * errorTop.Count - i) / errorTop.Count);
-            //    errorTop[i] = new PointD(errorTop[i].X, newY);
-            //}
+            switch (errorCalculationDistribution)
+            {
+                case 0:
+                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetUniformStations);
+                    break;
+                case 1:
+                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetSineStations);
+                    break;
+                case 2:
+                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetCosineStations);
+                    break;
+                default:
+                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetUniformStations);
+                    break;
+            }
+
+            //errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetCosineStations);
+            //totalErrorTop = CalculateAreaUnderCurve(errorTop) * 1000;
+
+            totalErrorTop = 0;
+
+            for (int i = 0; i < errorTop.Count; i++)
+            {
+                totalErrorTop += Math.Abs(errorTop[i].Y);
+            }
 
 
             errorOfEachControlPointTop.Clear();
@@ -399,19 +408,31 @@ namespace BezierAirfoilDesigner
             }
 
 
-
-
             errorBottom.Clear();
-            errorBottom = GetThickness(pointsBottom, referenceDatBottom, 0.001f);
-            totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
+            switch (errorCalculationDistribution)
+            {
+                case 0:
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetUniformStations);
+                    break;
+                case 1:
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetSineStations);
+                    break;
+                case 2:
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetCosineStations);
+                    break;
+                default:
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetUniformStations);
+                    break;
+            }
 
-            //totalErrorBottom = 0;
+            //totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
 
-            //for (int i = 0; i < errorBottom.Count; i++)
-            //{
-            //    double newY = errorBottom[i].Y * ((2 * errorBottom.Count - i) / errorBottom.Count);
-            //    errorBottom[i] = new PointD(errorBottom[i].X, newY);
-            //}
+            totalErrorBottom = 0;
+
+            for (int i = 0; i < errorBottom.Count; i++)
+            {
+                totalErrorBottom += Math.Abs(errorBottom[i].Y);
+            }
 
 
             errorOfEachControlPointBottom.Clear();
@@ -426,8 +447,8 @@ namespace BezierAirfoilDesigner
                 errorOfEachControlPointBottom.Add(new PointD(targetX, ySum));
             }
 
-            if (totalErrorTop > 0) { txtAirfoilParam.AppendText(System.Environment.NewLine + "error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
-            if (totalErrorBottom > 0) { txtAirfoilParam.AppendText("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
+            if (totalErrorTop > 0) { airfoilParamText += (System.Environment.NewLine + "error top:\t\t" + totalErrorTop + System.Environment.NewLine); }
+            if (totalErrorBottom > 0) { airfoilParamText += ("error bottom:\t\t" + totalErrorBottom + System.Environment.NewLine); }
 
             // Append each control point error to txtAirfoilParam
             //for (int i = 0; i < errorOfEachControlPointTop.Count; i++)
@@ -437,8 +458,8 @@ namespace BezierAirfoilDesigner
 
             //----------------------------------------------------------------------------------------------------------------------------------
 
-            txtAirfoilParam.Refresh();
-            formsPlot1.Refresh();
+            txtAirfoilParam.Text = airfoilParamText;
+            if (updateUI) { formsPlot1.Refresh(); }
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -756,7 +777,37 @@ namespace BezierAirfoilDesigner
             return controlPointsBottom;
         }
 
-        private static List<PointD> GetThickness(List<PointD> curve1, List<PointD> curve2, double stepSize)
+
+        private static List<double> GetUniformStations(int numberOfStations)
+        {
+            return Enumerable.Range(0, numberOfStations).Select(i => (double)i / (numberOfStations - 1)).ToList();
+        }
+
+        private static List<double> GetSineStations(int numberOfStations)
+        {
+            List<double> stations = new();
+            for (int i = 0; i < numberOfStations; i++)
+            {
+                double x = (double)i / (numberOfStations - 1); // Normalize x to [0, 1]
+                double stationPosition = x * Math.Sin(x * Math.PI / 2);
+                stations.Add(stationPosition);
+            }
+            return stations;
+        }
+
+        private static List<double> GetCosineStations(int numberOfStations)
+        {
+            List<double> stations = new();
+            for (int i = 0; i < numberOfStations; i++)
+            {
+                double x = (double)i / (numberOfStations - 1); // Normalize x to [0, 1]
+                double stationPosition = (Math.Cos(Math.PI * (1 - x)) + 1) / 2;
+                stations.Add(stationPosition);
+            }
+            return stations;
+        }
+
+        private static List<PointD> GetThickness(List<PointD> curve1, List<PointD> curve2, int numberOfStations, Func<int, List<double>> distributionMethod)
         {
             List<PointD> distances = new();
 
@@ -766,20 +817,17 @@ namespace BezierAirfoilDesigner
             curve1 = curve1.OrderBy(p => p.X).ToList();
             curve2 = curve2.OrderBy(p => p.X).ToList();
 
-            // The X range over which we calculate distances.
-            double minX = Math.Max(curve1.First().X, curve2.First().X);
-            double maxX = Math.Min(curve1.Last().X, curve2.Last().X);
+            // Get the station positions using the specified distribution method
+            List<double> stations = distributionMethod(numberOfStations);
 
-            // Calculate vertical distances at regular intervals within this range.
-            for (double x = minX; x <= maxX; x += stepSize)  // Adjust the step size as needed.
+            foreach (double station in stations)
             {
+                double x = station * (curve2.Last().X - curve1.First().X) + curve1.First().X;
                 double? y1 = InterpolateY(x, curve1);
                 double? y2 = InterpolateY(x, curve2);
                 if (y1.HasValue && y2.HasValue)
                     distances.Add(new PointD(x, Math.Abs(y1.Value - y2.Value)));
             }
-
-            // Now `distances` contains the vertical distances between the curves at regular intervals.
 
             return distances;
         }
@@ -1175,6 +1223,12 @@ namespace BezierAirfoilDesigner
         private void chkUpdateUI_CheckedChanged(object sender, EventArgs e)
         {
             updateUI = chkUpdateUI.Checked;
+            calculations();
+        }
+
+        private void cmbErrorCalculationDistribution_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            calculations();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -1593,7 +1647,7 @@ namespace BezierAirfoilDesigner
                 {
                     btnIncreaseOrderTop.PerformClick();
                 }
-                
+
                 if (totalErrorBottom >= errorThresholdBottom)
                 {
                     btnIncreaseOrderBottom.PerformClick();
@@ -1829,5 +1883,3 @@ public class PointD : IEquatable<PointD>
         return HashCode.Combine(X, Y);
     }
 }
-
-

@@ -147,7 +147,7 @@ namespace BezierAirfoilDesigner
                 string fileContents = airfoilName + System.Environment.NewLine;
 
                 fileContents = AppendPointsToFileContent(fileContents, pointsTop, true);
-                fileContents = AppendPointsToFileContent(fileContents, pointsBottom, false);
+                fileContents = AppendPointsToFileContent(fileContents, pointsBottom.Skip(1).ToList(), false);
 
                 fileContents = fileContents.Replace(',', '.');
 
@@ -169,7 +169,7 @@ namespace BezierAirfoilDesigner
                 string fileContents = airfoilName + System.Environment.NewLine;
 
                 fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, true);
-                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom.Skip(1).ToList(), false);
 
                 fileContents = fileContents.Replace(',', '.');
 

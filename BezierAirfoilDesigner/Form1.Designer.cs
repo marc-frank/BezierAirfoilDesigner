@@ -80,6 +80,8 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            lblErrorCalculationDistribution = new Label();
+            cmbErrorCalculationDistribution = new ComboBox();
             chkUpdateUI = new CheckBox();
             lblErrorThresholdBottom = new Label();
             lblErrorThresholdTop = new Label();
@@ -525,7 +527,7 @@
             txtThicknessStepSize.Name = "txtThicknessStepSize";
             txtThicknessStepSize.Size = new Size(57, 23);
             txtThicknessStepSize.TabIndex = 45;
-            txtThicknessStepSize.Text = "0,001";
+            txtThicknessStepSize.Text = "1000";
             txtThicknessStepSize.TextChanged += txtThicknessStepSize_TextChanged;
             // 
             // txtCamberStepSize
@@ -545,9 +547,9 @@
             lblThicknessStepSize.AutoSize = true;
             lblThicknessStepSize.Location = new Point(397, 617);
             lblThicknessStepSize.Name = "lblThicknessStepSize";
-            lblThicknessStepSize.Size = new Size(54, 15);
+            lblThicknessStepSize.Size = new Size(61, 15);
             lblThicknessStepSize.TabIndex = 47;
-            lblThicknessStepSize.Text = "step size:";
+            lblThicknessStepSize.Text = "# of steps:";
             // 
             // lblCamberStepSize
             // 
@@ -555,9 +557,9 @@
             lblCamberStepSize.AutoSize = true;
             lblCamberStepSize.Location = new Point(532, 617);
             lblCamberStepSize.Name = "lblCamberStepSize";
-            lblCamberStepSize.Size = new Size(54, 15);
+            lblCamberStepSize.Size = new Size(61, 15);
             lblCamberStepSize.TabIndex = 48;
-            lblCamberStepSize.Text = "step size:";
+            lblCamberStepSize.Text = "# of steps:";
             // 
             // lblCamberPosition
             // 
@@ -572,7 +574,7 @@
             // lblElapsedTime
             // 
             lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(13, 367);
+            lblElapsedTime.Location = new Point(13, 411);
             lblElapsedTime.Name = "lblElapsedTime";
             lblElapsedTime.Size = new Size(49, 15);
             lblElapsedTime.TabIndex = 50;
@@ -581,7 +583,7 @@
             // btnStopSearch
             // 
             btnStopSearch.AutoSize = true;
-            btnStopSearch.Location = new Point(0, 340);
+            btnStopSearch.Location = new Point(0, 384);
             btnStopSearch.Margin = new Padding(3, 2, 3, 2);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 25);
@@ -665,6 +667,8 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(lblErrorCalculationDistribution);
+            panel3.Controls.Add(cmbErrorCalculationDistribution);
             panel3.Controls.Add(chkUpdateUI);
             panel3.Controls.Add(lblErrorThresholdBottom);
             panel3.Controls.Add(lblErrorThresholdTop);
@@ -690,6 +694,24 @@
             panel3.Size = new Size(75, 608);
             panel3.TabIndex = 60;
             // 
+            // lblErrorCalculationDistribution
+            // 
+            lblErrorCalculationDistribution.AutoSize = true;
+            lblErrorCalculationDistribution.Location = new Point(3, 250);
+            lblErrorCalculationDistribution.Name = "lblErrorCalculationDistribution";
+            lblErrorCalculationDistribution.Size = new Size(68, 15);
+            lblErrorCalculationDistribution.TabIndex = 70;
+            lblErrorCalculationDistribution.Text = "ErrCalcDistr";
+            // 
+            // cmbErrorCalculationDistribution
+            // 
+            cmbErrorCalculationDistribution.FormattingEnabled = true;
+            cmbErrorCalculationDistribution.Location = new Point(0, 268);
+            cmbErrorCalculationDistribution.Name = "cmbErrorCalculationDistribution";
+            cmbErrorCalculationDistribution.Size = new Size(75, 23);
+            cmbErrorCalculationDistribution.TabIndex = 61;
+            cmbErrorCalculationDistribution.SelectedIndexChanged += cmbErrorCalculationDistribution_SelectedIndexChanged;
+            // 
             // chkUpdateUI
             // 
             chkUpdateUI.AutoSize = true;
@@ -704,7 +726,7 @@
             // lblErrorThresholdBottom
             // 
             lblErrorThresholdBottom.AutoSize = true;
-            lblErrorThresholdBottom.Location = new Point(0, 294);
+            lblErrorThresholdBottom.Location = new Point(0, 338);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
             lblErrorThresholdBottom.Size = new Size(78, 15);
             lblErrorThresholdBottom.TabIndex = 69;
@@ -713,7 +735,7 @@
             // lblErrorThresholdTop
             // 
             lblErrorThresholdTop.AutoSize = true;
-            lblErrorThresholdTop.Location = new Point(0, 250);
+            lblErrorThresholdTop.Location = new Point(0, 294);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
             lblErrorThresholdTop.Size = new Size(75, 15);
             lblErrorThresholdTop.TabIndex = 68;
@@ -732,7 +754,7 @@
             // 
             // txtErrorThresholdBottom
             // 
-            txtErrorThresholdBottom.Location = new Point(0, 312);
+            txtErrorThresholdBottom.Location = new Point(0, 356);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(75, 23);
             txtErrorThresholdBottom.TabIndex = 66;
@@ -741,7 +763,7 @@
             // 
             // txtErrorThresholdTop
             // 
-            txtErrorThresholdTop.Location = new Point(0, 268);
+            txtErrorThresholdTop.Location = new Point(0, 312);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(75, 23);
             txtErrorThresholdTop.TabIndex = 65;
@@ -750,7 +772,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(0, 436);
+            button1.Location = new Point(0, 534);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
             button1.Size = new Size(75, 21);
@@ -873,5 +895,7 @@
         private Label lblErrorThresholdBottom;
         private Label lblErrorThresholdTop;
         private CheckBox chkUpdateUI;
+        private Label lblErrorCalculationDistribution;
+        private ComboBox cmbErrorCalculationDistribution;
     }
 }
