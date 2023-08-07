@@ -192,13 +192,13 @@ namespace BezierAirfoilDesigner
             // calculating and plotting the thickness line
 
             // Try to parse the thickness step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (int.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out int thicknessNumSteps) == false || thicknessNumSteps < 0.00001f)
+            if (int.TryParse(txtThicknessStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out int thicknessNumStations) == false || thicknessNumStations < 0 || thicknessNumStations > 100000)
             {
                 MessageBox.Show("Invalid thickness step size.");
                 return;
             }
 
-            List<PointD> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessNumSteps, GetCosineStations);
+            List<PointD> thicknesses = GetThickness(pointsTop, pointsBottom, thicknessNumStations, GetCosineStations);
             PointD maxThickness = new PointD();
 
             for (int i = 0; i < thicknesses.Count; i++)
@@ -214,14 +214,14 @@ namespace BezierAirfoilDesigner
                 Color thicknessLineColor = new();
                 if (showThickness) { thicknessLineColor = Color.Gray; } else { thicknessLineColor = Color.Transparent; }
                 var thicknessLine = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
-                var thicknessStations = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
+                //var thicknessStations = formsPlot1.Plot.AddScatterList(color: thicknessLineColor, lineStyle: ScottPlot.LineStyle.Dash, markerSize: 0);
 
                 for (int i = 0; i < thicknesses.Count; i++)
                 {
                     thicknessLine.Add(thicknesses[i].X, thicknesses[i].Y);
-                    thicknessStations.Add(thicknesses[i].X, 0);
-                    thicknessStations.Add(thicknesses[i].X, thicknesses[i].Y);
-                    thicknessStations.Add(thicknesses[i].X, 0);
+                    //thicknessStations.Add(thicknesses[i].X, 0);
+                    //thicknessStations.Add(thicknesses[i].X, thicknesses[i].Y);
+                    //thicknessStations.Add(thicknesses[i].X, 0);
                 }
 
                 Color maxThicknessMarkColor = new();
@@ -243,13 +243,13 @@ namespace BezierAirfoilDesigner
             }
 
             //try to parse the camber step size, if unsuccessful (e.g. not numeric) set to 0.001f
-            if (double.TryParse(txtCamberStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double camberStepSize) == false || camberStepSize < 0.00001f || camberStepSize > 1.0f)
+            if (int.TryParse(txtCamberStepSize.Text.Replace(",", "."), CultureInfo.InvariantCulture, out int camberNumStations) == false || camberNumStations < 0 || camberNumStations > 100000)
             {
                 MessageBox.Show("Invalid camber step size.");
                 return;
             }
 
-            List<PointD> camber = GetCamber(pointsTop, pointsBottom, camberPosition, camberStepSize);
+            List<PointD> camber = GetCamber(pointsTop, pointsBottom, camberPosition, camberNumStations, GetCosineStations);
             PointD maxCamber = new PointD();
 
             for (int i = 0; i < camber.Count; i++)
@@ -832,22 +832,24 @@ namespace BezierAirfoilDesigner
             return distances;
         }
 
-        private static List<PointD> GetCamber(List<PointD> curve1, List<PointD> curve2, double camberPosition, double stepSize)
+        private static List<PointD> GetCamber(List<PointD> curve1, List<PointD> curve2, double camberPosition, int numberOfStations, Func<int, List<double>> distributionMethod)
         {
             // Ensure the points are sorted by X in ascending order.
             curve1 = curve1.OrderBy(p => p.X).ToList();
             curve2 = curve2.OrderBy(p => p.X).ToList();
 
+            // Get the station positions using the specified distribution method
+            List<double> stations = distributionMethod(numberOfStations);
+
             // The X range over which we calculate distances.
             double minX = Math.Max(curve1.First().X, curve2.First().X);
             double maxX = Math.Min(curve1.Last().X, curve2.Last().X);
 
-
-
-            // Calculate midpoints at regular intervals within this range.
+            // Calculate midpoints at specified stations within this range.
             List<PointD> midpoints = new();
-            for (double x = minX; x <= maxX; x += stepSize)  // Adjust the step size as needed.
+            foreach (double station in stations)
             {
+                double x = station * (maxX - minX) + minX;
                 double? y1 = InterpolateY(x, curve1);
                 double? y2 = InterpolateY(x, curve2);
                 if (y1.HasValue && y2.HasValue)
@@ -859,8 +861,7 @@ namespace BezierAirfoilDesigner
                 }
             }
 
-
-            // Now `midpoints` contains the midpoints between the curves at regular intervals,
+            // Now `midpoints` contains the midpoints between the curves at the specified stations,
             // stored as PointD where X is the x-value and Y is the midpoint Y value.
 
             return midpoints;
@@ -1401,6 +1402,14 @@ namespace BezierAirfoilDesigner
             btnAutoSearch.Enabled = true;
 
             this.Text = "BezierAirfoilDesigner  -  Loaded reference airfoil: " + loadedAirfoilName;
+
+            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
+            controlPointsTop[controlPointsTop.Count - 1] = referenceDatTop[referenceDatTop.Count - 1];
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
+
+            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+            controlPointsBottom[controlPointsBottom.Count - 1] = referenceDatBottom[referenceDatBottom.Count - 1];
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
 
             calculations();
 

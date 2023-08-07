@@ -101,26 +101,30 @@ namespace BezierAirfoilDesigner
                 string yCoord = points[i].Y >= 0 ? $"{points[i].Y:F16}" : $"{points[i].Y:F16}";
 
                 // Check the coordinate style and append the point to fileContents accordingly
-                if (cmbCoordinateStyle.Text.Equals("x,y"))
+                switch (cmbCoordinateStyle.Text)
                 {
-                    // Append point in "x,y" style
-                    fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                    case "x,y":
+                        // Append point in "x,y" style
+                        fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        fileContents += $"{0} {xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        fileContents += $"{xCoord} {0} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        fileContents += $"{xCoord} {yCoord} {0}" + System.Environment.NewLine;
+                        break;
+                    default:
+                        // Append point in "x,y" style in case nothing is entered
+                        fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
                 }
-                else if (cmbCoordinateStyle.Text.Equals("0,y,z"))
-                {
-                    // Append point in "0,y,z" style
-                    fileContents += $"{0} {xCoord} {yCoord}" + System.Environment.NewLine;
-                }
-                else if (cmbCoordinateStyle.Text.Equals("x,0,z"))
-                {
-                    // Append point in "x,0,z" style
-                    fileContents += $"{xCoord} {0} {yCoord}" + System.Environment.NewLine;
-                }
-                else if (cmbCoordinateStyle.Text.Equals("x,y,0"))
-                {
-                    // Append point in "x,y,0" style
-                    fileContents += $"{xCoord} {yCoord} {0}" + System.Environment.NewLine;
-                }
+
             }
 
             // Return the modified fileContents

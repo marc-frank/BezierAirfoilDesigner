@@ -538,7 +538,7 @@
             txtCamberStepSize.Name = "txtCamberStepSize";
             txtCamberStepSize.Size = new Size(57, 23);
             txtCamberStepSize.TabIndex = 46;
-            txtCamberStepSize.Text = "0,001";
+            txtCamberStepSize.Text = "1000";
             txtCamberStepSize.TextChanged += txtCamberStepSize_TextChanged;
             // 
             // lblThicknessStepSize
