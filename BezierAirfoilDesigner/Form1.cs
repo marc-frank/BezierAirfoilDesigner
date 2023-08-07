@@ -1409,7 +1409,6 @@ namespace BezierAirfoilDesigner
 
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             controlPointsBottom[controlPointsBottom.Count - 1] = referenceDatBottom[referenceDatBottom.Count - 1];
-
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
 
             calculations();
