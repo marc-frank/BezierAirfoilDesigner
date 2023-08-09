@@ -80,6 +80,7 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            chkMatchTEGap = new CheckBox();
             lblErrorCalculationDistribution = new Label();
             cmbErrorCalculationDistribution = new ComboBox();
             chkUpdateUI = new CheckBox();
@@ -368,7 +369,7 @@
             // btnLoadBezDat
             // 
             btnLoadBezDat.AutoSize = true;
-            btnLoadBezDat.Location = new Point(0, 73);
+            btnLoadBezDat.Location = new Point(0, 100);
             btnLoadBezDat.Margin = new Padding(3, 2, 3, 2);
             btnLoadBezDat.Name = "btnLoadBezDat";
             btnLoadBezDat.Size = new Size(75, 25);
@@ -380,7 +381,7 @@
             // btnLoadDat
             // 
             btnLoadDat.AutoSize = true;
-            btnLoadDat.Location = new Point(0, 45);
+            btnLoadDat.Location = new Point(0, 46);
             btnLoadDat.Margin = new Padding(3, 2, 3, 2);
             btnLoadDat.Name = "btnLoadDat";
             btnLoadDat.Size = new Size(75, 25);
@@ -427,7 +428,7 @@
             // btnSearchTop
             // 
             btnSearchTop.AutoSize = true;
-            btnSearchTop.Location = new Point(0, 168);
+            btnSearchTop.Location = new Point(0, 195);
             btnSearchTop.Margin = new Padding(3, 2, 3, 2);
             btnSearchTop.Name = "btnSearchTop";
             btnSearchTop.Size = new Size(75, 25);
@@ -439,7 +440,7 @@
             // btnSearchBottom
             // 
             btnSearchBottom.AutoSize = true;
-            btnSearchBottom.Location = new Point(0, 196);
+            btnSearchBottom.Location = new Point(0, 223);
             btnSearchBottom.Margin = new Padding(3, 2, 3, 2);
             btnSearchBottom.Name = "btnSearchBottom";
             btnSearchBottom.Size = new Size(75, 25);
@@ -451,7 +452,7 @@
             // btnAutoSearch
             // 
             btnAutoSearch.AutoSize = true;
-            btnAutoSearch.Location = new Point(0, 223);
+            btnAutoSearch.Location = new Point(0, 250);
             btnAutoSearch.Margin = new Padding(3, 2, 3, 2);
             btnAutoSearch.Name = "btnAutoSearch";
             btnAutoSearch.Size = new Size(75, 25);
@@ -489,7 +490,7 @@
             // lblSearch
             // 
             lblSearch.AutoSize = true;
-            lblSearch.Location = new Point(0, 126);
+            lblSearch.Location = new Point(0, 153);
             lblSearch.Name = "lblSearch";
             lblSearch.Size = new Size(41, 15);
             lblSearch.TabIndex = 42;
@@ -574,7 +575,7 @@
             // lblElapsedTime
             // 
             lblElapsedTime.AutoSize = true;
-            lblElapsedTime.Location = new Point(13, 411);
+            lblElapsedTime.Location = new Point(13, 438);
             lblElapsedTime.Name = "lblElapsedTime";
             lblElapsedTime.Size = new Size(49, 15);
             lblElapsedTime.TabIndex = 50;
@@ -583,7 +584,7 @@
             // btnStopSearch
             // 
             btnStopSearch.AutoSize = true;
-            btnStopSearch.Location = new Point(0, 384);
+            btnStopSearch.Location = new Point(0, 411);
             btnStopSearch.Margin = new Padding(3, 2, 3, 2);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 25);
@@ -604,7 +605,7 @@
             // btnLoadBez
             // 
             btnLoadBez.AutoSize = true;
-            btnLoadBez.Location = new Point(0, 100);
+            btnLoadBez.Location = new Point(0, 127);
             btnLoadBez.Margin = new Padding(3, 2, 3, 2);
             btnLoadBez.Name = "btnLoadBez";
             btnLoadBez.Size = new Size(75, 25);
@@ -667,6 +668,7 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(chkMatchTEGap);
             panel3.Controls.Add(lblErrorCalculationDistribution);
             panel3.Controls.Add(cmbErrorCalculationDistribution);
             panel3.Controls.Add(chkUpdateUI);
@@ -694,10 +696,20 @@
             panel3.Size = new Size(75, 608);
             panel3.TabIndex = 60;
             // 
+            // chkMatchTEGap
+            // 
+            chkMatchTEGap.AutoSize = true;
+            chkMatchTEGap.Location = new Point(0, 76);
+            chkMatchTEGap.Name = "chkMatchTEGap";
+            chkMatchTEGap.Size = new Size(75, 19);
+            chkMatchTEGap.TabIndex = 71;
+            chkMatchTEGap.Text = "match TE";
+            chkMatchTEGap.UseVisualStyleBackColor = true;
+            // 
             // lblErrorCalculationDistribution
             // 
             lblErrorCalculationDistribution.AutoSize = true;
-            lblErrorCalculationDistribution.Location = new Point(3, 250);
+            lblErrorCalculationDistribution.Location = new Point(3, 277);
             lblErrorCalculationDistribution.Name = "lblErrorCalculationDistribution";
             lblErrorCalculationDistribution.Size = new Size(68, 15);
             lblErrorCalculationDistribution.TabIndex = 70;
@@ -706,7 +718,7 @@
             // cmbErrorCalculationDistribution
             // 
             cmbErrorCalculationDistribution.FormattingEnabled = true;
-            cmbErrorCalculationDistribution.Location = new Point(0, 268);
+            cmbErrorCalculationDistribution.Location = new Point(0, 295);
             cmbErrorCalculationDistribution.Name = "cmbErrorCalculationDistribution";
             cmbErrorCalculationDistribution.Size = new Size(75, 23);
             cmbErrorCalculationDistribution.TabIndex = 61;
@@ -715,7 +727,7 @@
             // chkUpdateUI
             // 
             chkUpdateUI.AutoSize = true;
-            chkUpdateUI.Location = new Point(0, 144);
+            chkUpdateUI.Location = new Point(0, 171);
             chkUpdateUI.Name = "chkUpdateUI";
             chkUpdateUI.Size = new Size(77, 19);
             chkUpdateUI.TabIndex = 61;
@@ -726,7 +738,7 @@
             // lblErrorThresholdBottom
             // 
             lblErrorThresholdBottom.AutoSize = true;
-            lblErrorThresholdBottom.Location = new Point(0, 338);
+            lblErrorThresholdBottom.Location = new Point(0, 365);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
             lblErrorThresholdBottom.Size = new Size(78, 15);
             lblErrorThresholdBottom.TabIndex = 69;
@@ -735,7 +747,7 @@
             // lblErrorThresholdTop
             // 
             lblErrorThresholdTop.AutoSize = true;
-            lblErrorThresholdTop.Location = new Point(0, 294);
+            lblErrorThresholdTop.Location = new Point(0, 321);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
             lblErrorThresholdTop.Size = new Size(75, 15);
             lblErrorThresholdTop.TabIndex = 68;
@@ -754,7 +766,7 @@
             // 
             // txtErrorThresholdBottom
             // 
-            txtErrorThresholdBottom.Location = new Point(0, 356);
+            txtErrorThresholdBottom.Location = new Point(0, 383);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(75, 23);
             txtErrorThresholdBottom.TabIndex = 66;
@@ -763,7 +775,7 @@
             // 
             // txtErrorThresholdTop
             // 
-            txtErrorThresholdTop.Location = new Point(0, 312);
+            txtErrorThresholdTop.Location = new Point(0, 339);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(75, 23);
             txtErrorThresholdTop.TabIndex = 65;
@@ -897,5 +909,6 @@
         private CheckBox chkUpdateUI;
         private Label lblErrorCalculationDistribution;
         private ComboBox cmbErrorCalculationDistribution;
+        private CheckBox chkMatchTEGap;
     }
 }

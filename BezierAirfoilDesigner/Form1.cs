@@ -49,7 +49,7 @@ namespace BezierAirfoilDesigner
         double errorThresholdBottom = 0.075;
 
         readonly double minZoomRange = 0.01;
-        readonly double maxZoomRange = 500.0;
+        readonly double maxZoomRange = 250.0;
 
         private static bool showControlTop;
         private static bool showControlBottom;
@@ -459,6 +459,7 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
 
             txtAirfoilParam.Text = airfoilParamText;
+
             if (updateUI) { formsPlot1.Refresh(); }
         }
 
@@ -1403,13 +1404,16 @@ namespace BezierAirfoilDesigner
 
             this.Text = "BezierAirfoilDesigner  -  Loaded reference airfoil: " + loadedAirfoilName;
 
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            controlPointsTop[controlPointsTop.Count - 1] = referenceDatTop[referenceDatTop.Count - 1];
-            gridViewAddPoints(dataGridViewTop, controlPointsTop);
+            if (chkMatchTEGap.Checked == true)
+            {
+                List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
+                controlPointsTop[controlPointsTop.Count - 1] = referenceDatTop[referenceDatTop.Count - 1];
+                gridViewAddPoints(dataGridViewTop, controlPointsTop);
 
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-            controlPointsBottom[controlPointsBottom.Count - 1] = referenceDatBottom[referenceDatBottom.Count - 1];
-            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+                List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+                controlPointsBottom[controlPointsBottom.Count - 1] = referenceDatBottom[referenceDatBottom.Count - 1];
+                gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
+            }
 
             calculations();
 
