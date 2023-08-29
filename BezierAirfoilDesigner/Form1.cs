@@ -14,7 +14,7 @@ namespace BezierAirfoilDesigner
         //--------------------------------------------------------------------------------------------------------------------------------------
         // global variables
 
-        static string currentVersion = "v0.9.4";
+        static string currentVersion = "v0.9.5";
 
         private static DateTime currentTime;
         private static DateTime startTime;
@@ -685,7 +685,7 @@ namespace BezierAirfoilDesigner
             double previousGlobalBestScore = GlobalBestScore;
             int stalledIterations = 0;
             const int MaxStalledIterations = 50;  // Adjust based on your preference
-            const double TerminationThreshold = 0.01;  // Adjust based on the precision you need
+            const double TerminationThreshold = 0.001;  // Adjust based on the precision you need
 
 
             for (int iteration = 0; iteration < MaxIterations; iteration++)
