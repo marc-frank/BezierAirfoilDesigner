@@ -180,7 +180,7 @@ namespace BezierAirfoilDesigner
 
             List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
-            if (updateUI)
+            if (updateUI && pointsTop != pointsBottom)
             {
                 Color colorBottom;
                 if (showBottom) { colorBottom = Color.Red; } else { colorBottom = Color.Transparent; }
@@ -336,12 +336,15 @@ namespace BezierAirfoilDesigner
                     yB[i] = controlPointsBottom[i].Y;
                 }
 
-                var controlBottom = new ScottPlot.Plottable.ScatterPlotListDraggable();
-                controlBottom.AddRange(xB, yB);
-                controlBottom.LineStyle = LineStyle.Dash;
-                if (showControlBottom) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
-                controlBottom.MarkerSize = 5;
-                formsPlot1.Plot.Add(controlBottom);
+                if (xT != xB && yT != yB)
+                {
+                    var controlBottom = new ScottPlot.Plottable.ScatterPlotListDraggable();
+                    controlBottom.AddRange(xB, yB);
+                    controlBottom.LineStyle = LineStyle.Dash;
+                    if (showControlBottom) { controlBottom.Color = Color.Gray; } else { controlBottom.Color = Color.Transparent; }
+                    controlBottom.MarkerSize = 5;
+                    formsPlot1.Plot.Add(controlBottom);
+                }
             }
 
             //----------------------------------------------------------------------------------------------------------------------------------
@@ -1761,6 +1764,8 @@ namespace BezierAirfoilDesigner
             btnSearchTop.Enabled = true;
             btnSearchBottom.Enabled = true;
             btnAutoSearch.Enabled = true;
+            btnStartPSOTop.Enabled = true;
+            btnStartPSOBottom.Enabled = true;
 
             this.Text = "BezierAirfoilDesigner  -  Loaded reference airfoil: " + loadedAirfoilName;
 
@@ -1962,6 +1967,8 @@ namespace BezierAirfoilDesigner
                 btnSearchTop.Enabled = false;
                 btnSearchBottom.Enabled = false;
                 btnAutoSearch.Enabled = false;
+                btnStartPSOTop.Enabled = false;
+                btnStartPSOBottom.Enabled = false;
 
                 this.Text = "BezierAirfoilDesigner";
                 loadedAirfoilName = "";
@@ -1987,11 +1994,11 @@ namespace BezierAirfoilDesigner
         {
             if (e.Button == MouseButtons.Right)
             {
-                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
                 cancelSearch = false;
                 startTime = DateTime.Now;
                 await SearchTopAsync(true);
-                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
             }
         }
 
