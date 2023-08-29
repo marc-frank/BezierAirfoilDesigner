@@ -105,6 +105,9 @@ namespace BezierAirfoilDesigner
             btnSearchTop.Enabled = false;
             btnSearchBottom.Enabled = false;
             btnAutoSearch.Enabled = false;
+            btnStartPSOTop.Enabled = false;
+            btnStartPSOBottom.Enabled = false;
+
 
             progressBar1.Visible = false;
             //button1.Visible = false;
@@ -1969,7 +1972,7 @@ namespace BezierAirfoilDesigner
 
         private async void btnSearchTop_Click(object sender, EventArgs e)
         {
-            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
 
             cancelSearch = false;
 
@@ -1977,7 +1980,7 @@ namespace BezierAirfoilDesigner
 
             await SearchTopAsync(false);
 
-            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
 
         private async void btnSearchTop_MouseDown(object sender, MouseEventArgs e)
@@ -1994,7 +1997,7 @@ namespace BezierAirfoilDesigner
 
         private async void btnSearchBottom_Click(object sender, EventArgs e)
         {
-            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
 
             cancelSearch = false;
 
@@ -2002,23 +2005,23 @@ namespace BezierAirfoilDesigner
 
             await SearchBottomAsync(false);
 
-            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
         private async void btnSearchBottom_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
                 cancelSearch = false;
                 startTime = DateTime.Now;
                 await SearchBottomAsync(true);
-                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
             }
         }
 
         private async void btnAutoSearch_Click(object sender, EventArgs e)
         {
-            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
             cancelSearch = false;
 
             // Record the start time
@@ -2066,7 +2069,7 @@ namespace BezierAirfoilDesigner
                 MessageBox.Show($"Start time: {startTime}\nEnd time: {currentTime}\nElapsed time: {elapsedTime}");
             }
 
-            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
 
         private void btnStopSearch_Click(object sender, EventArgs e)
@@ -2111,14 +2114,19 @@ namespace BezierAirfoilDesigner
 
         private async void btnStartPSOTop_Click(object sender, EventArgs e)
         {
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
+
             startTime = DateTime.Now;
             await StartPSOTop(/*true*/); // true for top
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
 
         private async void btnStartPSOBottom_Click(object sender, EventArgs e)
         {
+            btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
             startTime = DateTime.Now;
             await StartPSOBottom(/*false*/); // false for bottom
+            btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
     }
 }
