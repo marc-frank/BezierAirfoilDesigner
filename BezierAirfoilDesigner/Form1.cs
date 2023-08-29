@@ -1,7 +1,10 @@
-using BezierAirfoilDesigner.Properties;
+﻿using BezierAirfoilDesigner.Properties;
 using ScottPlot;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace BezierAirfoilDesigner
 {
@@ -104,7 +107,7 @@ namespace BezierAirfoilDesigner
             btnAutoSearch.Enabled = false;
 
             progressBar1.Visible = false;
-            button1.Visible = false;
+            //button1.Visible = false;
 
             cmbLanguage.Items.Add("en");
             cmbLanguage.Items.Add("de");
@@ -351,14 +354,35 @@ namespace BezierAirfoilDesigner
                 if (showReferenceBottom) { referenceBottomColor = Color.Blue; } else { referenceBottomColor = Color.Transparent; }
                 var referenceDatPlotBottom = formsPlot1.Plot.AddScatterList(color: referenceBottomColor, lineStyle: ScottPlot.LineStyle.Dash, lineWidth: 1, markerSize: 4);
 
+
+                //double[] xsTop = new double[referenceDatTop.Count];
+                //double[] ysTop = new double[referenceDatTop.Count];
+                //double[] xsBottom = new double[referenceDatTop.Count];
+                //double[] ysBottom = new double[referenceDatTop.Count];
+
                 for (int i = 0; i < referenceDatTop.Count; i++)
                 {
                     referenceDatPlotTop.Add(referenceDatTop[i].X, referenceDatTop[i].Y);
+                    //xsTop[i] = referenceDatTop[i].X;
+                    //ysTop[i] = referenceDatTop[i].Y;
                 }
                 for (int i = 0; i < referenceDatBottom.Count; i++)
                 {
                     referenceDatPlotBottom.Add(referenceDatBottom[i].X, referenceDatBottom[i].Y);
+                    //xsBottom[i] = referenceDatBottom[i].X;
+                    //ysBottom[i] = referenceDatBottom[i].Y;
                 }
+
+                //check if xsTop is empty
+                //if (xsTop.Length != 0)
+                //{
+                //    (double[] smoothXsTop, double[] smoothYsTop) = ScottPlot.Statistics.Interpolation.Cubic.InterpolateXY(xsTop, ysTop, 200);
+                //    (double[] smoothXsBottom, double[] smoothYsBottom) = ScottPlot.Statistics.Interpolation.Cubic.InterpolateXY(xsBottom, ysBottom, 200);
+
+                //    formsPlot1.Plot.AddScatter(smoothXsTop, smoothYsTop);
+                //    formsPlot1.Plot.AddScatter(smoothXsBottom, smoothYsBottom);
+                //}
+
             }
 
             //----------------------------------------------------------------------------------------------------------------------------------
@@ -496,7 +520,8 @@ namespace BezierAirfoilDesigner
                 "chkShowCamber", "txtCamberStepSize", "txtCamberPosition", "chkShowRadius",
                 "chkShowReferenceTop", "chkShowReferenceBottom", "btnIncreaseOrderTop",
                 "btnDecreaseOrderTop", "txtNumOfPointsTop", "btnIncreaseOrderBottom",
-                "btnDecreaseOrderBottom", "txtNumOfPointBottom", "btnAxisAuto", "txtChord"
+                "btnDecreaseOrderBottom", "txtNumOfPointBottom", "btnAxisAuto", "txtChord",
+                "btnStartPSOTop", "btnStartPSOBottom"
             };
 
             // Set new tooltips
@@ -576,9 +601,319 @@ namespace BezierAirfoilDesigner
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        // Particle Swarm Optimization
+
+        public class Particle
+        {
+            public double[] Position { get; set; }
+            public double[] Velocity { get; set; }
+            public double[] BestPosition { get; set; }
+            public double BestScore { get; set; }
+        }
+
+        public int ParticleCount { get; set; } = 100;
+        public double Inertia { get; set; } = 0.5;
+        public double PersonalAcceleration { get; set; } = 0.1;
+        public double GlobalAcceleration { get; set; } = 0.1;
+        public int MaxIterations { get; set; } = 1000;
+        public double[] GlobalBestPosition { get; set; }
+        public double GlobalBestScore { get; set; } = double.MaxValue; // Assuming minimization problem
+
+        public void ResetGlobalBests()
+        {
+            GlobalBestPosition = null; // Clearing the array
+            GlobalBestScore = double.MaxValue; // Resetting to initial value
+        }
+
+
+        public int StalledIterations { get; set; } = 0;
+        public int MaxStalledIterations { get; set; } = 50;  // Adjust based on your preference
+        public double TerminationThreshold { get; set; } = 0.01;  // Adjust based on the precision you need
+
+
+
+        private Particle[] particles;
+
+        public void Initialize(double[] initialControlPoints)
+        {
+            particles = new Particle[ParticleCount];
+
+            for (int i = 0; i < ParticleCount; i++)
+            {
+                particles[i] = new Particle
+                {
+                    Position = (double[])initialControlPoints.Clone(),
+                    Velocity = new double[initialControlPoints.Length],
+                    BestPosition = new double[initialControlPoints.Length],
+                    BestScore = double.MaxValue
+                };
+
+                // Set velocities for the first control point to 0
+                particles[i].Velocity[0] = 0;  // x of controlPoint[0]
+                particles[i].Velocity[1] = 0;  // y of controlPoint[0]
+
+                particles[i].Velocity[2] = 0;  // x of controlPoint[1]
+
+                // Only vary the y-value of the second control point
+                for (int j = 3; j < initialControlPoints.Length - 2; j++)
+                {
+                    double positionVariationMultiplier = (new Random().NextDouble() * 0.5) * 0.25;
+                    double variationY = (new Random().NextDouble() * positionVariationMultiplier) - positionVariationMultiplier / 2;
+                    particles[i].Position[j] += variationY;  // y of controlPoint[j]
+                }
+
+                for (int j = 3; j < initialControlPoints.Length - 2; j++)
+                {
+                    double velocityVariationMultiplier = (new Random().NextDouble() * 0.5) - 0.25;
+                    // Initialize velocities for the other control points
+                    particles[i].Velocity[j] = (new Random().NextDouble() * velocityVariationMultiplier) - velocityVariationMultiplier / 2;
+                }
+            }
+        }
+
+
+
+
+        public void Optimize(Func<double[], double> objectiveFunction)
+        {
+            cancelSearch = false;
+
+            double previousGlobalBestScore = GlobalBestScore;
+            int stalledIterations = 0;
+            const int MaxStalledIterations = 50;  // Adjust based on your preference
+            const double TerminationThreshold = 0.01;  // Adjust based on the precision you need
+
+
+            for (int iteration = 0; iteration < MaxIterations; iteration++)
+            {
+                if (cancelSearch)
+                {
+                    MessageBox.Show("Terminated at iteration: " + iteration);
+                    break;  // Exit the loop
+                }
+
+                this.Invoke((MethodInvoker)delegate
+                {
+                    currentTime = DateTime.Now;
+                    elapsedTime = currentTime - startTime;
+                    System.Windows.Forms.Control control = panel3.Controls.Find("lblElapsedTime", true)[0];
+                    control.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
+                    control.Refresh();
+                });
+
+                foreach (Particle particle in particles)
+                {
+                    // Evaluate current fitness
+                    double currentScore = objectiveFunction(particle.Position);
+
+                    // Update personal best
+                    if (currentScore < particle.BestScore)
+                    {
+                        particle.BestScore = currentScore;
+                        particle.BestPosition = (double[])particle.Position.Clone();
+                    }
+
+                    // Update global best
+                    if (currentScore < GlobalBestScore)
+                    {
+                        GlobalBestScore = currentScore;
+                        GlobalBestPosition = (double[])particle.Position.Clone();
+                    }
+                }
+
+
+                // Update velocities and positions
+                foreach (Particle particle in particles)
+                {
+                    Inertia = new Random().NextDouble();
+                    PersonalAcceleration = new Random().NextDouble();
+                    GlobalAcceleration = new Random().NextDouble();
+
+                    for (int j = 0; j < particle.Position.Length; j++)
+                    {
+                        double r1 = new Random().NextDouble();
+                        double r2 = new Random().NextDouble();
+
+                        if (j == particle.Position.Length - 1 || j == particle.Position.Length - 2)
+                        {
+                            // Skip updating the last control point (both x and y)
+                            continue;
+                        }
+                        else if (j == 0 || j == 1)
+                        {
+                            // Skip updating the first control point (both x and y)
+                            continue;
+                        }
+                        else if (j == 2)
+                        {
+                            // Skip updating the x-coordinate of the second control point
+                            continue;
+                        }
+                        //else if (j == 3)
+                        //{
+                        //    // Only update the y-coordinate of the second control point
+                        //    particle.Velocity[j] = Inertia * particle.Velocity[j]
+                        //                           + PersonalAcceleration * r1 * (particle.BestPosition[j] - particle.Position[j])
+                        //                           + GlobalAcceleration * r2 * (GlobalBestPosition[j] - particle.Position[j]);
+                        //    particle.Position[j] += particle.Velocity[j];
+                        //}
+                        else
+                        {
+                            // Update all other control points normally
+                            particle.Velocity[j] = Inertia * particle.Velocity[j]
+                                                   + PersonalAcceleration * r1 * (particle.BestPosition[j] - particle.Position[j])
+                                                   + GlobalAcceleration * r2 * (GlobalBestPosition[j] - particle.Position[j]);
+
+                            particle.Position[j] += particle.Velocity[j];
+                        }
+                    }
+                }
+
+                if (Math.Abs(GlobalBestScore - previousGlobalBestScore) < TerminationThreshold)
+                {
+                    stalledIterations++;
+                    if (stalledIterations >= MaxStalledIterations)
+                    {
+                        Console.Beep();
+                        Console.Beep();
+                        Console.Beep();
+
+                        //show message box with number of iterations, start time, end time, and elapsed time
+                        MessageBox.Show("Terminated at iteration: " + iteration + $"\nStart time: {startTime}\nEnd time: {currentTime}\nElapsed time: {elapsedTime}");
+                        break;  // Exit the loop
+                    }
+                }
+                else
+                {
+                    stalledIterations = 0;  // Reset if there's a significant change
+                }
+
+                previousGlobalBestScore = GlobalBestScore;
+            }
+        }
+
+        private double[] ConvertControlPointsToArray(List<PointD> controlPoints)
+        {
+            double[] array = new double[controlPoints.Count * 2];
+            int index = 0;
+            foreach (var point in controlPoints)
+            {
+                array[index++] = point.X;
+                array[index++] = point.Y;
+            }
+            return array;
+        }
+
+        private List<PointD> ConvertArrayToControlPoints(double[] array)
+        {
+            List<PointD> controlPoints = new List<PointD>();
+            for (int i = 0; i < array.Length; i += 2)
+            {
+                controlPoints.Add(new PointD(array[i], array[i + 1]));
+            }
+            return controlPoints;
+        }
+
+        //private double ObjectiveFunction(double[] controlPointsArray, bool topOrBottom)
+        //{
+        //    DataGridView gridView = topOrBottom ? dataGridViewTop : dataGridViewBottom;
+        //    double totalError = topOrBottom ? totalErrorTop : totalErrorBottom;
+
+        //    List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
+        //    gridViewAddPoints(gridView, controlPoints);
+
+        //    this.Invoke((MethodInvoker)delegate
+        //    {
+        //        // UI update code goes here
+        //        calculations();
+        //    });
+
+        //    return totalError;
+        //}
+
+        //private async Task StartPSO(bool topOrBottom)
+        //{
+        //    DataGridView gridView = topOrBottom ? dataGridViewTop : dataGridViewBottom;
+        //    Func<double[], double> objectiveFunction = (controlPointsArray) => ObjectiveFunction(controlPointsArray, topOrBottom);
+
+        //    var controlPoints = GetControlPoints(gridView);
+        //    var initialControlPointsArray = ConvertControlPointsToArray(controlPoints);
+
+        //    Initialize(initialControlPointsArray);
+        //    await Task.Run(() => Optimize(objectiveFunction));
+
+        //    var optimizedControlPoints = ConvertArrayToControlPoints(GlobalBestPosition);
+        //    gridViewAddPoints(gridView, optimizedControlPoints);
+        //}
+
+        private double ObjectiveFunctionTop(double[] controlPointsArray)
+        {
+            List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
+            gridViewAddPoints(dataGridViewTop, controlPoints);
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                // UI update code goes here
+                calculations();
+            });
+
+            return totalErrorTop;
+        }
+
+        private async Task StartPSOTop()
+        {
+            ResetGlobalBests();
+
+            var controlPoints = GetControlPoints(dataGridViewTop);
+            var initialControlPointsArray = ConvertControlPointsToArray(controlPoints);
+
+            Initialize(initialControlPointsArray);
+            await Task.Run(() => Optimize(ObjectiveFunctionTop));
+
+            var optimizedControlPoints = ConvertArrayToControlPoints(GlobalBestPosition);
+            gridViewAddPoints(dataGridViewTop, optimizedControlPoints);
+        }
+
+        private double ObjectiveFunctionBottom(double[] controlPointsArray)
+        {
+            List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
+            gridViewAddPoints(dataGridViewBottom, controlPoints);
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                // UI update code goes here
+                calculations();
+            });
+
+            return totalErrorBottom;
+        }
+
+        private async Task StartPSOBottom()
+        {
+            ResetGlobalBests();
+
+            var controlPoints = GetControlPoints(dataGridViewBottom);
+            var initialControlPointsArray = ConvertControlPointsToArray(controlPoints);
+
+            Initialize(initialControlPointsArray);
+            await Task.Run(() => Optimize(ObjectiveFunctionBottom));
+
+            var optimizedControlPoints = ConvertArrayToControlPoints(GlobalBestPosition);
+            gridViewAddPoints(dataGridViewBottom, optimizedControlPoints);
+        }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
         // helper functions
 
-        private async Task SearchTopAsync()
+        private async Task SearchTopAsync(bool singleSearch)
         {
             progressBar1.Visible = true;
 
@@ -599,12 +934,15 @@ namespace BezierAirfoilDesigner
                 currentError = totalErrorTop;
                 errorImprovement = (previousError - currentError) / previousError;
                 previousError = currentError;
+
+                // If single search, then break after one iteration
+                if (singleSearch) break;
             }
 
             progressBar1.Visible = false;
         }
 
-        private async Task SearchBottomAsync()
+        private async Task SearchBottomAsync(bool singleSearch)
         {
             progressBar1.Visible = true;
 
@@ -625,6 +963,9 @@ namespace BezierAirfoilDesigner
                 currentError = totalErrorBottom;
                 errorImprovement = (previousError - currentError) / previousError;
                 previousError = currentError;
+
+                // If single search, then break after one iteration
+                if (singleSearch) break;
             }
 
             progressBar1.Visible = false;
@@ -1298,6 +1639,7 @@ namespace BezierAirfoilDesigner
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
         {
             List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
+            if (!ValidateDegreeCompatibility(controlPointsTop)) return;
             controlPointsTop = DeCasteljau.IncreaseOrder(controlPointsTop);
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
@@ -1306,10 +1648,25 @@ namespace BezierAirfoilDesigner
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
         {
             List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+            if (!ValidateDegreeCompatibility(controlPointsBottom)) return;
             controlPointsBottom = DeCasteljau.IncreaseOrder(controlPointsBottom);
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
         }
+
+        private bool ValidateDegreeCompatibility(List<PointD> controlPoints)
+        {
+            if (controlPoints.Count != 10 && controlPoints.Count != 11)
+            {
+                return true;
+            }
+
+            string warningMessage = "For optimal compatibility with most CAD software, increasing the degree above 9 is discouraged. DXF export supports up to degree 10 only. Do you wish to continue?";
+            DialogResult dialogResult = MessageBox.Show(warningMessage, "⚠ Compatibility Warning", MessageBoxButtons.YesNo);
+
+            return dialogResult != DialogResult.No;
+        }
+
 
         private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
         {
@@ -1618,9 +1975,21 @@ namespace BezierAirfoilDesigner
 
             startTime = DateTime.Now;
 
-            await SearchTopAsync();
+            await SearchTopAsync(false);
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+        }
+
+        private async void btnSearchTop_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+                cancelSearch = false;
+                startTime = DateTime.Now;
+                await SearchTopAsync(true);
+                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+            }
         }
 
         private async void btnSearchBottom_Click(object sender, EventArgs e)
@@ -1631,9 +2000,20 @@ namespace BezierAirfoilDesigner
 
             startTime = DateTime.Now;
 
-            await SearchBottomAsync();
+            await SearchBottomAsync(false);
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+        }
+        private async void btnSearchBottom_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false;
+                cancelSearch = false;
+                startTime = DateTime.Now;
+                await SearchBottomAsync(true);
+                btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true;
+            }
         }
 
         private async void btnAutoSearch_Click(object sender, EventArgs e)
@@ -1648,8 +2028,8 @@ namespace BezierAirfoilDesigner
             double currentError;
             double errorImprovement = 1.0f;
 
-            await SearchTopAsync();
-            await SearchBottomAsync();
+            await SearchTopAsync(false);
+            await SearchBottomAsync(false);
 
             while (totalErrorTop > errorThresholdTop || totalErrorBottom > errorThresholdBottom)
             {
@@ -1666,8 +2046,8 @@ namespace BezierAirfoilDesigner
                     btnIncreaseOrderBottom.PerformClick();
                 }
 
-                await SearchTopAsync();
-                await SearchBottomAsync();
+                await SearchTopAsync(false);
+                await SearchBottomAsync(false);
 
                 currentError = totalErrorTop + totalErrorBottom;
                 errorImprovement = (previousError - currentError) / previousError;
@@ -1701,134 +2081,6 @@ namespace BezierAirfoilDesigner
             updateCheckTriggeredByButtonClick = false;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // List of points that form the airfoil
-            List<PointD> points = new();
-            points.AddRange(referenceDatTop);
-            //points.AddRange(referenceDatBottom);
-
-            // Initialize list to store tangent vectors at each point
-            List<PointD> tangents = new List<PointD>();
-
-            // Step 2: Compute tangents at each point
-            for (int i = 0; i < points.Count; i++)
-            {
-                if (i == 0) // For the first point, the tangent is towards the next point
-                {
-                    // Compute direction from current point to next point
-                    double dx = points[i + 1].X - points[i].X;
-                    double dy = points[i + 1].Y - points[i].Y;
-
-                    // Compute length of direction vector
-                    double length = (double)Math.Sqrt(dx * dx + dy * dy);
-
-                    // Normalize direction vector
-                    PointD direction = new PointD(dx / length, dy / length);
-
-                    tangents.Add(direction);
-                }
-                else if (i == points.Count - 1) // For the last point, the tangent is from the previous point
-                {
-                    // Compute direction from previous point to current point
-                    double dx = points[i].X - points[i - 1].X;
-                    double dy = points[i].Y - points[i - 1].Y;
-
-                    // Compute length of direction vector
-                    double length = (double)Math.Sqrt(dx * dx + dy * dy);
-
-                    // Normalize direction vector
-                    PointD direction = new PointD(dx / length, dy / length);
-
-                    tangents.Add(direction);
-                }
-                else // For any other point, the tangent is the average of the direction from the previous point and towards the next point
-                {
-                    // Compute direction from previous point to current point
-                    double dx1 = points[i].X - points[i - 1].X;
-                    double dy1 = points[i].Y - points[i - 1].Y;
-
-                    // Compute length of direction vector
-                    double length1 = (double)Math.Sqrt(dx1 * dx1 + dy1 * dy1);
-
-                    // Normalize direction vector
-                    PointD direction1 = new PointD(dx1 / length1, dy1 / length1);
-
-                    // Compute direction from current point to next point
-                    double dx2 = points[i + 1].X - points[i].X;
-                    double dy2 = points[i + 1].Y - points[i].Y;
-
-                    // Compute length of direction vector
-                    double length2 = (double)Math.Sqrt(dx2 * dx2 + dy2 * dy2);
-
-                    // Normalize direction vector
-                    PointD direction2 = new PointD(dx2 / length2, dy2 / length2);
-
-                    // Compute average of both directions to get tangent vector
-                    PointD tangent = new PointD((direction1.X + direction2.X) / 2, (direction1.Y + direction2.Y) / 2);
-
-                    tangents.Add(tangent);
-                }
-            }
-
-            // Store each set of control points for a curve segment between two points on the airfoil
-            List<List<PointD>> controlPointsSegments = new List<List<PointD>>();
-
-            for (int i = 0; i < points.Count - 1; i++)
-            {
-                PointD P0 = points[i];
-                PointD P3 = points[i + 1];
-                PointD T0 = tangents[i];
-                PointD T3 = tangents[i + 1];
-
-                double distance = (double)Math.Sqrt(Math.Pow(P3.X - P0.X, 2) + Math.Pow(P3.Y - P0.Y, 2));
-
-                PointD P1;
-
-                if (i == 0) // For the first point, make the tangent vertical
-                {
-                    // Set the x-coordinate of the first control point to be the same as the x-coordinate of the first point of the airfoil
-                    double x1 = P0.X;
-
-                    // Set the y-coordinate of the first control point such that the tangent is vertical (x-component of the tangent is zero)
-                    double y1 = P0.Y + distance / 3;
-
-                    P1 = new PointD(x1, y1);
-                }
-                else // For other points, calculate the control point as before
-                {
-                    P1 = new PointD(P0.X + T0.X * distance / 3, P0.Y + T0.Y * distance / 3);
-                }
-
-                PointD P2 = new PointD(P3.X - T3.X * distance / 3, P3.Y - T3.Y * distance / 3);
-
-                // Store the control points for the current curve segment in a list
-                List<PointD> controlPoints = new List<PointD>();
-                controlPoints.Add(P0);
-                controlPoints.Add(P1);
-                controlPoints.Add(P2);
-                controlPoints.Add(P3);
-
-                // Add the list of control points for the current curve segment to the list of segments
-                controlPointsSegments.Add(controlPoints);
-            }
-
-            for (int i = 0; i < controlPointsSegments.Count; i++)
-            {
-                List<PointD> controls = controlPointsSegments[i];
-                List<PointD> pointsTop = DeCasteljau.BezierCurve(controls, 10);
-
-                var top = formsPlot1.Plot.AddScatterList(color: Color.Green, lineStyle: ScottPlot.LineStyle.Solid);
-
-                for (int j = 0; j < pointsTop.Count; j++)
-                {
-                    top.Add(pointsTop[j].X, pointsTop[j].Y);
-                }
-            }
-
-
-        }
-
         private void btnSave_Click(object sender, EventArgs e)
         {
             frmSave saveForm = new frmSave();
@@ -1855,6 +2107,18 @@ namespace BezierAirfoilDesigner
             saveForm.loadedAirfoilName = loadedAirfoilName;    // Your data for loadedAirfoilName
 
             saveForm.ShowDialog();
+        }
+
+        private async void btnStartPSOTop_Click(object sender, EventArgs e)
+        {
+            startTime = DateTime.Now;
+            await StartPSOTop(/*true*/); // true for top
+        }
+
+        private async void btnStartPSOBottom_Click(object sender, EventArgs e)
+        {
+            startTime = DateTime.Now;
+            await StartPSOBottom(/*false*/); // false for bottom
         }
     }
 }

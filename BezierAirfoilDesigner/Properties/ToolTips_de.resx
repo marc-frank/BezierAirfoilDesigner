@@ -195,10 +195,20 @@ Airfoil Name
     <value>Die aktuellen Kurven als .dat Datei speichern.</value>
   </data>
   <data name="btnSearchBottom" xml:space="preserve">
-    <value>Nach besseren Kontrollpunkten für die untere Kurve suchen.</value>
+    <value>Nach besseren Kontrollpunkten für die untere Kurve suchen.
+
+Rechtsklick, um eine einzelne Suche durchzuführen.</value>
   </data>
   <data name="btnSearchTop" xml:space="preserve">
-    <value>Nach besseren Kontrollpunkten für die obere Kurve suchen.</value>
+    <value>Nach besseren Kontrollpunkten für die obere Kurve suchen.
+
+Rechtsklick, um eine einzelne Suche durchzuführen.</value>
+  </data>
+  <data name="btnStartPSOBottom" xml:space="preserve">
+    <value>Eine Partikel-Schwarm-Optimierung für die untere Kurve starten.</value>
+  </data>
+  <data name="btnStartPSOTop" xml:space="preserve">
+    <value>Eine Partikel-Schwarm-Optimierung für die obere Kurve starten.</value>
   </data>
   <data name="btnStopSearch" xml:space="preserve">
     <value>Die aktuelle Suche abbrechen.</value>

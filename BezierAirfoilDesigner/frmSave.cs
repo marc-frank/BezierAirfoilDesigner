@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using netDxf;
+using netDxf.Entities;
+using static netDxf.Entities.HatchBoundaryPath;
 
 namespace BezierAirfoilDesigner
 {
@@ -205,6 +208,111 @@ namespace BezierAirfoilDesigner
                 fileContents = fileContents.Replace(',', '.');
 
                 SaveTextToFile(fileContents, path);
+            }
+        }
+
+        private void btnSaveDXF_Click(object sender, EventArgs e)
+        {
+            //check if number of control points is greater than 11
+            if (controlPointsTop.Count > 11 || controlPointsBottom.Count > 11)
+            {
+                MessageBox.Show("DXF export is limited to degree 10.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Try to parse with invariant culture
+            if (!double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord))
+            {
+                MessageBox.Show("Invalid Chord");
+                return;
+            }
+
+            // Create a new DXF document
+            DxfDocument dxf = new DxfDocument();
+
+            // Define control points for the spline
+            List<Vector3> controlPointsTopVector = new();
+
+            // Add top control points to the list
+            foreach (PointD point in controlPointsTop)
+            {
+                switch (cmbCoordinateStyle.Text)
+                {
+                    case "x,y":
+                        // show error message and return if "x,y" is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        controlPointsTopVector.Add(new Vector3(0, point.Y * chord, point.X * chord));
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        controlPointsTopVector.Add(new Vector3(point.X * chord, 0, point.Y * chord));
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        controlPointsTopVector.Add(new Vector3(point.X * chord, point.Y * chord, 0));
+                        break;
+                    default:
+                        // show error message and return if nothing or something else is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                }
+            }
+
+            // Define control points for the spline
+            List<Vector3> controlPointsBottomVector = new();
+
+            // Add top control points to the list
+            foreach (PointD point in controlPointsBottom)
+            {
+                switch (cmbCoordinateStyle.Text)
+                {
+                    case "x,y":
+                        // show error message and return if "x,y" is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        controlPointsBottomVector.Add(new Vector3(0, point.Y * chord, point.X * chord));
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        controlPointsBottomVector.Add(new Vector3(point.X * chord, 0, point.Y * chord));
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        controlPointsBottomVector.Add(new Vector3(point.X * chord, point.Y * chord, 0));
+                        break;
+                    default:
+                        // show error message and return if nothing or something else is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                }
+            }
+
+            // Create a spline with the control points
+            netDxf.Entities.Spline splineTop = new netDxf.Entities.Spline(controlPointsTopVector, null, degree: short.Parse((controlPointsTop.Count - 1).ToString()));
+            netDxf.Entities.Spline splineBottom = new netDxf.Entities.Spline(controlPointsBottomVector, null, degree: short.Parse((controlPointsBottom.Count - 1).ToString()));
+
+            // Add the spline to the DXF document
+            dxf.Entities.Add(splineTop);
+            dxf.Entities.Add(splineBottom);
+
+            // Save the DXF document to a file
+            //dxf.Save(loadedAirfoilName + ".dxf", );
+
+            // Create a SaveFileDialog to get the save location from the user
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = PrepareAirfoilName(loadedAirfoilName);
+            saveFileDialog.Filter = "DXF Files (*.dxf)|*.dxf";
+            saveFileDialog.Title = "Save as DXF";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dxf.Save(saveFileDialog.FileName);
+                MessageBox.Show("File Saved Successfully!");
             }
         }
     }

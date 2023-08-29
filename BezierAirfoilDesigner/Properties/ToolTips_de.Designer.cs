@@ -208,7 +208,9 @@ namespace BezierAirfoilDesigner.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Nach besseren Kontrollpunkten für die untere Kurve suchen. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Nach besseren Kontrollpunkten für die untere Kurve suchen.
+        ///
+        ///Rechtsklick, um eine einzelne Suche durchzuführen. ähnelt.
         /// </summary>
         internal static string btnSearchBottom {
             get {
@@ -217,11 +219,31 @@ namespace BezierAirfoilDesigner.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Nach besseren Kontrollpunkten für die obere Kurve suchen. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Nach besseren Kontrollpunkten für die obere Kurve suchen.
+        ///
+        ///Rechtsklick, um eine einzelne Suche durchzuführen. ähnelt.
         /// </summary>
         internal static string btnSearchTop {
             get {
                 return ResourceManager.GetString("btnSearchTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Eine Partikel-Schwarm-Optimierung für die untere Kurve starten. ähnelt.
+        /// </summary>
+        internal static string btnStartPSOBottom {
+            get {
+                return ResourceManager.GetString("btnStartPSOBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Eine Partikel-Schwarm-Optimierung für die obere Kurve starten. ähnelt.
+        /// </summary>
+        internal static string btnStartPSOTop {
+            get {
+                return ResourceManager.GetString("btnStartPSOTop", resourceCulture);
             }
         }
         

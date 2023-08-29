@@ -196,10 +196,20 @@ Airfoil Name
     <value>Save the current curves as a .dat file.</value>
   </data>
   <data name="btnSearchBottom" xml:space="preserve">
-    <value>Search for better control points for the bottom curve.</value>
+    <value>Search for better control points for the bottom curve.
+
+Right click to do a single search.</value>
   </data>
   <data name="btnSearchTop" xml:space="preserve">
-    <value>Search for better control points for the top curve.</value>
+    <value>Search for better control points for the top curve.
+
+Right click to do a single search.</value>
+  </data>
+  <data name="btnStartPSOBottom" xml:space="preserve">
+    <value>Start a Particle Swarm Optimization for the bottom curve.</value>
+  </data>
+  <data name="btnStartPSOTop" xml:space="preserve">
+    <value>Start a Particle Swarm Optimization for the top curve.</value>
   </data>
   <data name="btnStopSearch" xml:space="preserve">
     <value>Stop the currently running search.</value>

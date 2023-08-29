@@ -36,13 +36,14 @@
             btnSaveDat = new Button();
             btnSaveBezDat = new Button();
             btnSaveBez = new Button();
+            btnSaveDXF = new Button();
             SuspendLayout();
             // 
             // lblChord
             // 
             lblChord.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblChord.AutoSize = true;
-            lblChord.Location = new Point(110, 9);
+            lblChord.Location = new Point(122, 9);
             lblChord.Name = "lblChord";
             lblChord.Size = new Size(38, 15);
             lblChord.TabIndex = 66;
@@ -51,7 +52,7 @@
             // txtChord
             // 
             txtChord.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txtChord.Location = new Point(110, 27);
+            txtChord.Location = new Point(122, 27);
             txtChord.Name = "txtChord";
             txtChord.Size = new Size(75, 23);
             txtChord.TabIndex = 4;
@@ -61,7 +62,7 @@
             // 
             cmbCoordinateStyle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cmbCoordinateStyle.FormattingEnabled = true;
-            cmbCoordinateStyle.Location = new Point(110, 71);
+            cmbCoordinateStyle.Location = new Point(122, 71);
             cmbCoordinateStyle.Name = "cmbCoordinateStyle";
             cmbCoordinateStyle.Size = new Size(75, 23);
             cmbCoordinateStyle.TabIndex = 5;
@@ -70,7 +71,7 @@
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(110, 53);
+            label1.Location = new Point(122, 53);
             label1.Name = "label1";
             label1.Size = new Size(68, 15);
             label1.TabIndex = 68;
@@ -112,11 +113,24 @@
             btnSaveBez.UseVisualStyleBackColor = true;
             btnSaveBez.Click += btnSaveBez_Click;
             // 
+            // btnSaveDXF
+            // 
+            btnSaveDXF.AutoSize = true;
+            btnSaveDXF.Location = new Point(12, 98);
+            btnSaveDXF.Margin = new Padding(3, 2, 3, 2);
+            btnSaveDXF.Name = "btnSaveDXF";
+            btnSaveDXF.Size = new Size(75, 25);
+            btnSaveDXF.TabIndex = 69;
+            btnSaveDXF.Text = ".dxf";
+            btnSaveDXF.UseVisualStyleBackColor = true;
+            btnSaveDXF.Click += btnSaveDXF_Click;
+            // 
             // frmSave
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(197, 106);
+            ClientSize = new Size(209, 133);
+            Controls.Add(btnSaveDXF);
             Controls.Add(btnSaveDat);
             Controls.Add(btnSaveBezDat);
             Controls.Add(btnSaveBez);
@@ -142,5 +156,6 @@
         private Button btnSaveDat;
         private Button btnSaveBezDat;
         private Button btnSaveBez;
+        private Button btnSaveDXF;
     }
 }

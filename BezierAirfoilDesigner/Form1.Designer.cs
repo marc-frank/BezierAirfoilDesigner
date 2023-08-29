@@ -80,6 +80,7 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            btnStartPSOBottom = new Button();
             chkMatchTEGap = new CheckBox();
             lblErrorCalculationDistribution = new Label();
             cmbErrorCalculationDistribution = new ComboBox();
@@ -89,7 +90,7 @@
             btnSave = new Button();
             txtErrorThresholdBottom = new TextBox();
             txtErrorThresholdTop = new TextBox();
-            button1 = new Button();
+            btnStartPSOTop = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridViewBottom).BeginInit();
             panel1.SuspendLayout();
@@ -436,6 +437,7 @@
             btnSearchTop.Text = "top";
             btnSearchTop.UseVisualStyleBackColor = true;
             btnSearchTop.Click += btnSearchTop_Click;
+            btnSearchTop.MouseDown += btnSearchTop_MouseDown;
             // 
             // btnSearchBottom
             // 
@@ -448,6 +450,7 @@
             btnSearchBottom.Text = "bottom";
             btnSearchBottom.UseVisualStyleBackColor = true;
             btnSearchBottom.Click += btnSearchBottom_Click;
+            btnSearchBottom.MouseDown += btnSearchBottom_MouseDown;
             // 
             // btnAutoSearch
             // 
@@ -668,6 +671,7 @@
             // panel3
             // 
             panel3.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel3.Controls.Add(btnStartPSOBottom);
             panel3.Controls.Add(chkMatchTEGap);
             panel3.Controls.Add(lblErrorCalculationDistribution);
             panel3.Controls.Add(cmbErrorCalculationDistribution);
@@ -677,7 +681,7 @@
             panel3.Controls.Add(btnSave);
             panel3.Controls.Add(txtErrorThresholdBottom);
             panel3.Controls.Add(txtErrorThresholdTop);
-            panel3.Controls.Add(button1);
+            panel3.Controls.Add(btnStartPSOTop);
             panel3.Controls.Add(lblLoad);
             panel3.Controls.Add(btnDefault);
             panel3.Controls.Add(btnLoadDat);
@@ -695,6 +699,17 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(75, 608);
             panel3.TabIndex = 60;
+            // 
+            // btnStartPSOBottom
+            // 
+            btnStartPSOBottom.Location = new Point(0, 484);
+            btnStartPSOBottom.Margin = new Padding(3, 2, 3, 2);
+            btnStartPSOBottom.Name = "btnStartPSOBottom";
+            btnStartPSOBottom.Size = new Size(75, 25);
+            btnStartPSOBottom.TabIndex = 72;
+            btnStartPSOBottom.Text = "PSO btm";
+            btnStartPSOBottom.UseVisualStyleBackColor = true;
+            btnStartPSOBottom.Click += btnStartPSOBottom_Click;
             // 
             // chkMatchTEGap
             // 
@@ -782,16 +797,16 @@
             txtErrorThresholdTop.Text = "0,075";
             txtErrorThresholdTop.TextChanged += txtErrorThresholdTop_TextChanged;
             // 
-            // button1
+            // btnStartPSOTop
             // 
-            button1.Location = new Point(0, 534);
-            button1.Margin = new Padding(3, 2, 3, 2);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 21);
-            button1.TabIndex = 61;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            btnStartPSOTop.Location = new Point(0, 455);
+            btnStartPSOTop.Margin = new Padding(3, 2, 3, 2);
+            btnStartPSOTop.Name = "btnStartPSOTop";
+            btnStartPSOTop.Size = new Size(75, 25);
+            btnStartPSOTop.TabIndex = 61;
+            btnStartPSOTop.Text = "PSO top";
+            btnStartPSOTop.UseVisualStyleBackColor = true;
+            btnStartPSOTop.Click += btnStartPSOTop_Click;
             // 
             // Form1
             // 
@@ -902,7 +917,7 @@
         private Panel panel3;
         private TextBox txtErrorThresholdBottom;
         private TextBox txtErrorThresholdTop;
-        private Button button1;
+        private Button btnStartPSOTop;
         private Button btnSave;
         private Label lblErrorThresholdBottom;
         private Label lblErrorThresholdTop;
@@ -910,5 +925,6 @@
         private Label lblErrorCalculationDistribution;
         private ComboBox cmbErrorCalculationDistribution;
         private CheckBox chkMatchTEGap;
+        private Button btnStartPSOBottom;
     }
 }
