@@ -48,8 +48,8 @@ namespace BezierAirfoilDesigner
 
         double totalErrorTop;
         double totalErrorBottom;
-        double errorThresholdTop = 0.075;
-        double errorThresholdBottom = 0.075;
+        double errorThresholdTop = 7.5e-6;
+        double errorThresholdBottom = 7.5e-6;
 
         readonly double minZoomRange = 0.01;
         readonly double maxZoomRange = 250.0;
@@ -398,19 +398,25 @@ namespace BezierAirfoilDesigner
 
             int errorCalculationDistribution = cmbErrorCalculationDistribution.SelectedIndex;
 
+            if (int.TryParse(txtErrorNumberOfSteps.Text.Replace(",", "."), CultureInfo.InvariantCulture, out int errorNumberOfSteps) == false)
+            {
+                MessageBox.Show("Invalid number of steps.");
+                return;
+            }
+
             switch (errorCalculationDistribution)
             {
                 case 0:
-                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetUniformStations);
+                    errorTop = GetThickness(pointsTop, referenceDatTop, errorNumberOfSteps, GetUniformStations);
                     break;
                 case 1:
-                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetSineStations);
+                    errorTop = GetThickness(pointsTop, referenceDatTop, errorNumberOfSteps, GetSineStations);
                     break;
                 case 2:
-                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetCosineStations);
+                    errorTop = GetThickness(pointsTop, referenceDatTop, errorNumberOfSteps, GetCosineStations);
                     break;
                 default:
-                    errorTop = GetThickness(pointsTop, referenceDatTop, 1000, GetUniformStations);
+                    errorTop = GetThickness(pointsTop, referenceDatTop, errorNumberOfSteps, GetUniformStations);
                     break;
             }
 
@@ -421,7 +427,7 @@ namespace BezierAirfoilDesigner
 
             for (int i = 0; i < errorTop.Count; i++)
             {
-                totalErrorTop += Math.Abs(errorTop[i].Y);
+                totalErrorTop += Math.Abs(errorTop[i].Y) / errorNumberOfSteps;
             }
 
 
@@ -442,26 +448,24 @@ namespace BezierAirfoilDesigner
             switch (errorCalculationDistribution)
             {
                 case 0:
-                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetUniformStations);
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, errorNumberOfSteps, GetUniformStations);
                     break;
                 case 1:
-                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetSineStations);
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, errorNumberOfSteps, GetSineStations);
                     break;
                 case 2:
-                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetCosineStations);
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, errorNumberOfSteps, GetCosineStations);
                     break;
                 default:
-                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, 1000, GetUniformStations);
+                    errorBottom = GetThickness(pointsBottom, referenceDatBottom, errorNumberOfSteps, GetUniformStations);
                     break;
             }
-
-            //totalErrorBottom = CalculateAreaUnderCurve(errorBottom) * 1000;
 
             totalErrorBottom = 0;
 
             for (int i = 0; i < errorBottom.Count; i++)
             {
-                totalErrorBottom += Math.Abs(errorBottom[i].Y);
+                totalErrorBottom += Math.Abs(errorBottom[i].Y) / errorNumberOfSteps;
             }
 
 
@@ -621,7 +625,7 @@ namespace BezierAirfoilDesigner
             public double BestScore { get; set; }
         }
 
-        public int ParticleCount { get; set; } = 100;
+        public int ParticleCount = 100;
         public double Inertia { get; set; } = 0.5;
         public double PersonalAcceleration { get; set; } = 0.1;
         public double GlobalAcceleration { get; set; } = 0.1;
@@ -646,6 +650,12 @@ namespace BezierAirfoilDesigner
 
         public void Initialize(double[] initialControlPoints)
         {
+            if (int.TryParse(txtNumberOfParticles.Text.Replace(",", "."), CultureInfo.InvariantCulture, out ParticleCount) == false)
+            {
+                MessageBox.Show("Invalid number of particles.");
+                return;
+            }
+
             particles = new Particle[ParticleCount];
 
             for (int i = 0; i < ParticleCount; i++)
@@ -691,7 +701,7 @@ namespace BezierAirfoilDesigner
             double previousGlobalBestScore = GlobalBestScore;
             int stalledIterations = 0;
             const int MaxStalledIterations = 50;  // Adjust based on your preference
-            const double TerminationThreshold = 0.001;  // Adjust based on the precision you need
+            const double TerminationThreshold = 1e-6;  // Adjust based on the precision you need
 
 
             for (int iteration = 0; iteration < MaxIterations; iteration++)
@@ -923,7 +933,7 @@ namespace BezierAirfoilDesigner
         {
             progressBar1.Visible = true;
 
-            double improvementThreshold = 0.01f;
+            double improvementThreshold = 0.01;
 
             double previousError = totalErrorTop;
             double currentError;
@@ -952,7 +962,7 @@ namespace BezierAirfoilDesigner
         {
             progressBar1.Visible = true;
 
-            double improvementThreshold = 0.01f;
+            double improvementThreshold = 0.01;
 
             double previousError = totalErrorBottom;
             double currentError;
@@ -993,7 +1003,7 @@ namespace BezierAirfoilDesigner
             while (!betterCombinationFound)
             {
                 double minimumSearchDistance = 0.001f; // Adjust this value as needed.
-                double searchDistance = Math.Max(((double)Math.Log(currentLowestError + 1) / 50), minimumSearchDistance);
+                double searchDistance = Math.Max(((double)Math.Log(currentLowestError + 1) * 10), minimumSearchDistance);
                 double searchStep = searchDistance / (numPoints - 1); // Defines the step size
 
                 // Calculate total combinations and set progress bar maximum.
