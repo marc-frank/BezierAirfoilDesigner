@@ -165,7 +165,7 @@
             btnIncreaseOrderTop.Location = new Point(0, 17);
             btnIncreaseOrderTop.Margin = new Padding(3, 2, 3, 2);
             btnIncreaseOrderTop.Name = "btnIncreaseOrderTop";
-            btnIncreaseOrderTop.Size = new Size(25, 25);
+            btnIncreaseOrderTop.Size = new Size(40, 42);
             btnIncreaseOrderTop.TabIndex = 8;
             btnIncreaseOrderTop.Text = "+";
             btnIncreaseOrderTop.UseVisualStyleBackColor = true;
@@ -177,7 +177,7 @@
             btnIncreaseOrderBottom.Location = new Point(0, 17);
             btnIncreaseOrderBottom.Margin = new Padding(3, 2, 3, 2);
             btnIncreaseOrderBottom.Name = "btnIncreaseOrderBottom";
-            btnIncreaseOrderBottom.Size = new Size(25, 25);
+            btnIncreaseOrderBottom.Size = new Size(40, 42);
             btnIncreaseOrderBottom.TabIndex = 9;
             btnIncreaseOrderBottom.Text = "+";
             btnIncreaseOrderBottom.UseVisualStyleBackColor = true;
@@ -245,7 +245,7 @@
             btnDecreaseOrderTop.Location = new Point(31, 17);
             btnDecreaseOrderTop.Margin = new Padding(3, 2, 3, 2);
             btnDecreaseOrderTop.Name = "btnDecreaseOrderTop";
-            btnDecreaseOrderTop.Size = new Size(25, 25);
+            btnDecreaseOrderTop.Size = new Size(34, 42);
             btnDecreaseOrderTop.TabIndex = 16;
             btnDecreaseOrderTop.Text = "-";
             btnDecreaseOrderTop.UseVisualStyleBackColor = true;
@@ -259,7 +259,7 @@
             btnDecreaseOrderBottom.Location = new Point(31, 17);
             btnDecreaseOrderBottom.Margin = new Padding(3, 2, 3, 2);
             btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
-            btnDecreaseOrderBottom.Size = new Size(25, 25);
+            btnDecreaseOrderBottom.Size = new Size(34, 42);
             btnDecreaseOrderBottom.TabIndex = 17;
             btnDecreaseOrderBottom.Text = "-";
             btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
@@ -633,7 +633,7 @@
             // 
             cmbLanguage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmbLanguage.FormattingEnabled = true;
-            cmbLanguage.Location = new Point(1201, 632);
+            cmbLanguage.Location = new Point(1201, 635);
             cmbLanguage.Margin = new Padding(3, 2, 3, 2);
             cmbLanguage.Name = "cmbLanguage";
             cmbLanguage.Size = new Size(36, 23);
@@ -643,7 +643,7 @@
             // btnCheckForUpdates
             // 
             btnCheckForUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCheckForUpdates.Location = new Point(1108, 633);
+            btnCheckForUpdates.Location = new Point(1107, 635);
             btnCheckForUpdates.Margin = new Padding(3, 2, 3, 2);
             btnCheckForUpdates.Name = "btnCheckForUpdates";
             btnCheckForUpdates.Size = new Size(87, 23);
@@ -855,7 +855,7 @@
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(75, 22);
             txtErrorThresholdBottom.TabIndex = 66;
-            txtErrorThresholdBottom.Text = "7,5e-6";
+            txtErrorThresholdBottom.Text = "7,5e-5";
             txtErrorThresholdBottom.TextChanged += txtErrorThresholdBottom_TextChanged;
             // 
             // txtErrorThresholdTop
@@ -866,7 +866,7 @@
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(75, 22);
             txtErrorThresholdTop.TabIndex = 65;
-            txtErrorThresholdTop.Text = "7,5e-6";
+            txtErrorThresholdTop.Text = "7,5e-5";
             txtErrorThresholdTop.TextChanged += txtErrorThresholdTop_TextChanged;
             // 
             // btnStartPSOTop
@@ -885,7 +885,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1243, 664);
+            ClientSize = new Size(1243, 497);
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);

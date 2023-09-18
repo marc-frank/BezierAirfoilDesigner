@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ApplicationIcon>bezier icon.ico</ApplicationIcon>
+    <ApplicationIcon>bezier icon v2.ico</ApplicationIcon>
     <AnalysisLevel>latest</AnalysisLevel>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>annotations</Nullable>
@@ -15,7 +15,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'" />
 
   <ItemGroup>
-    <Content Include="bezier icon.ico" />
+    <Content Include="bezier icon v2.ico" />
   </ItemGroup>
 
   <ItemGroup>
