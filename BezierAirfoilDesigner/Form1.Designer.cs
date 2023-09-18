@@ -106,9 +106,9 @@
             // 
             formsPlot1.BackColor = SystemColors.Control;
             formsPlot1.Location = new Point(0, 0);
-            formsPlot1.Margin = new Padding(3, 0, 3, 0);
+            formsPlot1.Margin = new Padding(6, 0, 6, 0);
             formsPlot1.Name = "formsPlot1";
-            formsPlot1.Size = new Size(816, 636);
+            formsPlot1.Size = new Size(1515, 1357);
             formsPlot1.TabIndex = 0;
             formsPlot1.AxesChanged += formsPlot1_AxesChanged;
             formsPlot1.PlottableDragged += formsPlot1_PlottableDragged;
@@ -117,12 +117,12 @@
             // 
             dataGridViewTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridViewTop.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewTop.Location = new Point(890, 25);
-            dataGridViewTop.Margin = new Padding(3, 2, 3, 2);
+            dataGridViewTop.Location = new Point(1653, 53);
+            dataGridViewTop.Margin = new Padding(6, 4, 6, 4);
             dataGridViewTop.Name = "dataGridViewTop";
             dataGridViewTop.RowHeadersWidth = 47;
             dataGridViewTop.RowTemplate.Height = 28;
-            dataGridViewTop.Size = new Size(266, 190);
+            dataGridViewTop.Size = new Size(494, 405);
             dataGridViewTop.TabIndex = 1;
             dataGridViewTop.CellValueChanged += dataGridView1_CellValueChanged;
             // 
@@ -130,12 +130,12 @@
             // 
             dataGridViewBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             dataGridViewBottom.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewBottom.Location = new Point(890, 234);
-            dataGridViewBottom.Margin = new Padding(3, 2, 3, 2);
+            dataGridViewBottom.Location = new Point(1653, 499);
+            dataGridViewBottom.Margin = new Padding(6, 4, 6, 4);
             dataGridViewBottom.Name = "dataGridViewBottom";
             dataGridViewBottom.RowHeadersWidth = 47;
             dataGridViewBottom.RowTemplate.Height = 28;
-            dataGridViewBottom.Size = new Size(266, 190);
+            dataGridViewBottom.Size = new Size(494, 405);
             dataGridViewBottom.TabIndex = 2;
             dataGridViewBottom.CellValueChanged += dataGridView2_CellValueChanged;
             // 
@@ -143,9 +143,10 @@
             // 
             lblTop.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblTop.AutoSize = true;
-            lblTop.Location = new Point(890, 8);
+            lblTop.Location = new Point(1653, 17);
+            lblTop.Margin = new Padding(6, 0, 6, 0);
             lblTop.Name = "lblTop";
-            lblTop.Size = new Size(26, 15);
+            lblTop.Size = new Size(53, 32);
             lblTop.TabIndex = 3;
             lblTop.Text = "Top";
             // 
@@ -153,19 +154,20 @@
             // 
             lblBottom.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblBottom.AutoSize = true;
-            lblBottom.Location = new Point(890, 217);
+            lblBottom.Location = new Point(1653, 463);
+            lblBottom.Margin = new Padding(6, 0, 6, 0);
             lblBottom.Name = "lblBottom";
-            lblBottom.Size = new Size(47, 15);
+            lblBottom.Size = new Size(93, 32);
             lblBottom.TabIndex = 4;
             lblBottom.Text = "Bottom";
             // 
             // btnIncreaseOrderTop
             // 
             btnIncreaseOrderTop.AutoSize = true;
-            btnIncreaseOrderTop.Location = new Point(0, 17);
-            btnIncreaseOrderTop.Margin = new Padding(3, 2, 3, 2);
+            btnIncreaseOrderTop.Location = new Point(0, 36);
+            btnIncreaseOrderTop.Margin = new Padding(6, 4, 6, 4);
             btnIncreaseOrderTop.Name = "btnIncreaseOrderTop";
-            btnIncreaseOrderTop.Size = new Size(25, 25);
+            btnIncreaseOrderTop.Size = new Size(74, 90);
             btnIncreaseOrderTop.TabIndex = 8;
             btnIncreaseOrderTop.Text = "+";
             btnIncreaseOrderTop.UseVisualStyleBackColor = true;
@@ -174,10 +176,10 @@
             // btnIncreaseOrderBottom
             // 
             btnIncreaseOrderBottom.AutoSize = true;
-            btnIncreaseOrderBottom.Location = new Point(0, 17);
-            btnIncreaseOrderBottom.Margin = new Padding(3, 2, 3, 2);
+            btnIncreaseOrderBottom.Location = new Point(0, 36);
+            btnIncreaseOrderBottom.Margin = new Padding(6, 4, 6, 4);
             btnIncreaseOrderBottom.Name = "btnIncreaseOrderBottom";
-            btnIncreaseOrderBottom.Size = new Size(25, 25);
+            btnIncreaseOrderBottom.Size = new Size(74, 90);
             btnIncreaseOrderBottom.TabIndex = 9;
             btnIncreaseOrderBottom.Text = "+";
             btnIncreaseOrderBottom.UseVisualStyleBackColor = true;
@@ -185,20 +187,20 @@
             // 
             // txtNumOfPointsTop
             // 
-            txtNumOfPointsTop.Location = new Point(0, 60);
-            txtNumOfPointsTop.Margin = new Padding(3, 2, 3, 2);
+            txtNumOfPointsTop.Location = new Point(0, 128);
+            txtNumOfPointsTop.Margin = new Padding(6, 4, 6, 4);
             txtNumOfPointsTop.Name = "txtNumOfPointsTop";
-            txtNumOfPointsTop.Size = new Size(76, 23);
+            txtNumOfPointsTop.Size = new Size(138, 39);
             txtNumOfPointsTop.TabIndex = 10;
             txtNumOfPointsTop.Text = "150";
             txtNumOfPointsTop.TextChanged += txtNumOfPointsTop_TextChanged;
             // 
             // txtNumOfPointBottom
             // 
-            txtNumOfPointBottom.Location = new Point(0, 60);
-            txtNumOfPointBottom.Margin = new Padding(3, 2, 3, 2);
+            txtNumOfPointBottom.Location = new Point(0, 128);
+            txtNumOfPointBottom.Margin = new Padding(6, 4, 6, 4);
             txtNumOfPointBottom.Name = "txtNumOfPointBottom";
-            txtNumOfPointBottom.Size = new Size(76, 23);
+            txtNumOfPointBottom.Size = new Size(138, 39);
             txtNumOfPointBottom.TabIndex = 11;
             txtNumOfPointBottom.Text = "150";
             txtNumOfPointBottom.TextChanged += txtNumOfPointsBottom_TextChanged;
@@ -206,18 +208,20 @@
             // lblNumOfPointTop
             // 
             lblNumOfPointTop.AutoSize = true;
-            lblNumOfPointTop.Location = new Point(0, 43);
+            lblNumOfPointTop.Location = new Point(0, 92);
+            lblNumOfPointTop.Margin = new Padding(6, 0, 6, 0);
             lblNumOfPointTop.Name = "lblNumOfPointTop";
-            lblNumOfPointTop.Size = new Size(64, 15);
+            lblNumOfPointTop.Size = new Size(130, 32);
             lblNumOfPointTop.TabIndex = 12;
             lblNumOfPointTop.Text = "# of points";
             // 
             // lblNumOfPointBottom
             // 
             lblNumOfPointBottom.AutoSize = true;
-            lblNumOfPointBottom.Location = new Point(0, 43);
+            lblNumOfPointBottom.Location = new Point(0, 92);
+            lblNumOfPointBottom.Margin = new Padding(6, 0, 6, 0);
             lblNumOfPointBottom.Name = "lblNumOfPointBottom";
-            lblNumOfPointBottom.Size = new Size(64, 15);
+            lblNumOfPointBottom.Size = new Size(130, 32);
             lblNumOfPointBottom.TabIndex = 13;
             lblNumOfPointBottom.Text = "# of points";
             // 
@@ -225,8 +229,9 @@
             // 
             lblOrderTop.AutoSize = true;
             lblOrderTop.Location = new Point(0, 0);
+            lblOrderTop.Margin = new Padding(6, 0, 6, 0);
             lblOrderTop.Name = "lblOrderTop";
-            lblOrderTop.Size = new Size(38, 15);
+            lblOrderTop.Size = new Size(76, 32);
             lblOrderTop.TabIndex = 14;
             lblOrderTop.Text = "order:";
             // 
@@ -234,18 +239,19 @@
             // 
             lblOrderBottom.AutoSize = true;
             lblOrderBottom.Location = new Point(0, 0);
+            lblOrderBottom.Margin = new Padding(6, 0, 6, 0);
             lblOrderBottom.Name = "lblOrderBottom";
-            lblOrderBottom.Size = new Size(38, 15);
+            lblOrderBottom.Size = new Size(76, 32);
             lblOrderBottom.TabIndex = 15;
             lblOrderBottom.Text = "order:";
             // 
             // btnDecreaseOrderTop
             // 
             btnDecreaseOrderTop.AutoSize = true;
-            btnDecreaseOrderTop.Location = new Point(31, 17);
-            btnDecreaseOrderTop.Margin = new Padding(3, 2, 3, 2);
+            btnDecreaseOrderTop.Location = new Point(58, 36);
+            btnDecreaseOrderTop.Margin = new Padding(6, 4, 6, 4);
             btnDecreaseOrderTop.Name = "btnDecreaseOrderTop";
-            btnDecreaseOrderTop.Size = new Size(25, 25);
+            btnDecreaseOrderTop.Size = new Size(63, 90);
             btnDecreaseOrderTop.TabIndex = 16;
             btnDecreaseOrderTop.Text = "-";
             btnDecreaseOrderTop.UseVisualStyleBackColor = true;
@@ -256,10 +262,10 @@
             btnDecreaseOrderBottom.AutoSize = true;
             btnDecreaseOrderBottom.BackColor = SystemColors.Control;
             btnDecreaseOrderBottom.ForeColor = SystemColors.ControlText;
-            btnDecreaseOrderBottom.Location = new Point(31, 17);
-            btnDecreaseOrderBottom.Margin = new Padding(3, 2, 3, 2);
+            btnDecreaseOrderBottom.Location = new Point(58, 36);
+            btnDecreaseOrderBottom.Margin = new Padding(6, 4, 6, 4);
             btnDecreaseOrderBottom.Name = "btnDecreaseOrderBottom";
-            btnDecreaseOrderBottom.Size = new Size(25, 25);
+            btnDecreaseOrderBottom.Size = new Size(63, 90);
             btnDecreaseOrderBottom.TabIndex = 17;
             btnDecreaseOrderBottom.Text = "-";
             btnDecreaseOrderBottom.UseVisualStyleBackColor = true;
@@ -268,10 +274,10 @@
             // txtAirfoilParam
             // 
             txtAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            txtAirfoilParam.Location = new Point(890, 443);
-            txtAirfoilParam.Margin = new Padding(3, 2, 3, 2);
+            txtAirfoilParam.Location = new Point(1653, 945);
+            txtAirfoilParam.Margin = new Padding(6, 4, 6, 4);
             txtAirfoilParam.Name = "txtAirfoilParam";
-            txtAirfoilParam.Size = new Size(347, 173);
+            txtAirfoilParam.Size = new Size(641, 365);
             txtAirfoilParam.TabIndex = 18;
             txtAirfoilParam.Text = "";
             // 
@@ -279,19 +285,20 @@
             // 
             lblAirfoilParam.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblAirfoilParam.AutoSize = true;
-            lblAirfoilParam.Location = new Point(891, 426);
+            lblAirfoilParam.Location = new Point(1655, 909);
+            lblAirfoilParam.Margin = new Padding(6, 0, 6, 0);
             lblAirfoilParam.Name = "lblAirfoilParam";
-            lblAirfoilParam.Size = new Size(101, 15);
+            lblAirfoilParam.Size = new Size(201, 32);
             lblAirfoilParam.TabIndex = 19;
             lblAirfoilParam.Text = "Airfoil Parameters";
             // 
             // btnDefault
             // 
             btnDefault.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnDefault.Location = new Point(0, 14);
-            btnDefault.Margin = new Padding(3, 1, 3, 1);
+            btnDefault.Location = new Point(0, 30);
+            btnDefault.Margin = new Padding(6, 2, 6, 2);
             btnDefault.Name = "btnDefault";
-            btnDefault.Size = new Size(75, 23);
+            btnDefault.Size = new Size(139, 49);
             btnDefault.TabIndex = 20;
             btnDefault.Text = "default";
             btnDefault.UseVisualStyleBackColor = true;
@@ -301,10 +308,10 @@
             // 
             chkShowControlTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowControlTop.AutoSize = true;
-            chkShowControlTop.Location = new Point(40, 639);
-            chkShowControlTop.Margin = new Padding(1, 0, 1, 0);
+            chkShowControlTop.Location = new Point(74, 1368);
+            chkShowControlTop.Margin = new Padding(2, 0, 2, 0);
             chkShowControlTop.Name = "chkShowControlTop";
-            chkShowControlTop.Size = new Size(64, 19);
+            chkShowControlTop.Size = new Size(122, 36);
             chkShowControlTop.TabIndex = 25;
             chkShowControlTop.Text = "ctrl top";
             chkShowControlTop.UseVisualStyleBackColor = true;
@@ -314,10 +321,10 @@
             // 
             chkShowThickness.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowThickness.AutoSize = true;
-            chkShowThickness.Location = new Point(290, 639);
-            chkShowThickness.Margin = new Padding(1, 0, 1, 0);
+            chkShowThickness.Location = new Point(539, 1368);
+            chkShowThickness.Margin = new Padding(2, 0, 2, 0);
             chkShowThickness.Name = "chkShowThickness";
-            chkShowThickness.Size = new Size(75, 19);
+            chkShowThickness.Size = new Size(144, 36);
             chkShowThickness.TabIndex = 26;
             chkShowThickness.Text = "thickness";
             chkShowThickness.UseVisualStyleBackColor = true;
@@ -327,10 +334,10 @@
             // 
             chkShowRadius.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowRadius.AutoSize = true;
-            chkShowRadius.Location = new Point(612, 639);
-            chkShowRadius.Margin = new Padding(1, 0, 1, 0);
+            chkShowRadius.Location = new Point(1137, 1368);
+            chkShowRadius.Margin = new Padding(2, 0, 2, 0);
             chkShowRadius.Name = "chkShowRadius";
-            chkShowRadius.Size = new Size(58, 19);
+            chkShowRadius.Size = new Size(110, 36);
             chkShowRadius.TabIndex = 27;
             chkShowRadius.Text = "radius";
             chkShowRadius.UseVisualStyleBackColor = true;
@@ -340,10 +347,10 @@
             // 
             lblShow.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblShow.AutoSize = true;
-            lblShow.Location = new Point(0, 640);
-            lblShow.Margin = new Padding(1, 0, 1, 0);
+            lblShow.Location = new Point(0, 1365);
+            lblShow.Margin = new Padding(2, 0, 2, 0);
             lblShow.Name = "lblShow";
-            lblShow.Size = new Size(38, 15);
+            lblShow.Size = new Size(74, 32);
             lblShow.TabIndex = 28;
             lblShow.Text = "show:";
             // 
@@ -351,10 +358,10 @@
             // 
             chkShowCamber.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowCamber.AutoSize = true;
-            chkShowCamber.Location = new Point(426, 639);
-            chkShowCamber.Margin = new Padding(1, 0, 1, 0);
+            chkShowCamber.Location = new Point(791, 1368);
+            chkShowCamber.Margin = new Padding(2, 0, 2, 0);
             chkShowCamber.Name = "chkShowCamber";
-            chkShowCamber.Size = new Size(66, 19);
+            chkShowCamber.Size = new Size(125, 36);
             chkShowCamber.TabIndex = 29;
             chkShowCamber.Text = "camber";
             chkShowCamber.UseVisualStyleBackColor = true;
@@ -364,10 +371,10 @@
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnAxisAuto.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAxisAuto.Location = new Point(0, 585);
-            btnAxisAuto.Margin = new Padding(3, 0, 3, 0);
+            btnAxisAuto.Location = new Point(0, 1248);
+            btnAxisAuto.Margin = new Padding(6, 0, 6, 0);
             btnAxisAuto.Name = "btnAxisAuto";
-            btnAxisAuto.Size = new Size(75, 23);
+            btnAxisAuto.Size = new Size(139, 49);
             btnAxisAuto.TabIndex = 30;
             btnAxisAuto.Text = "Zoom";
             btnAxisAuto.UseVisualStyleBackColor = true;
@@ -376,10 +383,10 @@
             // btnLoadBezDat
             // 
             btnLoadBezDat.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnLoadBezDat.Location = new Point(0, 81);
-            btnLoadBezDat.Margin = new Padding(3, 1, 3, 1);
+            btnLoadBezDat.Location = new Point(0, 173);
+            btnLoadBezDat.Margin = new Padding(6, 2, 6, 2);
             btnLoadBezDat.Name = "btnLoadBezDat";
-            btnLoadBezDat.Size = new Size(75, 23);
+            btnLoadBezDat.Size = new Size(139, 49);
             btnLoadBezDat.TabIndex = 32;
             btnLoadBezDat.Text = ".bez.dat";
             btnLoadBezDat.UseVisualStyleBackColor = true;
@@ -388,10 +395,10 @@
             // btnLoadDat
             // 
             btnLoadDat.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnLoadDat.Location = new Point(0, 39);
-            btnLoadDat.Margin = new Padding(3, 1, 3, 1);
+            btnLoadDat.Location = new Point(0, 83);
+            btnLoadDat.Margin = new Padding(6, 2, 6, 2);
             btnLoadDat.Name = "btnLoadDat";
-            btnLoadDat.Size = new Size(75, 23);
+            btnLoadDat.Size = new Size(139, 49);
             btnLoadDat.TabIndex = 31;
             btnLoadDat.Text = ".dat";
             btnLoadDat.UseVisualStyleBackColor = true;
@@ -403,8 +410,9 @@
             lblLoad.AutoSize = true;
             lblLoad.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             lblLoad.Location = new Point(0, 0);
+            lblLoad.Margin = new Padding(6, 0, 6, 0);
             lblLoad.Name = "lblLoad";
-            lblLoad.Size = new Size(33, 13);
+            lblLoad.Size = new Size(60, 30);
             lblLoad.TabIndex = 34;
             lblLoad.Text = "load:";
             // 
@@ -412,10 +420,10 @@
             // 
             chkShowReferenceTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowReferenceTop.AutoSize = true;
-            chkShowReferenceTop.Location = new Point(672, 639);
-            chkShowReferenceTop.Margin = new Padding(1, 0, 1, 0);
+            chkShowReferenceTop.Location = new Point(1248, 1368);
+            chkShowReferenceTop.Margin = new Padding(2, 0, 2, 0);
             chkShowReferenceTop.Name = "chkShowReferenceTop";
-            chkShowReferenceTop.Size = new Size(61, 19);
+            chkShowReferenceTop.Size = new Size(118, 36);
             chkShowReferenceTop.TabIndex = 35;
             chkShowReferenceTop.Text = "ref top";
             chkShowReferenceTop.UseVisualStyleBackColor = true;
@@ -424,10 +432,10 @@
             // chkShowReferenceBottom
             // 
             chkShowReferenceBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            chkShowReferenceBottom.Location = new Point(735, 639);
-            chkShowReferenceBottom.Margin = new Padding(1, 0, 1, 0);
+            chkShowReferenceBottom.Location = new Point(1365, 1363);
+            chkShowReferenceBottom.Margin = new Padding(2, 0, 2, 0);
             chkShowReferenceBottom.Name = "chkShowReferenceBottom";
-            chkShowReferenceBottom.Size = new Size(69, 19);
+            chkShowReferenceBottom.Size = new Size(128, 41);
             chkShowReferenceBottom.TabIndex = 36;
             chkShowReferenceBottom.Text = "ref btm";
             chkShowReferenceBottom.UseVisualStyleBackColor = true;
@@ -436,10 +444,10 @@
             // btnSearchTop
             // 
             btnSearchTop.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearchTop.Location = new Point(0, 161);
-            btnSearchTop.Margin = new Padding(3, 1, 3, 1);
+            btnSearchTop.Location = new Point(0, 343);
+            btnSearchTop.Margin = new Padding(6, 2, 6, 2);
             btnSearchTop.Name = "btnSearchTop";
-            btnSearchTop.Size = new Size(75, 23);
+            btnSearchTop.Size = new Size(139, 49);
             btnSearchTop.TabIndex = 37;
             btnSearchTop.Text = "top";
             btnSearchTop.UseVisualStyleBackColor = true;
@@ -449,10 +457,10 @@
             // btnSearchBottom
             // 
             btnSearchBottom.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSearchBottom.Location = new Point(0, 186);
-            btnSearchBottom.Margin = new Padding(3, 1, 3, 1);
+            btnSearchBottom.Location = new Point(0, 397);
+            btnSearchBottom.Margin = new Padding(6, 2, 6, 2);
             btnSearchBottom.Name = "btnSearchBottom";
-            btnSearchBottom.Size = new Size(75, 23);
+            btnSearchBottom.Size = new Size(139, 49);
             btnSearchBottom.TabIndex = 38;
             btnSearchBottom.Text = "bottom";
             btnSearchBottom.UseVisualStyleBackColor = true;
@@ -462,10 +470,10 @@
             // btnAutoSearch
             // 
             btnAutoSearch.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAutoSearch.Location = new Point(0, 211);
-            btnAutoSearch.Margin = new Padding(3, 1, 3, 1);
+            btnAutoSearch.Location = new Point(0, 450);
+            btnAutoSearch.Margin = new Padding(6, 2, 6, 2);
             btnAutoSearch.Name = "btnAutoSearch";
-            btnAutoSearch.Size = new Size(75, 23);
+            btnAutoSearch.Size = new Size(139, 49);
             btnAutoSearch.TabIndex = 39;
             btnAutoSearch.Text = "auto";
             btnAutoSearch.UseVisualStyleBackColor = true;
@@ -475,10 +483,10 @@
             // 
             chkShowTop.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowTop.AutoSize = true;
-            chkShowTop.Location = new Point(176, 639);
-            chkShowTop.Margin = new Padding(1, 0, 1, 0);
+            chkShowTop.Location = new Point(327, 1368);
+            chkShowTop.Margin = new Padding(2, 0, 2, 0);
             chkShowTop.Name = "chkShowTop";
-            chkShowTop.Size = new Size(44, 19);
+            chkShowTop.Size = new Size(82, 36);
             chkShowTop.TabIndex = 40;
             chkShowTop.Text = "top";
             chkShowTop.UseVisualStyleBackColor = true;
@@ -488,10 +496,10 @@
             // 
             chkShowBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowBottom.AutoSize = true;
-            chkShowBottom.Location = new Point(222, 639);
-            chkShowBottom.Margin = new Padding(1, 0, 1, 0);
+            chkShowBottom.Location = new Point(412, 1368);
+            chkShowBottom.Margin = new Padding(2, 0, 2, 0);
             chkShowBottom.Name = "chkShowBottom";
-            chkShowBottom.Size = new Size(66, 19);
+            chkShowBottom.Size = new Size(125, 36);
             chkShowBottom.TabIndex = 41;
             chkShowBottom.Text = "bottom";
             chkShowBottom.UseVisualStyleBackColor = true;
@@ -501,9 +509,10 @@
             // 
             lblSearch.AutoSize = true;
             lblSearch.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblSearch.Location = new Point(0, 130);
+            lblSearch.Location = new Point(0, 277);
+            lblSearch.Margin = new Padding(6, 0, 6, 0);
             lblSearch.Name = "lblSearch";
-            lblSearch.Size = new Size(40, 13);
+            lblSearch.Size = new Size(75, 30);
             lblSearch.TabIndex = 42;
             lblSearch.Text = "search";
             // 
@@ -511,10 +520,10 @@
             // 
             chkShowControlBottom.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             chkShowControlBottom.AutoSize = true;
-            chkShowControlBottom.Location = new Point(106, 639);
-            chkShowControlBottom.Margin = new Padding(1, 0, 1, 0);
+            chkShowControlBottom.Location = new Point(197, 1368);
+            chkShowControlBottom.Margin = new Padding(2, 0, 2, 0);
             chkShowControlBottom.Name = "chkShowControlBottom";
-            chkShowControlBottom.Size = new Size(68, 19);
+            chkShowControlBottom.Size = new Size(129, 36);
             chkShowControlBottom.TabIndex = 43;
             chkShowControlBottom.Text = "ctrl btm";
             chkShowControlBottom.UseVisualStyleBackColor = true;
@@ -523,10 +532,10 @@
             // txtCamberPosition
             // 
             txtCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberPosition.Location = new Point(553, 637);
-            txtCamberPosition.Margin = new Padding(1, 0, 1, 0);
+            txtCamberPosition.Location = new Point(1027, 1359);
+            txtCamberPosition.Margin = new Padding(2, 0, 2, 0);
             txtCamberPosition.Name = "txtCamberPosition";
-            txtCamberPosition.Size = new Size(57, 23);
+            txtCamberPosition.Size = new Size(102, 39);
             txtCamberPosition.TabIndex = 44;
             txtCamberPosition.Text = "0,5";
             txtCamberPosition.TextChanged += txtCamberPosition_TextChanged;
@@ -534,10 +543,10 @@
             // txtThicknessStepSize
             // 
             txtThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtThicknessStepSize.Location = new Point(367, 637);
-            txtThicknessStepSize.Margin = new Padding(1, 0, 1, 0);
+            txtThicknessStepSize.Location = new Point(682, 1359);
+            txtThicknessStepSize.Margin = new Padding(2, 0, 2, 0);
             txtThicknessStepSize.Name = "txtThicknessStepSize";
-            txtThicknessStepSize.Size = new Size(57, 23);
+            txtThicknessStepSize.Size = new Size(102, 39);
             txtThicknessStepSize.TabIndex = 45;
             txtThicknessStepSize.Text = "1000";
             txtThicknessStepSize.TextChanged += txtThicknessStepSize_TextChanged;
@@ -545,10 +554,10 @@
             // txtCamberStepSize
             // 
             txtCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            txtCamberStepSize.Location = new Point(494, 637);
-            txtCamberStepSize.Margin = new Padding(1, 0, 1, 0);
+            txtCamberStepSize.Location = new Point(917, 1359);
+            txtCamberStepSize.Margin = new Padding(2, 0, 2, 0);
             txtCamberStepSize.Name = "txtCamberStepSize";
-            txtCamberStepSize.Size = new Size(57, 23);
+            txtCamberStepSize.Size = new Size(102, 39);
             txtCamberStepSize.TabIndex = 46;
             txtCamberStepSize.Text = "1000";
             txtCamberStepSize.TextChanged += txtCamberStepSize_TextChanged;
@@ -557,10 +566,10 @@
             // 
             lblThicknessStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblThicknessStepSize.AutoSize = true;
-            lblThicknessStepSize.Location = new Point(367, 622);
-            lblThicknessStepSize.Margin = new Padding(1, 0, 1, 0);
+            lblThicknessStepSize.Location = new Point(682, 1327);
+            lblThicknessStepSize.Margin = new Padding(2, 0, 2, 0);
             lblThicknessStepSize.Name = "lblThicknessStepSize";
-            lblThicknessStepSize.Size = new Size(61, 15);
+            lblThicknessStepSize.Size = new Size(124, 32);
             lblThicknessStepSize.TabIndex = 47;
             lblThicknessStepSize.Text = "# of steps:";
             // 
@@ -568,10 +577,10 @@
             // 
             lblCamberStepSize.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblCamberStepSize.AutoSize = true;
-            lblCamberStepSize.Location = new Point(494, 622);
-            lblCamberStepSize.Margin = new Padding(1, 0, 1, 0);
+            lblCamberStepSize.Location = new Point(917, 1327);
+            lblCamberStepSize.Margin = new Padding(2, 0, 2, 0);
             lblCamberStepSize.Name = "lblCamberStepSize";
-            lblCamberStepSize.Size = new Size(61, 15);
+            lblCamberStepSize.Size = new Size(124, 32);
             lblCamberStepSize.TabIndex = 48;
             lblCamberStepSize.Text = "# of steps:";
             // 
@@ -579,10 +588,10 @@
             // 
             lblCamberPosition.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             lblCamberPosition.AutoSize = true;
-            lblCamberPosition.Location = new Point(553, 621);
-            lblCamberPosition.Margin = new Padding(1, 0, 1, 0);
+            lblCamberPosition.Location = new Point(1027, 1325);
+            lblCamberPosition.Margin = new Padding(2, 0, 2, 0);
             lblCamberPosition.Name = "lblCamberPosition";
-            lblCamberPosition.Size = new Size(53, 15);
+            lblCamberPosition.Size = new Size(105, 32);
             lblCamberPosition.TabIndex = 49;
             lblCamberPosition.Text = "position:";
             // 
@@ -590,19 +599,20 @@
             // 
             lblElapsedTime.AutoSize = true;
             lblElapsedTime.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblElapsedTime.Location = new Point(13, 407);
+            lblElapsedTime.Location = new Point(24, 868);
+            lblElapsedTime.Margin = new Padding(6, 0, 6, 0);
             lblElapsedTime.Name = "lblElapsedTime";
-            lblElapsedTime.Size = new Size(49, 13);
+            lblElapsedTime.Size = new Size(95, 30);
             lblElapsedTime.TabIndex = 50;
             lblElapsedTime.Text = "00:00:00";
             // 
             // btnStopSearch
             // 
             btnStopSearch.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStopSearch.Location = new Point(0, 383);
-            btnStopSearch.Margin = new Padding(3, 1, 3, 1);
+            btnStopSearch.Location = new Point(0, 817);
+            btnStopSearch.Margin = new Padding(6, 2, 6, 2);
             btnStopSearch.Name = "btnStopSearch";
-            btnStopSearch.Size = new Size(75, 23);
+            btnStopSearch.Size = new Size(139, 49);
             btnStopSearch.TabIndex = 51;
             btnStopSearch.Text = "stop";
             btnStopSearch.UseVisualStyleBackColor = true;
@@ -611,19 +621,19 @@
             // progressBar1
             // 
             progressBar1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            progressBar1.Location = new Point(0, 660);
-            progressBar1.Margin = new Padding(3, 2, 3, 2);
+            progressBar1.Location = new Point(0, 1408);
+            progressBar1.Margin = new Padding(6, 4, 6, 4);
             progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(1243, 4);
+            progressBar1.Size = new Size(2308, 9);
             progressBar1.TabIndex = 52;
             // 
             // btnLoadBez
             // 
             btnLoadBez.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnLoadBez.Location = new Point(0, 106);
-            btnLoadBez.Margin = new Padding(3, 1, 3, 1);
+            btnLoadBez.Location = new Point(0, 226);
+            btnLoadBez.Margin = new Padding(6, 2, 6, 2);
             btnLoadBez.Name = "btnLoadBez";
-            btnLoadBez.Size = new Size(75, 23);
+            btnLoadBez.Size = new Size(139, 49);
             btnLoadBez.TabIndex = 53;
             btnLoadBez.Text = ".bez";
             btnLoadBez.UseVisualStyleBackColor = true;
@@ -633,20 +643,20 @@
             // 
             cmbLanguage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             cmbLanguage.FormattingEnabled = true;
-            cmbLanguage.Location = new Point(1201, 632);
-            cmbLanguage.Margin = new Padding(3, 2, 3, 2);
+            cmbLanguage.Location = new Point(2230, 1354);
+            cmbLanguage.Margin = new Padding(6, 4, 6, 4);
             cmbLanguage.Name = "cmbLanguage";
-            cmbLanguage.Size = new Size(36, 23);
+            cmbLanguage.Size = new Size(63, 40);
             cmbLanguage.TabIndex = 56;
             cmbLanguage.SelectedIndexChanged += cmbLanguage_SelectedIndexChanged;
             // 
             // btnCheckForUpdates
             // 
             btnCheckForUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCheckForUpdates.Location = new Point(1108, 633);
-            btnCheckForUpdates.Margin = new Padding(3, 2, 3, 2);
+            btnCheckForUpdates.Location = new Point(2056, 1354);
+            btnCheckForUpdates.Margin = new Padding(6, 4, 6, 4);
             btnCheckForUpdates.Name = "btnCheckForUpdates";
-            btnCheckForUpdates.Size = new Size(87, 23);
+            btnCheckForUpdates.Size = new Size(162, 49);
             btnCheckForUpdates.TabIndex = 57;
             btnCheckForUpdates.Text = "check version";
             btnCheckForUpdates.UseVisualStyleBackColor = true;
@@ -660,10 +670,10 @@
             panel1.Controls.Add(txtNumOfPointsTop);
             panel1.Controls.Add(lblNumOfPointTop);
             panel1.Controls.Add(btnDecreaseOrderTop);
-            panel1.Location = new Point(1162, 25);
-            panel1.Margin = new Padding(3, 2, 3, 2);
+            panel1.Location = new Point(2158, 53);
+            panel1.Margin = new Padding(6, 4, 6, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(75, 190);
+            panel1.Size = new Size(139, 405);
             panel1.TabIndex = 58;
             // 
             // panel2
@@ -674,10 +684,10 @@
             panel2.Controls.Add(txtNumOfPointBottom);
             panel2.Controls.Add(lblNumOfPointBottom);
             panel2.Controls.Add(btnDecreaseOrderBottom);
-            panel2.Location = new Point(1162, 234);
-            panel2.Margin = new Padding(3, 2, 3, 2);
+            panel2.Location = new Point(2158, 499);
+            panel2.Margin = new Padding(6, 4, 6, 4);
             panel2.Name = "panel2";
-            panel2.Size = new Size(75, 190);
+            panel2.Size = new Size(139, 405);
             panel2.TabIndex = 59;
             // 
             // panel3
@@ -710,29 +720,30 @@
             panel3.Controls.Add(lblElapsedTime);
             panel3.Controls.Add(btnStopSearch);
             panel3.Controls.Add(btnAxisAuto);
-            panel3.Location = new Point(809, 8);
-            panel3.Margin = new Padding(3, 2, 3, 2);
+            panel3.Location = new Point(1502, 17);
+            panel3.Margin = new Padding(6, 4, 6, 4);
             panel3.Name = "panel3";
-            panel3.Size = new Size(75, 608);
+            panel3.Size = new Size(139, 1297);
             panel3.TabIndex = 60;
             // 
             // lblNumberOfParticles
             // 
             lblNumberOfParticles.AutoSize = true;
             lblNumberOfParticles.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblNumberOfParticles.Location = new Point(0, 470);
+            lblNumberOfParticles.Location = new Point(0, 1003);
+            lblNumberOfParticles.Margin = new Padding(6, 0, 6, 0);
             lblNumberOfParticles.Name = "lblNumberOfParticles";
-            lblNumberOfParticles.Size = new Size(74, 13);
+            lblNumberOfParticles.Size = new Size(138, 30);
             lblNumberOfParticles.TabIndex = 76;
             lblNumberOfParticles.Text = "# of particles";
             // 
             // txtNumberOfParticles
             // 
             txtNumberOfParticles.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtNumberOfParticles.Location = new Point(0, 484);
-            txtNumberOfParticles.Margin = new Padding(3, 1, 3, 1);
+            txtNumberOfParticles.Location = new Point(0, 1033);
+            txtNumberOfParticles.Margin = new Padding(6, 2, 6, 2);
             txtNumberOfParticles.Name = "txtNumberOfParticles";
-            txtNumberOfParticles.Size = new Size(75, 22);
+            txtNumberOfParticles.Size = new Size(136, 37);
             txtNumberOfParticles.TabIndex = 75;
             txtNumberOfParticles.Text = "100";
             // 
@@ -740,29 +751,30 @@
             // 
             lblErrorNumberOfSteps.AutoSize = true;
             lblErrorNumberOfSteps.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorNumberOfSteps.Location = new Point(0, 271);
+            lblErrorNumberOfSteps.Location = new Point(0, 578);
+            lblErrorNumberOfSteps.Margin = new Padding(6, 0, 6, 0);
             lblErrorNumberOfSteps.Name = "lblErrorNumberOfSteps";
-            lblErrorNumberOfSteps.Size = new Size(58, 13);
+            lblErrorNumberOfSteps.Size = new Size(108, 30);
             lblErrorNumberOfSteps.TabIndex = 74;
             lblErrorNumberOfSteps.Text = "# of steps";
             // 
             // txtErrorNumberOfSteps
             // 
             txtErrorNumberOfSteps.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorNumberOfSteps.Location = new Point(0, 285);
-            txtErrorNumberOfSteps.Margin = new Padding(3, 1, 3, 1);
+            txtErrorNumberOfSteps.Location = new Point(0, 608);
+            txtErrorNumberOfSteps.Margin = new Padding(6, 2, 6, 2);
             txtErrorNumberOfSteps.Name = "txtErrorNumberOfSteps";
-            txtErrorNumberOfSteps.Size = new Size(75, 22);
+            txtErrorNumberOfSteps.Size = new Size(136, 37);
             txtErrorNumberOfSteps.TabIndex = 73;
             txtErrorNumberOfSteps.Text = "1000";
             // 
             // btnStartPSOBottom
             // 
             btnStartPSOBottom.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStartPSOBottom.Location = new Point(0, 446);
-            btnStartPSOBottom.Margin = new Padding(3, 1, 3, 1);
+            btnStartPSOBottom.Location = new Point(0, 951);
+            btnStartPSOBottom.Margin = new Padding(6, 2, 6, 2);
             btnStartPSOBottom.Name = "btnStartPSOBottom";
-            btnStartPSOBottom.Size = new Size(75, 23);
+            btnStartPSOBottom.Size = new Size(139, 49);
             btnStartPSOBottom.TabIndex = 72;
             btnStartPSOBottom.Text = "PSO btm";
             btnStartPSOBottom.UseVisualStyleBackColor = true;
@@ -772,10 +784,10 @@
             // 
             chkMatchTEGap.AutoSize = true;
             chkMatchTEGap.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            chkMatchTEGap.Location = new Point(0, 63);
-            chkMatchTEGap.Margin = new Padding(3, 0, 3, 0);
+            chkMatchTEGap.Location = new Point(0, 134);
+            chkMatchTEGap.Margin = new Padding(6, 0, 6, 0);
             chkMatchTEGap.Name = "chkMatchTEGap";
-            chkMatchTEGap.Size = new Size(72, 17);
+            chkMatchTEGap.Size = new Size(133, 34);
             chkMatchTEGap.TabIndex = 71;
             chkMatchTEGap.Text = "match TE";
             chkMatchTEGap.UseVisualStyleBackColor = true;
@@ -784,9 +796,10 @@
             // 
             lblErrorCalculationDistribution.AutoSize = true;
             lblErrorCalculationDistribution.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorCalculationDistribution.Location = new Point(0, 235);
+            lblErrorCalculationDistribution.Location = new Point(0, 501);
+            lblErrorCalculationDistribution.Margin = new Padding(6, 0, 6, 0);
             lblErrorCalculationDistribution.Name = "lblErrorCalculationDistribution";
-            lblErrorCalculationDistribution.Size = new Size(66, 13);
+            lblErrorCalculationDistribution.Size = new Size(124, 30);
             lblErrorCalculationDistribution.TabIndex = 70;
             lblErrorCalculationDistribution.Text = "ErrCalcDistr";
             // 
@@ -794,10 +807,10 @@
             // 
             cmbErrorCalculationDistribution.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
             cmbErrorCalculationDistribution.FormattingEnabled = true;
-            cmbErrorCalculationDistribution.Location = new Point(0, 249);
-            cmbErrorCalculationDistribution.Margin = new Padding(3, 1, 3, 1);
+            cmbErrorCalculationDistribution.Location = new Point(0, 531);
+            cmbErrorCalculationDistribution.Margin = new Padding(6, 2, 6, 2);
             cmbErrorCalculationDistribution.Name = "cmbErrorCalculationDistribution";
-            cmbErrorCalculationDistribution.Size = new Size(75, 21);
+            cmbErrorCalculationDistribution.Size = new Size(136, 38);
             cmbErrorCalculationDistribution.TabIndex = 61;
             cmbErrorCalculationDistribution.SelectedIndexChanged += cmbErrorCalculationDistribution_SelectedIndexChanged;
             // 
@@ -805,10 +818,10 @@
             // 
             chkUpdateUI.AutoSize = true;
             chkUpdateUI.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            chkUpdateUI.Location = new Point(0, 143);
-            chkUpdateUI.Margin = new Padding(3, 0, 3, 0);
+            chkUpdateUI.Location = new Point(0, 305);
+            chkUpdateUI.Margin = new Padding(6, 0, 6, 0);
             chkUpdateUI.Name = "chkUpdateUI";
-            chkUpdateUI.Size = new Size(77, 17);
+            chkUpdateUI.Size = new Size(140, 34);
             chkUpdateUI.TabIndex = 61;
             chkUpdateUI.Text = "update UI";
             chkUpdateUI.UseVisualStyleBackColor = true;
@@ -818,9 +831,10 @@
             // 
             lblErrorThresholdBottom.AutoSize = true;
             lblErrorThresholdBottom.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorThresholdBottom.Location = new Point(0, 345);
+            lblErrorThresholdBottom.Location = new Point(0, 736);
+            lblErrorThresholdBottom.Margin = new Padding(6, 0, 6, 0);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
-            lblErrorThresholdBottom.Size = new Size(75, 13);
+            lblErrorThresholdBottom.Size = new Size(144, 30);
             lblErrorThresholdBottom.TabIndex = 69;
             lblErrorThresholdBottom.Text = "ErrThreshBtm";
             // 
@@ -828,9 +842,10 @@
             // 
             lblErrorThresholdTop.AutoSize = true;
             lblErrorThresholdTop.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorThresholdTop.Location = new Point(0, 308);
+            lblErrorThresholdTop.Location = new Point(0, 657);
+            lblErrorThresholdTop.Margin = new Padding(6, 0, 6, 0);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
-            lblErrorThresholdTop.Size = new Size(75, 13);
+            lblErrorThresholdTop.Size = new Size(141, 30);
             lblErrorThresholdTop.TabIndex = 68;
             lblErrorThresholdTop.Text = "ErrThreshTop";
             // 
@@ -838,10 +853,10 @@
             // 
             btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnSave.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSave.Location = new Point(0, 562);
-            btnSave.Margin = new Padding(3, 0, 3, 0);
+            btnSave.Location = new Point(0, 1199);
+            btnSave.Margin = new Padding(6, 0, 6, 0);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(75, 23);
+            btnSave.Size = new Size(139, 49);
             btnSave.TabIndex = 67;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
@@ -850,32 +865,32 @@
             // txtErrorThresholdBottom
             // 
             txtErrorThresholdBottom.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorThresholdBottom.Location = new Point(0, 359);
-            txtErrorThresholdBottom.Margin = new Padding(3, 1, 3, 1);
+            txtErrorThresholdBottom.Location = new Point(0, 766);
+            txtErrorThresholdBottom.Margin = new Padding(6, 2, 6, 2);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
-            txtErrorThresholdBottom.Size = new Size(75, 22);
+            txtErrorThresholdBottom.Size = new Size(136, 37);
             txtErrorThresholdBottom.TabIndex = 66;
-            txtErrorThresholdBottom.Text = "7,5e-6";
+            txtErrorThresholdBottom.Text = "7,5e-5";
             txtErrorThresholdBottom.TextChanged += txtErrorThresholdBottom_TextChanged;
             // 
             // txtErrorThresholdTop
             // 
             txtErrorThresholdTop.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorThresholdTop.Location = new Point(0, 322);
-            txtErrorThresholdTop.Margin = new Padding(3, 1, 3, 1);
+            txtErrorThresholdTop.Location = new Point(0, 687);
+            txtErrorThresholdTop.Margin = new Padding(6, 2, 6, 2);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
-            txtErrorThresholdTop.Size = new Size(75, 22);
+            txtErrorThresholdTop.Size = new Size(136, 37);
             txtErrorThresholdTop.TabIndex = 65;
-            txtErrorThresholdTop.Text = "7,5e-6";
+            txtErrorThresholdTop.Text = "7,5e-5";
             txtErrorThresholdTop.TextChanged += txtErrorThresholdTop_TextChanged;
             // 
             // btnStartPSOTop
             // 
             btnStartPSOTop.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStartPSOTop.Location = new Point(0, 421);
-            btnStartPSOTop.Margin = new Padding(3, 1, 3, 1);
+            btnStartPSOTop.Location = new Point(0, 898);
+            btnStartPSOTop.Margin = new Padding(6, 2, 6, 2);
             btnStartPSOTop.Name = "btnStartPSOTop";
-            btnStartPSOTop.Size = new Size(75, 23);
+            btnStartPSOTop.Size = new Size(139, 49);
             btnStartPSOTop.TabIndex = 61;
             btnStartPSOTop.Text = "PSO top";
             btnStartPSOTop.UseVisualStyleBackColor = true;
@@ -883,9 +898,9 @@
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1243, 664);
+            ClientSize = new Size(2308, 1417);
             Controls.Add(panel3);
             Controls.Add(panel2);
             Controls.Add(panel1);
@@ -916,7 +931,7 @@
             Controls.Add(dataGridViewTop);
             Controls.Add(formsPlot1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(3, 2, 3, 2);
+            Margin = new Padding(6, 4, 6, 4);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "BezierAirfoilDesigner";
