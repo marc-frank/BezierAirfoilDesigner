@@ -716,7 +716,7 @@ namespace BezierAirfoilDesigner
                 {
                     currentTime = DateTime.Now;
                     elapsedTime = currentTime - startTime;
-                    System.Windows.Forms.Control control = panel3.Controls.Find("lblElapsedTime", true)[0];
+                    System.Windows.Forms.Control control = tabControl1.Controls.Find("lblElapsedTime", true)[0];
                     control.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
                     control.Refresh();
                 });
@@ -1037,14 +1037,14 @@ namespace BezierAirfoilDesigner
                         {
                             // UI update code goes here
                             calculations();
-                            txtAirfoilParam.AppendText(System.Environment.NewLine + "current lowest error:\t" + currentLowestError + System.Environment.NewLine);
+                            txtAirfoilParam.AppendText(/*System.Environment.NewLine + */"current lowest error:\t" + currentLowestError/* + System.Environment.NewLine*/);
                             txtAirfoilParam.Refresh();
 
                             progressBar1.Value = Math.Min(progressBar1.Value + 1, progressBar1.Maximum);
 
                             currentTime = DateTime.Now;
                             elapsedTime = currentTime - startTime;
-                            System.Windows.Forms.Control control = panel3.Controls.Find("lblElapsedTime", true)[0];
+                            System.Windows.Forms.Control control = tabControl1.Controls.Find("lblElapsedTime", true)[0];
                             control.Text = string.Format("{0:D2}:{1:D2}:{2:D2}", elapsedTime.Hours, elapsedTime.Minutes, elapsedTime.Seconds);
                             control.Refresh();
                         });
@@ -1352,46 +1352,34 @@ namespace BezierAirfoilDesigner
         private void Form1_Resize(object sender, EventArgs e)
         {
             int margin = 3;
-            var activeForm = Form1.ActiveForm;
-            if (activeForm != null)
-            {
-                //activeForm.SuspendLayout();
 
-                //panel1.Left = activeForm.Width - margin - panel1.Width;
-                //panel2.Left = activeForm.Width - margin - panel2.Width;
+            this.SuspendLayout();
 
-                dataGridViewTop.Left = panel1.Left - margin - dataGridViewTop.Width;
-                dataGridViewTop.Height = (activeForm.Height - lblTop.Top - lblTop.Height - margin - margin - lblBottom.Height - margin - (activeForm.Height - lblAirfoilParam.Top)) / 2;
-                dataGridViewTop.Width = dataGridViewTop.Columns[0].Width + dataGridViewTop.Columns[1].Width + dataGridViewBottom.RowHeadersWidth + SystemInformation.VerticalScrollBarWidth + 2;
-                dataGridViewBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + 2 * margin + lblBottom.Height;
-                dataGridViewBottom.Left = dataGridViewTop.Left;
-                dataGridViewBottom.Height = dataGridViewTop.Height;
-                dataGridViewBottom.Width = dataGridViewTop.Width;
+            //dataGridViewTop.Width = dataGridViewTop.Columns[0].Width + dataGridViewTop.Columns[1].Width + dataGridViewBottom.RowHeadersWidth + SystemInformation.VerticalScrollBarWidth + 2;
+            dataGridViewTop.Height = tabPageGridView.Height / 2 - margin * 2 - lblTop.Height;
 
-                txtAirfoilParam.Left = dataGridViewTop.Left;
+            dataGridViewBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + 2 * margin + lblBottom.Height;
+            dataGridViewBottom.Height = dataGridViewTop.Height;
 
-                panel1.Top = dataGridViewTop.Top;
-                panel1.Height = dataGridViewTop.Height;
-                panel2.Top = dataGridViewBottom.Top;
-                panel2.Height = dataGridViewBottom.Height;
+            panel1.Top = dataGridViewTop.Top;
+            panel1.Height = dataGridViewTop.Height;
+            panel2.Top = dataGridViewBottom.Top;
+            panel2.Height = dataGridViewBottom.Height;
 
-                panel3.Left = dataGridViewTop.Left - panel3.Width - margin - 2;
-                panel3.Height = activeForm.Height - lblTop.Top - (activeForm.Height - (txtAirfoilParam.Top + txtAirfoilParam.Height));
-
-                lblTop.Left = dataGridViewTop.Left;
-                lblBottom.Left = dataGridViewTop.Left;
-                lblBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + margin;
-                lblAirfoilParam.Left = dataGridViewTop.Left;
+            lblTop.Left = dataGridViewTop.Left;
+            lblBottom.Left = dataGridViewTop.Left;
+            lblBottom.Top = dataGridViewTop.Top + dataGridViewTop.Height + margin;
+            lblAirfoilParam.Left = tabControl1.Left;
 
 
-                formsPlot1.Width = panel3.Left;
-                formsPlot1.Height = txtThicknessStepSize.Top;
+            formsPlot1.Width = tabControl1.Left;
+            formsPlot1.Height = progressBar1.Top;
 
-                progressBar1.Width = activeForm.Width - 16;
+            progressBar1.Width = this.Width;
 
+            tabControl1.Height = lblAirfoilParam.Top - margin;
 
-                //activeForm.ResumeLayout();
-            }
+            this.ResumeLayout();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------
@@ -2144,6 +2132,31 @@ namespace BezierAirfoilDesigner
             startTime = DateTime.Now;
             await StartPSOBottom(/*false*/); // false for bottom
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
+        }
+
+        private void tabPageGridView_Click(object sender, EventArgs e)
+        {
+            Form1_Resize(sender, e);
+        }
+
+        private void Form1_MouseClick(object sender, MouseEventArgs e)
+        {
+            Form1_Resize(sender, e);
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            Form1_Resize(sender, e);
+        }
+
+        private void tabControl1_MouseMove(object sender, MouseEventArgs e)
+        {
+            Form1_Resize(sender, e);
+        }
+
+        private void formsPlot1_MouseMove(object sender, MouseEventArgs e)
+        {
+            Form1_Resize(sender, e);
         }
     }
 }
