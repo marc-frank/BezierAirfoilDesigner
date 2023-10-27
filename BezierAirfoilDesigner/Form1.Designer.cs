@@ -96,8 +96,15 @@
             txtErrorThresholdBottom = new TextBox();
             lblErrorThreshold = new Label();
             tabPageSave = new TabPage();
-            btnSave = new Button();
-            tabPageGraphVisibility = new TabPage();
+            btnSaveDXF = new Button();
+            btnSaveDat = new Button();
+            btnSaveBezDat = new Button();
+            btnSaveBez = new Button();
+            label1 = new Label();
+            cmbCoordinateStyle = new ComboBox();
+            lblChord = new Label();
+            txtChord = new TextBox();
+            tabPagePlotVisibility = new TabPage();
             tabControl1.SuspendLayout();
             tabPageGridView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
@@ -107,7 +114,7 @@
             tabPageLoad.SuspendLayout();
             tabPageCurveFitting.SuspendLayout();
             tabPageSave.SuspendLayout();
-            tabPageGraphVisibility.SuspendLayout();
+            tabPagePlotVisibility.SuspendLayout();
             SuspendLayout();
             // 
             // formsPlot1
@@ -189,11 +196,12 @@
             // btnAxisAuto
             // 
             btnAxisAuto.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnAxisAuto.AutoSize = true;
             btnAxisAuto.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAxisAuto.Location = new Point(1027, 633);
+            btnAxisAuto.Location = new Point(1049, 631);
             btnAxisAuto.Margin = new Padding(3, 0, 3, 0);
             btnAxisAuto.Name = "btnAxisAuto";
-            btnAxisAuto.Size = new Size(75, 23);
+            btnAxisAuto.Size = new Size(49, 25);
             btnAxisAuto.TabIndex = 30;
             btnAxisAuto.Text = "Zoom";
             btnAxisAuto.UseVisualStyleBackColor = true;
@@ -335,11 +343,12 @@
             // btnCheckForUpdates
             // 
             btnCheckForUpdates.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnCheckForUpdates.AutoSize = true;
             btnCheckForUpdates.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnCheckForUpdates.Location = new Point(1108, 633);
+            btnCheckForUpdates.Location = new Point(1104, 631);
             btnCheckForUpdates.Margin = new Padding(3, 2, 3, 2);
             btnCheckForUpdates.Name = "btnCheckForUpdates";
-            btnCheckForUpdates.Size = new Size(87, 23);
+            btnCheckForUpdates.Size = new Size(91, 25);
             btnCheckForUpdates.TabIndex = 57;
             btnCheckForUpdates.Text = "check version";
             btnCheckForUpdates.UseVisualStyleBackColor = true;
@@ -352,7 +361,7 @@
             tabControl1.Controls.Add(tabPageLoad);
             tabControl1.Controls.Add(tabPageCurveFitting);
             tabControl1.Controls.Add(tabPageSave);
-            tabControl1.Controls.Add(tabPageGraphVisibility);
+            tabControl1.Controls.Add(tabPagePlotVisibility);
             tabControl1.Location = new Point(875, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -656,7 +665,7 @@
             // 
             lblErrorThresholdTop.AutoSize = true;
             lblErrorThresholdTop.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorThresholdTop.Location = new Point(6, 117);
+            lblErrorThresholdTop.Location = new Point(6, 88);
             lblErrorThresholdTop.Margin = new Padding(3);
             lblErrorThresholdTop.Name = "lblErrorThresholdTop";
             lblErrorThresholdTop.Size = new Size(26, 15);
@@ -667,7 +676,7 @@
             // 
             lblNumberOfParticles.AutoSize = true;
             lblNumberOfParticles.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblNumberOfParticles.Location = new Point(6, 325);
+            lblNumberOfParticles.Location = new Point(6, 209);
             lblNumberOfParticles.Margin = new Padding(3);
             lblNumberOfParticles.Name = "lblNumberOfParticles";
             lblNumberOfParticles.Size = new Size(75, 15);
@@ -677,7 +686,7 @@
             // txtNumberOfParticles
             // 
             txtNumberOfParticles.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            txtNumberOfParticles.Location = new Point(87, 317);
+            txtNumberOfParticles.Location = new Point(87, 201);
             txtNumberOfParticles.Name = "txtNumberOfParticles";
             txtNumberOfParticles.Size = new Size(75, 23);
             txtNumberOfParticles.TabIndex = 75;
@@ -687,7 +696,7 @@
             // 
             btnStopSearch.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnStopSearch.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStopSearch.Location = new Point(6, 395);
+            btnStopSearch.Location = new Point(6, 393);
             btnStopSearch.Name = "btnStopSearch";
             btnStopSearch.Size = new Size(75, 23);
             btnStopSearch.TabIndex = 51;
@@ -699,7 +708,7 @@
             // 
             lblErrorNumberOfSteps.AutoSize = true;
             lblErrorNumberOfSteps.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorNumberOfSteps.Location = new Point(6, 233);
+            lblErrorNumberOfSteps.Location = new Point(168, 117);
             lblErrorNumberOfSteps.Margin = new Padding(3);
             lblErrorNumberOfSteps.Name = "lblErrorNumberOfSteps";
             lblErrorNumberOfSteps.Size = new Size(58, 15);
@@ -721,7 +730,7 @@
             // txtErrorNumberOfSteps
             // 
             txtErrorNumberOfSteps.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorNumberOfSteps.Location = new Point(87, 230);
+            txtErrorNumberOfSteps.Location = new Point(249, 114);
             txtErrorNumberOfSteps.Name = "txtErrorNumberOfSteps";
             txtErrorNumberOfSteps.Size = new Size(75, 23);
             txtErrorNumberOfSteps.TabIndex = 73;
@@ -730,7 +739,7 @@
             // btnAutoSearch
             // 
             btnAutoSearch.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAutoSearch.Location = new Point(6, 35);
+            btnAutoSearch.Location = new Point(168, 6);
             btnAutoSearch.Name = "btnAutoSearch";
             btnAutoSearch.Size = new Size(75, 23);
             btnAutoSearch.TabIndex = 39;
@@ -741,7 +750,7 @@
             // btnStartPSOBottom
             // 
             btnStartPSOBottom.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStartPSOBottom.Location = new Point(87, 288);
+            btnStartPSOBottom.Location = new Point(87, 172);
             btnStartPSOBottom.Name = "btnStartPSOBottom";
             btnStartPSOBottom.Size = new Size(75, 23);
             btnStartPSOBottom.TabIndex = 72;
@@ -765,7 +774,7 @@
             // 
             lblErrorCalculationDistribution.AutoSize = true;
             lblErrorCalculationDistribution.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorCalculationDistribution.Location = new Point(6, 204);
+            lblErrorCalculationDistribution.Location = new Point(168, 88);
             lblErrorCalculationDistribution.Margin = new Padding(3);
             lblErrorCalculationDistribution.Name = "lblErrorCalculationDistribution";
             lblErrorCalculationDistribution.Size = new Size(68, 15);
@@ -788,7 +797,7 @@
             // 
             cmbErrorCalculationDistribution.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             cmbErrorCalculationDistribution.FormattingEnabled = true;
-            cmbErrorCalculationDistribution.Location = new Point(87, 201);
+            cmbErrorCalculationDistribution.Location = new Point(249, 85);
             cmbErrorCalculationDistribution.Name = "cmbErrorCalculationDistribution";
             cmbErrorCalculationDistribution.Size = new Size(75, 23);
             cmbErrorCalculationDistribution.TabIndex = 61;
@@ -797,7 +806,7 @@
             // btnStartPSOTop
             // 
             btnStartPSOTop.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnStartPSOTop.Location = new Point(6, 288);
+            btnStartPSOTop.Location = new Point(6, 172);
             btnStartPSOTop.Name = "btnStartPSOTop";
             btnStartPSOTop.Size = new Size(75, 23);
             btnStartPSOTop.TabIndex = 61;
@@ -821,7 +830,7 @@
             // txtErrorThresholdTop
             // 
             txtErrorThresholdTop.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorThresholdTop.Location = new Point(56, 114);
+            txtErrorThresholdTop.Location = new Point(56, 85);
             txtErrorThresholdTop.Name = "txtErrorThresholdTop";
             txtErrorThresholdTop.Size = new Size(106, 23);
             txtErrorThresholdTop.TabIndex = 65;
@@ -832,7 +841,7 @@
             // 
             lblErrorThresholdBottom.AutoSize = true;
             lblErrorThresholdBottom.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorThresholdBottom.Location = new Point(6, 146);
+            lblErrorThresholdBottom.Location = new Point(6, 117);
             lblErrorThresholdBottom.Margin = new Padding(3);
             lblErrorThresholdBottom.Name = "lblErrorThresholdBottom";
             lblErrorThresholdBottom.Size = new Size(47, 15);
@@ -842,7 +851,7 @@
             // txtErrorThresholdBottom
             // 
             txtErrorThresholdBottom.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            txtErrorThresholdBottom.Location = new Point(56, 143);
+            txtErrorThresholdBottom.Location = new Point(56, 114);
             txtErrorThresholdBottom.Name = "txtErrorThresholdBottom";
             txtErrorThresholdBottom.Size = new Size(106, 23);
             txtErrorThresholdBottom.TabIndex = 66;
@@ -853,7 +862,7 @@
             // 
             lblErrorThreshold.AutoSize = true;
             lblErrorThreshold.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            lblErrorThreshold.Location = new Point(6, 93);
+            lblErrorThreshold.Location = new Point(6, 64);
             lblErrorThreshold.Margin = new Padding(3);
             lblErrorThreshold.Name = "lblErrorThreshold";
             lblErrorThreshold.Size = new Size(87, 15);
@@ -862,7 +871,14 @@
             // 
             // tabPageSave
             // 
-            tabPageSave.Controls.Add(btnSave);
+            tabPageSave.Controls.Add(btnSaveDXF);
+            tabPageSave.Controls.Add(btnSaveDat);
+            tabPageSave.Controls.Add(btnSaveBezDat);
+            tabPageSave.Controls.Add(btnSaveBez);
+            tabPageSave.Controls.Add(label1);
+            tabPageSave.Controls.Add(cmbCoordinateStyle);
+            tabPageSave.Controls.Add(lblChord);
+            tabPageSave.Controls.Add(txtChord);
             tabPageSave.Location = new Point(4, 24);
             tabPageSave.Name = "tabPageSave";
             tabPageSave.Padding = new Padding(3);
@@ -871,42 +887,114 @@
             tabPageSave.Text = "save";
             tabPageSave.UseVisualStyleBackColor = true;
             // 
-            // btnSave
+            // btnSaveDXF
             // 
-            btnSave.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            btnSave.Location = new Point(6, 3);
-            btnSave.Margin = new Padding(3, 0, 3, 0);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(75, 23);
-            btnSave.TabIndex = 67;
-            btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
+            btnSaveDXF.AutoSize = true;
+            btnSaveDXF.Location = new Point(6, 99);
+            btnSaveDXF.Name = "btnSaveDXF";
+            btnSaveDXF.Size = new Size(75, 25);
+            btnSaveDXF.TabIndex = 77;
+            btnSaveDXF.Text = ".dxf";
+            btnSaveDXF.UseVisualStyleBackColor = true;
+            btnSaveDXF.Click += btnSaveDXF_Click;
             // 
-            // tabPageGraphVisibility
+            // btnSaveDat
             // 
-            tabPageGraphVisibility.Controls.Add(chkShowControlTop);
-            tabPageGraphVisibility.Controls.Add(chkShowControlBottom);
-            tabPageGraphVisibility.Controls.Add(chkShowTop);
-            tabPageGraphVisibility.Controls.Add(chkShowBottom);
-            tabPageGraphVisibility.Controls.Add(chkShowReferenceBottom);
-            tabPageGraphVisibility.Controls.Add(txtCamberPosition);
-            tabPageGraphVisibility.Controls.Add(chkShowReferenceTop);
-            tabPageGraphVisibility.Controls.Add(lblCamberPosition);
-            tabPageGraphVisibility.Controls.Add(chkShowRadius);
-            tabPageGraphVisibility.Controls.Add(chkShowThickness);
-            tabPageGraphVisibility.Controls.Add(txtCamberStepSize);
-            tabPageGraphVisibility.Controls.Add(lblCamberStepSize);
-            tabPageGraphVisibility.Controls.Add(lblThicknessStepSize);
-            tabPageGraphVisibility.Controls.Add(txtThicknessStepSize);
-            tabPageGraphVisibility.Controls.Add(chkShowCamber);
-            tabPageGraphVisibility.Location = new Point(4, 24);
-            tabPageGraphVisibility.Name = "tabPageGraphVisibility";
-            tabPageGraphVisibility.Padding = new Padding(3);
-            tabPageGraphVisibility.Size = new Size(353, 422);
-            tabPageGraphVisibility.TabIndex = 4;
-            tabPageGraphVisibility.Text = "graph visibility";
-            tabPageGraphVisibility.UseVisualStyleBackColor = true;
+            btnSaveDat.AutoSize = true;
+            btnSaveDat.Location = new Point(6, 6);
+            btnSaveDat.Name = "btnSaveDat";
+            btnSaveDat.Size = new Size(75, 25);
+            btnSaveDat.TabIndex = 70;
+            btnSaveDat.Text = ".dat";
+            btnSaveDat.UseVisualStyleBackColor = true;
+            btnSaveDat.Click += btnSaveDat_Click;
+            // 
+            // btnSaveBezDat
+            // 
+            btnSaveBezDat.AutoSize = true;
+            btnSaveBezDat.Location = new Point(6, 37);
+            btnSaveBezDat.Name = "btnSaveBezDat";
+            btnSaveBezDat.Size = new Size(75, 25);
+            btnSaveBezDat.TabIndex = 71;
+            btnSaveBezDat.Text = ".bez.dat";
+            btnSaveBezDat.UseVisualStyleBackColor = true;
+            btnSaveBezDat.Click += btnSaveBezDat_Click;
+            // 
+            // btnSaveBez
+            // 
+            btnSaveBez.AutoSize = true;
+            btnSaveBez.Location = new Point(6, 68);
+            btnSaveBez.Name = "btnSaveBez";
+            btnSaveBez.Size = new Size(75, 25);
+            btnSaveBez.TabIndex = 72;
+            btnSaveBez.Text = ".bez";
+            btnSaveBez.UseVisualStyleBackColor = true;
+            btnSaveBez.Click += btnSaveBez_Click;
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label1.AutoSize = true;
+            label1.Location = new Point(87, 73);
+            label1.Margin = new Padding(3);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 15);
+            label1.TabIndex = 76;
+            label1.Text = "export style";
+            // 
+            // cmbCoordinateStyle
+            // 
+            cmbCoordinateStyle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cmbCoordinateStyle.FormattingEnabled = true;
+            cmbCoordinateStyle.Location = new Point(87, 101);
+            cmbCoordinateStyle.Name = "cmbCoordinateStyle";
+            cmbCoordinateStyle.Size = new Size(75, 23);
+            cmbCoordinateStyle.TabIndex = 74;
+            // 
+            // lblChord
+            // 
+            lblChord.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblChord.AutoSize = true;
+            lblChord.Location = new Point(87, 11);
+            lblChord.Margin = new Padding(3);
+            lblChord.Name = "lblChord";
+            lblChord.Size = new Size(38, 15);
+            lblChord.TabIndex = 75;
+            lblChord.Text = "chord";
+            // 
+            // txtChord
+            // 
+            txtChord.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtChord.Location = new Point(87, 39);
+            txtChord.Name = "txtChord";
+            txtChord.Size = new Size(75, 23);
+            txtChord.TabIndex = 73;
+            txtChord.Text = "1";
+            // 
+            // tabPagePlotVisibility
+            // 
+            tabPagePlotVisibility.Controls.Add(chkShowControlTop);
+            tabPagePlotVisibility.Controls.Add(chkShowControlBottom);
+            tabPagePlotVisibility.Controls.Add(chkShowTop);
+            tabPagePlotVisibility.Controls.Add(chkShowBottom);
+            tabPagePlotVisibility.Controls.Add(chkShowReferenceBottom);
+            tabPagePlotVisibility.Controls.Add(txtCamberPosition);
+            tabPagePlotVisibility.Controls.Add(chkShowReferenceTop);
+            tabPagePlotVisibility.Controls.Add(lblCamberPosition);
+            tabPagePlotVisibility.Controls.Add(chkShowRadius);
+            tabPagePlotVisibility.Controls.Add(chkShowThickness);
+            tabPagePlotVisibility.Controls.Add(txtCamberStepSize);
+            tabPagePlotVisibility.Controls.Add(lblCamberStepSize);
+            tabPagePlotVisibility.Controls.Add(lblThicknessStepSize);
+            tabPagePlotVisibility.Controls.Add(txtThicknessStepSize);
+            tabPagePlotVisibility.Controls.Add(chkShowCamber);
+            tabPagePlotVisibility.Location = new Point(4, 24);
+            tabPagePlotVisibility.Name = "tabPagePlotVisibility";
+            tabPagePlotVisibility.Padding = new Padding(3);
+            tabPagePlotVisibility.Size = new Size(353, 422);
+            tabPagePlotVisibility.TabIndex = 4;
+            tabPagePlotVisibility.Text = "plot visibility";
+            tabPagePlotVisibility.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -945,8 +1033,9 @@
             tabPageCurveFitting.ResumeLayout(false);
             tabPageCurveFitting.PerformLayout();
             tabPageSave.ResumeLayout(false);
-            tabPageGraphVisibility.ResumeLayout(false);
-            tabPageGraphVisibility.PerformLayout();
+            tabPageSave.PerformLayout();
+            tabPagePlotVisibility.ResumeLayout(false);
+            tabPagePlotVisibility.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1019,8 +1108,15 @@
         private TextBox txtErrorThresholdBottom;
         private Label lblErrorThreshold;
         private TabPage tabPageSave;
-        private Button btnSave;
-        private TabPage tabPageGraphVisibility;
+        private TabPage tabPagePlotVisibility;
         private Label lblErrorThresholdTop;
+        private Button btnSaveDXF;
+        private Button btnSaveDat;
+        private Button btnSaveBezDat;
+        private Button btnSaveBez;
+        private Label label1;
+        private ComboBox cmbCoordinateStyle;
+        private Label lblChord;
+        private TextBox txtChord;
     }
 }

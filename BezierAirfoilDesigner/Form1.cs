@@ -5,6 +5,9 @@ using System.Globalization;
 using System.Net;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using netDxf;
+using netDxf.Entities;
+using static netDxf.Entities.HatchBoundaryPath;
 
 namespace BezierAirfoilDesigner
 {
@@ -36,6 +39,12 @@ namespace BezierAirfoilDesigner
             new PointD(0.5, -0.1),
             new PointD(1, 0)
         };
+
+        List<PointD> controlPointsTop = new();
+        List<PointD> controlPointsBottom = new();
+
+        List<PointD> pointsTop = new();
+        List<PointD> pointsBottom = new();
 
         List<PointD> referenceDatTop = new();
         List<PointD> referenceDatBottom = new();
@@ -121,6 +130,12 @@ namespace BezierAirfoilDesigner
             cmbErrorCalculationDistribution.Items.Add("cosine");
             cmbErrorCalculationDistribution.SelectedIndex = 2;
 
+            cmbCoordinateStyle.Items.Add("x,y");
+            cmbCoordinateStyle.Items.Add("0,y,z");
+            cmbCoordinateStyle.Items.Add("x,0,z");
+            cmbCoordinateStyle.Items.Add("x,y,0");
+            cmbCoordinateStyle.SelectedIndex = 0;
+
             calculations();
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
@@ -141,7 +156,7 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting points on the top bezier curve
 
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
+            controlPointsTop = GetControlPoints(dataGridViewTop);
 
             // Try to parse the number of points, if unsuccessful show a message box and return
             if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
@@ -150,7 +165,7 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            List<PointD> pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
+            pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
 
             if (updateUI)
             {
@@ -169,7 +184,7 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting points on the bottom bezier curve
 
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+            controlPointsBottom = GetControlPoints(dataGridViewBottom);
 
             // Try to parse the number of points, if unsuccessful show a message box and return
             if (int.TryParse(txtNumOfPointBottom.Text, CultureInfo.InvariantCulture, out int numPointsBottom) == false || numPointsBottom < 2)
@@ -178,7 +193,7 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            List<PointD> pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
+            pointsBottom = DeCasteljau.BezierCurve(controlPointsBottom, numPointsBottom);
 
             if (updateUI && pointsTop != pointsBottom)
             {
@@ -639,12 +654,9 @@ namespace BezierAirfoilDesigner
             GlobalBestScore = double.MaxValue; // Resetting to initial value
         }
 
-
         public int StalledIterations { get; set; } = 0;
         public int MaxStalledIterations { get; set; } = 50;  // Adjust based on your preference
         public double TerminationThreshold { get; set; } = 0.01;  // Adjust based on the precision you need
-
-
 
         private Particle[] particles;
 
@@ -690,9 +702,6 @@ namespace BezierAirfoilDesigner
                 }
             }
         }
-
-
-
 
         public void Optimize(Func<double[], double> objectiveFunction)
         {
@@ -834,42 +843,10 @@ namespace BezierAirfoilDesigner
             return controlPoints;
         }
 
-        //private double ObjectiveFunction(double[] controlPointsArray, bool topOrBottom)
-        //{
-        //    DataGridView gridView = topOrBottom ? dataGridViewTop : dataGridViewBottom;
-        //    double totalError = topOrBottom ? totalErrorTop : totalErrorBottom;
-
-        //    List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
-        //    gridViewAddPoints(gridView, controlPoints);
-
-        //    this.Invoke((MethodInvoker)delegate
-        //    {
-        //        // UI update code goes here
-        //        calculations();
-        //    });
-
-        //    return totalError;
-        //}
-
-        //private async Task StartPSO(bool topOrBottom)
-        //{
-        //    DataGridView gridView = topOrBottom ? dataGridViewTop : dataGridViewBottom;
-        //    Func<double[], double> objectiveFunction = (controlPointsArray) => ObjectiveFunction(controlPointsArray, topOrBottom);
-
-        //    var controlPoints = GetControlPoints(gridView);
-        //    var initialControlPointsArray = ConvertControlPointsToArray(controlPoints);
-
-        //    Initialize(initialControlPointsArray);
-        //    await Task.Run(() => Optimize(objectiveFunction));
-
-        //    var optimizedControlPoints = ConvertArrayToControlPoints(GlobalBestPosition);
-        //    gridViewAddPoints(gridView, optimizedControlPoints);
-        //}
-
         private double ObjectiveFunctionTop(double[] controlPointsArray)
         {
-            List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
-            gridViewAddPoints(dataGridViewTop, controlPoints);
+            controlPointsTop = ConvertArrayToControlPoints(controlPointsArray);
+            gridViewAddPoints(dataGridViewTop, controlPointsTop);
 
             this.Invoke((MethodInvoker)delegate
             {
@@ -896,8 +873,8 @@ namespace BezierAirfoilDesigner
 
         private double ObjectiveFunctionBottom(double[] controlPointsArray)
         {
-            List<PointD> controlPoints = ConvertArrayToControlPoints(controlPointsArray);
-            gridViewAddPoints(dataGridViewBottom, controlPoints);
+            controlPointsBottom = ConvertArrayToControlPoints(controlPointsArray);
+            gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
 
             this.Invoke((MethodInvoker)delegate
             {
@@ -944,7 +921,7 @@ namespace BezierAirfoilDesigner
                 // Check if the operation should be cancelled
                 if (cancelSearch) break;
 
-                List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
+                controlPointsTop = GetControlPoints(dataGridViewTop);
                 await Task.Run(() => SearchControlPoints(controlPointsTop, dataGridViewTop));
                 Console.Beep();
                 currentError = totalErrorTop;
@@ -973,7 +950,7 @@ namespace BezierAirfoilDesigner
                 // Check if the operation should be cancelled
                 if (cancelSearch) break;
 
-                List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
+                controlPointsBottom = GetControlPoints(dataGridViewBottom);
                 await Task.Run(() => SearchControlPoints(controlPointsBottom, dataGridViewBottom));
                 Console.Beep();
                 currentError = totalErrorBottom;
@@ -1134,7 +1111,6 @@ namespace BezierAirfoilDesigner
 
             return controlPointsBottom;
         }
-
 
         private static List<double> GetUniformStations(int numberOfStations)
         {
@@ -1334,9 +1310,6 @@ namespace BezierAirfoilDesigner
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-
             if (!controlPointsTop.SequenceEqual(defaultControlPointsTop) ||
                 !controlPointsBottom.SequenceEqual(defaultControlPointsBottom))
             {
@@ -1422,9 +1395,6 @@ namespace BezierAirfoilDesigner
 
         private void formsPlot1_PlottableDragged(object sender, EventArgs e)
         {
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
-
             (double mouseCoordX, double mouseCoordY) = formsPlot1.GetMouseCoordinates();
             PointD mouse = new(double.Parse(mouseCoordX.ToString()), double.Parse(mouseCoordY.ToString()));
 
@@ -1642,7 +1612,6 @@ namespace BezierAirfoilDesigner
 
         private void btnIncreaseOrderTop_Click(object sender, EventArgs e)
         {
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
             if (!ValidateDegreeCompatibility(controlPointsTop)) return;
             controlPointsTop = DeCasteljau.IncreaseOrder(controlPointsTop);
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
@@ -1651,7 +1620,6 @@ namespace BezierAirfoilDesigner
 
         private void btnIncreaseOrderBottom_Click(object sender, EventArgs e)
         {
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             if (!ValidateDegreeCompatibility(controlPointsBottom)) return;
             controlPointsBottom = DeCasteljau.IncreaseOrder(controlPointsBottom);
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
@@ -1671,10 +1639,8 @@ namespace BezierAirfoilDesigner
             return dialogResult != DialogResult.No;
         }
 
-
         private void btnDecreaseOrderTop_Click(object sender, EventArgs e)
         {
-            List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
             controlPointsTop = DeCasteljau.DecreaseOrder(controlPointsTop);
             gridViewAddPoints(dataGridViewTop, controlPointsTop);
             calculations();
@@ -1682,7 +1648,6 @@ namespace BezierAirfoilDesigner
 
         private void btnDecreaseOrderBottom_Click(object sender, EventArgs e)
         {
-            List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
             controlPointsBottom = DeCasteljau.DecreaseOrder(controlPointsBottom);
             gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             calculations();
@@ -1769,11 +1734,9 @@ namespace BezierAirfoilDesigner
 
             if (chkMatchTEGap.Checked == true)
             {
-                List<PointD> controlPointsTop = GetControlPoints(dataGridViewTop);
                 controlPointsTop[controlPointsTop.Count - 1] = referenceDatTop[referenceDatTop.Count - 1];
                 gridViewAddPoints(dataGridViewTop, controlPointsTop);
 
-                List<PointD> controlPointsBottom = GetControlPoints(dataGridViewBottom);
                 controlPointsBottom[controlPointsBottom.Count - 1] = referenceDatBottom[referenceDatBottom.Count - 1];
                 gridViewAddPoints(dataGridViewBottom, controlPointsBottom);
             }
@@ -2012,6 +1975,7 @@ namespace BezierAirfoilDesigner
 
             btnSearchTop.Enabled = true; btnSearchBottom.Enabled = true; btnAutoSearch.Enabled = true; btnStartPSOTop.Enabled = true; btnStartPSOBottom.Enabled = true;
         }
+
         private async void btnSearchBottom_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -2089,34 +2053,6 @@ namespace BezierAirfoilDesigner
             updateCheckTriggeredByButtonClick = false;
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            frmSave saveForm = new frmSave();
-
-            // Set properties
-            saveForm.controlPointsTop = GetControlPoints(dataGridViewTop); ;     // Your data for controlPointsTop
-            saveForm.controlPointsBottom = GetControlPoints(dataGridViewBottom); ;  // Your data for controlPointsBottom
-
-            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
-            {
-                MessageBox.Show("Invalid number of points for the top curve.");
-                return;
-            }
-
-            if (int.TryParse(txtNumOfPointBottom.Text, CultureInfo.InvariantCulture, out int numPointsBottom) == false || numPointsTop < 2)
-            {
-                MessageBox.Show("Invalid number of points for the top curve.");
-                return;
-            }
-
-            saveForm.pointsTop = DeCasteljau.BezierCurve(GetControlPoints(dataGridViewTop), numPointsTop);            // Your data for pointsTop
-            saveForm.pointsBottom = DeCasteljau.BezierCurve(GetControlPoints(dataGridViewBottom), numPointsBottom);        // Your data for pointsBottom
-
-            saveForm.loadedAirfoilName = loadedAirfoilName;    // Your data for loadedAirfoilName
-
-            saveForm.ShowDialog();
-        }
-
         private async void btnStartPSOTop_Click(object sender, EventArgs e)
         {
             btnSearchTop.Enabled = false; btnSearchBottom.Enabled = false; btnAutoSearch.Enabled = false; btnStartPSOTop.Enabled = false; btnStartPSOBottom.Enabled = false;
@@ -2158,6 +2094,287 @@ namespace BezierAirfoilDesigner
         {
             Form1_Resize(sender, e);
         }
+
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        public static void SaveTextToFile(string text, string path)
+        {
+            try
+            {
+                File.WriteAllText(path, text);
+                MessageBox.Show("File Saved Successfully!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
+        }
+
+        private bool ParseAndApplyChord(string chordText, List<PointD> points)
+        {
+            // Try to parse with invariant culture
+            if (!double.TryParse(chordText.Replace(",", "."), CultureInfo.InvariantCulture, out double chord))
+            {
+                MessageBox.Show("Invalid Chord");
+                return false;
+            }
+
+            // Multiply all points by chord
+            for (int i = 0; i < points.Count; i++)
+            {
+                points[i].X *= chord;
+                points[i].Y *= chord;
+            }
+
+            return true;
+        }
+
+        private string ShowSaveDialog(string fileName, string filter)
+        {
+            using SaveFileDialog sfd = new();
+            sfd.Filter = filter;
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
+            sfd.FileName = fileName;
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+
+            return null;
+        }
+
+        // This method appends points to file content string. It can append points in regular or reverse order.
+        private string AppendPointsToFileContent(string fileContents, List<PointD> points, bool reverseOrder)
+        {
+            // Determine the start, end, and step for the loop depending on whether we need to append points in reverse order
+            int start = reverseOrder ? points.Count - 1 : 0;
+            int end = reverseOrder ? -1 : points.Count;
+            int step = reverseOrder ? -1 : 1;
+
+            // Loop through the points
+            for (int i = start; i != end; i += step)
+            {
+                // Format X and Y coordinates. /*If a coordinate is not negative, add a space in front of it.*/
+                string xCoord = points[i].X >= 0 ? $"{points[i].X:F16}" : $"{points[i].X:F16}";
+                string yCoord = points[i].Y >= 0 ? $"{points[i].Y:F16}" : $"{points[i].Y:F16}";
+
+                // Check the coordinate style and append the point to fileContents accordingly
+                switch (cmbCoordinateStyle.Text)
+                {
+                    case "x,y":
+                        // Append point in "x,y" style
+                        fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        fileContents += $"{0} {xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        fileContents += $"{xCoord} {0} {yCoord}" + System.Environment.NewLine;
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        fileContents += $"{xCoord} {yCoord} {0}" + System.Environment.NewLine;
+                        break;
+                    default:
+                        // Append point in "x,y" style in case nothing is entered
+                        fileContents += $"{xCoord} {yCoord}" + System.Environment.NewLine;
+                        break;
+                }
+
+            }
+
+            // Return the modified fileContents
+            return fileContents;
+        }
+
+        private string PrepareAirfoilName(string airfoilName)
+        {
+            // Remove "Bezier " prefix from the loaded airfoil name if it exists
+            return airfoilName.StartsWith("Bezier ") ? airfoilName.Substring(7) : airfoilName;
+        }
+
+        private void btnSaveDat_Click(object sender, EventArgs e)
+        {
+            if (!ParseAndApplyChord(txtChord.Text, pointsTop) || !ParseAndApplyChord(txtChord.Text, pointsBottom))
+            {
+                return;
+            }
+
+            string path = ShowSaveDialog("Bezier " + PrepareAirfoilName(loadedAirfoilName), "dat files (*.dat)|*.dat|All files (*.*)|*.*");
+            if (path != null)
+            {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents = AppendPointsToFileContent(fileContents, pointsTop, true);
+                fileContents = AppendPointsToFileContent(fileContents, pointsBottom.Skip(1).ToList(), false);
+
+                fileContents = fileContents.Replace(',', '.');
+
+                SaveTextToFile(fileContents, path);
+            }
+        }
+
+        private void btnSaveBezDat_Click(object sender, EventArgs e)
+        {
+            if (!ParseAndApplyChord(txtChord.Text, controlPointsTop) || !ParseAndApplyChord(txtChord.Text, controlPointsBottom))
+            {
+                return;
+            }
+
+            string path = ShowSaveDialog(PrepareAirfoilName(loadedAirfoilName), "Bezier dat files (*.bez.dat)|*.bez.dat|All files (*.*)|*.*");
+            if (path != null)
+            {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, true);
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom.Skip(1).ToList(), false);
+
+                fileContents = fileContents.Replace(',', '.');
+
+                SaveTextToFile(fileContents, path);
+            }
+        }
+
+        private void btnSaveBez_Click(object sender, EventArgs e)
+        {
+            if (!ParseAndApplyChord(txtChord.Text, controlPointsTop) || !ParseAndApplyChord(txtChord.Text, controlPointsBottom))
+            {
+                return;
+            }
+
+            string path = ShowSaveDialog(PrepareAirfoilName(loadedAirfoilName), "Bezier files (*.bez)|*.bez|All files (*.*)|*.*");
+            if (path != null)
+            {
+                string airfoilName = Path.GetFileNameWithoutExtension(path);
+                string fileContents = airfoilName + System.Environment.NewLine;
+
+                fileContents += "Top Start" + System.Environment.NewLine;
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsTop, false);
+                fileContents += "Top End" + System.Environment.NewLine;
+
+                fileContents += "Bottom Start" + System.Environment.NewLine;
+                fileContents = AppendPointsToFileContent(fileContents, controlPointsBottom, false);
+                fileContents += "Bottom End" + System.Environment.NewLine;
+
+                fileContents = fileContents.Replace(',', '.');
+
+                SaveTextToFile(fileContents, path);
+            }
+        }
+
+        private void btnSaveDXF_Click(object sender, EventArgs e)
+        {
+            //check if number of control points is greater than 11
+            if (controlPointsTop.Count > 11 || controlPointsBottom.Count > 11)
+            {
+                MessageBox.Show("DXF export is limited to degree 10.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Try to parse with invariant culture
+            if (!double.TryParse(txtChord.Text.Replace(",", "."), CultureInfo.InvariantCulture, out double chord))
+            {
+                MessageBox.Show("Invalid Chord");
+                return;
+            }
+
+            // Create a new DXF document
+            DxfDocument dxf = new DxfDocument();
+
+            // Define control points for the spline
+            List<Vector3> controlPointsTopVector = new();
+
+            // Add top control points to the list
+            foreach (PointD point in controlPointsTop)
+            {
+                switch (cmbCoordinateStyle.Text)
+                {
+                    case "x,y":
+                        // show error message and return if "x,y" is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        controlPointsTopVector.Add(new Vector3(0, point.Y * chord, point.X * chord));
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        controlPointsTopVector.Add(new Vector3(point.X * chord, 0, point.Y * chord));
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        controlPointsTopVector.Add(new Vector3(point.X * chord, point.Y * chord, 0));
+                        break;
+                    default:
+                        // show error message and return if nothing or something else is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                }
+            }
+
+            // Define control points for the spline
+            List<Vector3> controlPointsBottomVector = new();
+
+            // Add top control points to the list
+            foreach (PointD point in controlPointsBottom)
+            {
+                switch (cmbCoordinateStyle.Text)
+                {
+                    case "x,y":
+                        // show error message and return if "x,y" is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    case "0,y,z":
+                        // Append point in "0,y,z" style
+                        controlPointsBottomVector.Add(new Vector3(0, point.Y * chord, point.X * chord));
+                        break;
+                    case "x,0,z":
+                        // Append point in "x,0,z" style
+                        controlPointsBottomVector.Add(new Vector3(point.X * chord, 0, point.Y * chord));
+                        break;
+                    case "x,y,0":
+                        // Append point in "x,y,0" style
+                        controlPointsBottomVector.Add(new Vector3(point.X * chord, point.Y * chord, 0));
+                        break;
+                    default:
+                        // show error message and return if nothing or something else is selected
+                        MessageBox.Show("Please select a different coordinate style for DXF export.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                }
+            }
+
+            // Create a spline with the control points
+            netDxf.Entities.Spline splineTop = new netDxf.Entities.Spline(controlPointsTopVector, null, degree: short.Parse((controlPointsTop.Count - 1).ToString()));
+            netDxf.Entities.Spline splineBottom = new netDxf.Entities.Spline(controlPointsBottomVector, null, degree: short.Parse((controlPointsBottom.Count - 1).ToString()));
+
+            // Add the spline to the DXF document
+            dxf.Entities.Add(splineTop);
+            dxf.Entities.Add(splineBottom);
+
+            // Save the DXF document to a file
+            //dxf.Save(loadedAirfoilName + ".dxf", );
+
+            // Create a SaveFileDialog to get the save location from the user
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = PrepareAirfoilName(loadedAirfoilName);
+            saveFileDialog.Filter = "DXF Files (*.dxf)|*.dxf";
+            saveFileDialog.Title = "Save as DXF";
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                dxf.Save(saveFileDialog.FileName);
+                MessageBox.Show("File Saved Successfully!");
+            }
+        }
+
     }
 }
 
