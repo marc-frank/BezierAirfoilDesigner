@@ -8,6 +8,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 using netDxf;
 using netDxf.Entities;
 using static netDxf.Entities.HatchBoundaryPath;
+using ScottPlot.Plottable;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BezierAirfoilDesigner
 {
@@ -139,6 +141,16 @@ namespace BezierAirfoilDesigner
             calculations();
             formsPlot1.Plot.AxisAuto();
             formsPlot1.Refresh();
+
+            double[,] values = { { 1.0, 1.0, 1.0 }, {0,0,0} };
+            double[] maxValues = { 1.0, 1.0, 1.0};
+            var radarPlot = formsPlot2.Plot.AddRadar(values: values, maxValues: maxValues);
+            radarPlot.CategoryLabels = new string[] { "Airfoil 1", "Airfoil 2", "Airfoil 3" };
+            radarPlot.AxisType = RadarAxis.Polygon;
+            radarPlot.LineColors = new System.Drawing.Color[] { System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent };
+            radarPlot.FillColors = new System.Drawing.Color[] { System.Drawing.Color.Transparent, System.Drawing.Color.Transparent, System.Drawing.Color.Transparent };
+            formsPlot2.Plot.AddMarkerDraggable(0, 0);;
+            formsPlot2.Refresh();
         }
 
         //--------------------------------------------------------------------------------------------------------------------------------------

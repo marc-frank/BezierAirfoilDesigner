@@ -95,6 +95,7 @@
             lblErrorThresholdBottom = new Label();
             txtErrorThresholdBottom = new TextBox();
             lblErrorThreshold = new Label();
+            tabAirfoilBlending = new TabPage();
             tabPageSave = new TabPage();
             btnSaveDXF = new Button();
             btnSaveDat = new Button();
@@ -105,6 +106,7 @@
             lblChord = new Label();
             txtChord = new TextBox();
             tabPagePlotVisibility = new TabPage();
+            formsPlot2 = new ScottPlot.FormsPlot();
             tabControl1.SuspendLayout();
             tabPageGridView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
@@ -113,6 +115,7 @@
             panel1.SuspendLayout();
             tabPageLoad.SuspendLayout();
             tabPageCurveFitting.SuspendLayout();
+            tabAirfoilBlending.SuspendLayout();
             tabPageSave.SuspendLayout();
             tabPagePlotVisibility.SuspendLayout();
             SuspendLayout();
@@ -360,6 +363,7 @@
             tabControl1.Controls.Add(tabPageGridView);
             tabControl1.Controls.Add(tabPageLoad);
             tabControl1.Controls.Add(tabPageCurveFitting);
+            tabControl1.Controls.Add(tabAirfoilBlending);
             tabControl1.Controls.Add(tabPageSave);
             tabControl1.Controls.Add(tabPagePlotVisibility);
             tabControl1.Location = new Point(875, 0);
@@ -869,6 +873,17 @@
             lblErrorThreshold.TabIndex = 68;
             lblErrorThreshold.Text = "Error Threshold";
             // 
+            // tabAirfoilBlending
+            // 
+            tabAirfoilBlending.Controls.Add(formsPlot2);
+            tabAirfoilBlending.Location = new Point(4, 24);
+            tabAirfoilBlending.Name = "tabAirfoilBlending";
+            tabAirfoilBlending.Padding = new Padding(3);
+            tabAirfoilBlending.Size = new Size(353, 422);
+            tabAirfoilBlending.TabIndex = 5;
+            tabAirfoilBlending.Text = "blending";
+            tabAirfoilBlending.UseVisualStyleBackColor = true;
+            // 
             // tabPageSave
             // 
             tabPageSave.Controls.Add(btnSaveDXF);
@@ -996,6 +1011,14 @@
             tabPagePlotVisibility.Text = "plot visibility";
             tabPagePlotVisibility.UseVisualStyleBackColor = true;
             // 
+            // formsPlot2
+            // 
+            formsPlot2.Location = new Point(7, 6);
+            formsPlot2.Margin = new Padding(4, 3, 4, 3);
+            formsPlot2.Name = "formsPlot2";
+            formsPlot2.Size = new Size(339, 339);
+            formsPlot2.TabIndex = 0;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1032,6 +1055,7 @@
             tabPageLoad.PerformLayout();
             tabPageCurveFitting.ResumeLayout(false);
             tabPageCurveFitting.PerformLayout();
+            tabAirfoilBlending.ResumeLayout(false);
             tabPageSave.ResumeLayout(false);
             tabPageSave.PerformLayout();
             tabPagePlotVisibility.ResumeLayout(false);
@@ -1118,5 +1142,7 @@
         private ComboBox cmbCoordinateStyle;
         private Label lblChord;
         private TextBox txtChord;
+        private TabPage tabAirfoilBlending;
+        private ScottPlot.FormsPlot formsPlot2;
     }
 }
