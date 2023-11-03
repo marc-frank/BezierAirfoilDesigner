@@ -105,6 +105,7 @@
             lblChord = new Label();
             txtChord = new TextBox();
             tabPagePlotVisibility = new TabPage();
+            tabAirfoilBlending = new TabPage();
             tabControl1.SuspendLayout();
             tabPageGridView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridViewTop).BeginInit();
@@ -360,6 +361,7 @@
             tabControl1.Controls.Add(tabPageGridView);
             tabControl1.Controls.Add(tabPageLoad);
             tabControl1.Controls.Add(tabPageCurveFitting);
+            tabControl1.Controls.Add(tabAirfoilBlending);
             tabControl1.Controls.Add(tabPageSave);
             tabControl1.Controls.Add(tabPagePlotVisibility);
             tabControl1.Location = new Point(875, 0);
@@ -996,6 +998,16 @@
             tabPagePlotVisibility.Text = "plot visibility";
             tabPagePlotVisibility.UseVisualStyleBackColor = true;
             // 
+            // tabAirfoilBlending
+            // 
+            tabAirfoilBlending.Location = new Point(4, 24);
+            tabAirfoilBlending.Name = "tabAirfoilBlending";
+            tabAirfoilBlending.Padding = new Padding(3);
+            tabAirfoilBlending.Size = new Size(353, 422);
+            tabAirfoilBlending.TabIndex = 5;
+            tabAirfoilBlending.Text = "blending";
+            tabAirfoilBlending.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1118,5 +1130,6 @@
         private ComboBox cmbCoordinateStyle;
         private Label lblChord;
         private TextBox txtChord;
+        private TabPage tabAirfoilBlending;
     }
 }
