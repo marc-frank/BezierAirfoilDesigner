@@ -1154,7 +1154,6 @@
         private Label lblChord;
         private TextBox txtChord;
         private TabPage tabAirfoilBlending;
-        private TabPage tabAirfoilBlending;
         private ScottPlot.FormsPlot formsPlot2;
     }
 }
