@@ -27,6 +27,24 @@ namespace BezierAirfoilDesigner
 
         string loadedAirfoilName = "";
 
+        Airfoil defaultAirfoil = new Airfoil("Default Airfoil",
+        new List<PointD>
+        {
+            new PointD(0, 0),
+            new PointD(0, 0.1),
+            new PointD(0.5, 0.1),
+            new PointD(1, 0)
+        },
+        new List<PointD>
+        {
+            new PointD(0, 0),
+            new PointD(0, -0.1),
+            new PointD(0.5, -0.1),
+            new PointD(1, 0)
+        });
+
+
+
         readonly List<PointD> defaultControlPointsTop = new()
         {
             new PointD(0, 0),
