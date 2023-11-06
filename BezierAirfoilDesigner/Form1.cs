@@ -27,23 +27,9 @@ namespace BezierAirfoilDesigner
 
         string loadedAirfoilName = "";
 
-        Airfoil defaultAirfoil = new Airfoil("Default Airfoil",
-        new List<PointD>
-        {
-            new PointD(0, 0),
-            new PointD(0, 0.1),
-            new PointD(0.5, 0.1),
-            new PointD(1, 0)
-        },
-        new List<PointD>
-        {
-            new PointD(0, 0),
-            new PointD(0, -0.1),
-            new PointD(0.5, -0.1),
-            new PointD(1, 0)
-        });
+        Airfoil defaultAirfoil = new();
 
-
+        List<Airfoil> airfoilList = new();
 
         readonly List<PointD> defaultControlPointsTop = new()
         {
@@ -123,6 +109,8 @@ namespace BezierAirfoilDesigner
             AddDefaultPointsTop();
             AddDefaultPointsBottom();
 
+            airfoilList.Add(defaultAirfoil);
+
             chkShowControlTop.Checked = true;
             chkShowControlBottom.Checked = true;
             chkShowTop.Checked = true;
@@ -139,7 +127,6 @@ namespace BezierAirfoilDesigner
 
 
             progressBar1.Visible = false;
-            //button1.Visible = false;
 
             cmbLanguage.Items.Add("en");
             cmbLanguage.Items.Add("de");
@@ -183,33 +170,19 @@ namespace BezierAirfoilDesigner
                 formsPlot1.Plot.SetAxisLimits(axisLimits);
             }
 
-            //----------------------------------------------------------------------------------------------------------------------------------
-            // calculating and plotting points on the top bezier curve
-
-            controlPointsTop = GetControlPoints(dataGridViewTop);
-
-            // Try to parse the number of points, if unsuccessful show a message box and return
-            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
-            {
-                MessageBox.Show("Invalid number of points for the top curve.");
-                return;
-            }
-
-            pointsTop = DeCasteljau.BezierCurve(controlPointsTop, numPointsTop);
-
             if (updateUI)
             {
                 Color colorTop;
                 if (showTop) { colorTop = Color.Red; } else { colorTop = Color.Transparent; }
                 var top = formsPlot1.Plot.AddScatterList(color: colorTop, lineStyle: ScottPlot.LineStyle.Solid);
 
-                for (int i = 0; i < pointsTop.Count; i++)
+                for (int i = 0; i < defaultAirfoil.CurvePointsTop.Count; i++)
                 {
-                    top.Add(pointsTop[i].X, pointsTop[i].Y);
+                    top.Add(airfoilList[0].CurvePointsTop[i].X, airfoilList[0].CurvePointsTop[i].Y);
                 }
             }
 
-            lblOrderTop.Text = "order: " + (controlPointsTop.Count - 1).ToString();
+            lblOrderTop.Text = "order: " + (airfoilList[0].ControlPointsTop.Count - 1).ToString();
 
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and plotting points on the bottom bezier curve
@@ -300,7 +273,7 @@ namespace BezierAirfoilDesigner
                 return;
             }
 
-            List<PointD> camber = GetCamber(pointsTop, pointsBottom, camberPosition, camberNumStations, GetCosineStations);
+            List<PointD> camber = GetCamber(airfoilList[0].CurvePointsTop, pointsBottom, camberPosition, camberNumStations, GetCosineStations);
             PointD maxCamber = new PointD();
 
             for (int i = 0; i < camber.Count; i++)
@@ -332,8 +305,8 @@ namespace BezierAirfoilDesigner
             //----------------------------------------------------------------------------------------------------------------------------------
             // calculating and drawing the LE radius
 
-            PointD midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], pointsTop[0], pointsTop[1]);
-            double radius = CircleProperties.CalculateRadius(pointsBottom[1], pointsTop[0], pointsTop[1]);
+            PointD midpoint = CircleProperties.CalculateMidpoint(pointsBottom[1], airfoilList[0].CurvePointsTop[0], airfoilList[0].CurvePointsTop[1]);
+            double radius = CircleProperties.CalculateRadius(pointsBottom[1], airfoilList[0].CurvePointsTop[0], airfoilList[0].CurvePointsTop[1]);
 
             if (updateUI)
             {
@@ -356,13 +329,13 @@ namespace BezierAirfoilDesigner
 
             if (updateUI)
             {
-                double[] xT = new double[controlPointsTop.Count];
-                double[] yT = new double[controlPointsTop.Count];
+                double[] xT = new double[airfoilList[0].ControlPointsTop.Count];
+                double[] yT = new double[airfoilList[0].ControlPointsTop.Count];
 
-                for (int i = 0; i < controlPointsTop.Count; i++)
+                for (int i = 0; i < airfoilList[0].ControlPointsTop.Count; i++)
                 {
-                    xT[i] = controlPointsTop[i].X;
-                    yT[i] = controlPointsTop[i].Y;
+                    xT[i] = airfoilList[0].ControlPointsTop[i].X;
+                    yT[i] = airfoilList[0].ControlPointsTop[i].Y;
                 }
 
                 var controlTop = new ScottPlot.Plottable.ScatterPlotListDraggable();
@@ -1437,9 +1410,9 @@ namespace BezierAirfoilDesigner
             int indexLowestDistance = 0;
             bool topOrBottom;
 
-            for (int i = 0; i < controlPointsTop.Count; i++)
+            for (int i = 0; i < airfoilList[0].ControlPointsTop.Count; i++)
             {
-                double currentDistance = GetDistanceBetweenPoints(mouse, controlPointsTop[i]);
+                double currentDistance = GetDistanceBetweenPoints(mouse, airfoilList[0].ControlPointsTop[i]);
                 if (currentDistance < lowestDistanceTop)
                 {
                     lowestDistanceTop = currentDistance;
@@ -1473,8 +1446,9 @@ namespace BezierAirfoilDesigner
             {
                 if (topOrBottom /*&& indexLowestDistance < controlPointsTop.Count - 1*/) //chose top or bottom and protect against dragging the TE point
                 {
-                    controlPointsTop[indexLowestDistance] = mouse;
-                    gridViewAddPoints(dataGridViewTop, controlPointsTop);
+                    airfoilList[0].ControlPointsTop[indexLowestDistance] = mouse;
+                    airfoilList[0].CalculateCurvePoints();
+                    gridViewAddPoints(dataGridViewTop, airfoilList[0].ControlPointsTop);
                 }
                 else if (!topOrBottom /*&& indexLowestDistance < controlPointsBottom.Count - 1*/) //chose top or bottom and protect against dragging the TE point
                 {
@@ -1497,6 +1471,9 @@ namespace BezierAirfoilDesigner
                 if (dataGridViewTop.Rows[i].Cells[0].Value == null) { dataGridViewTop.Rows[i].Cells[0].Value = 0.0f; }
                 if (dataGridViewTop.Rows[i].Cells[1].Value == null) { dataGridViewTop.Rows[i].Cells[1].Value = 0.0f; }
             }
+
+            airfoilList[0].ControlPointsTop = GetControlPoints(dataGridViewTop);
+
             calculations();
         }
 
@@ -1507,6 +1484,9 @@ namespace BezierAirfoilDesigner
                 if (dataGridViewBottom.Rows[i].Cells[0].Value == null) { dataGridViewBottom.Rows[i].Cells[0].Value = 0.0f; }
                 if (dataGridViewBottom.Rows[i].Cells[1].Value == null) { dataGridViewBottom.Rows[i].Cells[1].Value = 0.0f; }
             }
+
+            airfoilList[0].ControlPointsBottom = GetControlPoints(dataGridViewBottom);
+
             calculations();
         }
 
@@ -1598,12 +1578,22 @@ namespace BezierAirfoilDesigner
 
         private void txtNumOfPointsTop_TextChanged(object sender, EventArgs e)
         {
+            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numPointsTop) == false || numPointsTop < 2)
+            {
+                MessageBox.Show("Invalid number of points for the top curve.");
+                return;
+            }
+
             calculations();
         }
 
         private void txtNumOfPointsBottom_TextChanged(object sender, EventArgs e)
         {
-            calculations();
+            if (int.TryParse(txtNumOfPointsTop.Text, CultureInfo.InvariantCulture, out int numberOfCurvePoints))
+            {
+                airfoilList[0].NumberOfCurvePoints = numberOfCurvePoints;
+                calculations();
+            }
         }
 
         private void txtErrorThresholdTop_TextChanged(object sender, EventArgs e)
