@@ -97,6 +97,7 @@ namespace BezierAirfoilDesigner
         public Form1()
         {
             InitializeComponent();
+            InitializeGnVarPro();
         }
 
         private async void Form1_Load(object sender, EventArgs e)

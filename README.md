@@ -1,5 +1,33 @@
 # BezierAirfoilDesigner
 
+## GN VarPro fitting
+
+Load a reference `.dat` airfoil, set the degree of each surface with the existing
+order controls, then open **curve fitting > GN VarPro...**. Choose the continuity
+and fitting settings, click **Fit both**, and use **Apply fit** to update both
+control polygons. **Stop** keeps the best accepted fit available to apply;
+closing the dialog leaves the editor unchanged.
+
+The fitter ports `spline_fitter`'s Gauss–Newton variable projection method to
+Bézier curves, using Levenberg–Marquardt and the full analytic reduced Jacobian.
+Both surfaces are solved together. G0 joins positions, G1 additionally matches
+first derivatives, G2 also matches second derivatives, and G3 also matches third
+derivatives. These are the source application's G0–G3 names for parametric
+derivative continuity. G3 needs degree 4 or higher on both surfaces. Different
+degrees on the upper and lower surfaces are supported.
+
+The reference trailing-edge endpoints are always fixed, preserving their gap.
+The leading edge is fixed by default and can optionally move while remaining
+joined. Smoothing defaults to `1e-3`; set it to zero to disable it. RMS is the
+Euclidean data-point residual in the reference coordinates, independently of the
+editor's existing vertical-distance error display. See
+[the numerical details](docs/gn-varpro.md) for the objective, API and validation.
+
+Build on Windows with `dotnet build BezierAirfoilDesigner.sln`. Run the numerical
+and editor integration checks with
+`dotnet run --project BezierAirfoilDesigner.Tests`.
+
+
 An Open-Source-App for converting airfoil coordinates into Bézier curves.
 
 ## Which problem is the app supposed to solve?
